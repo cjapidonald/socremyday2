@@ -56,7 +56,7 @@ final class SoundManager {
     func positive() {
         guard AppPrefsStore.shared.soundsOn else { return }
         guard let buf = positiveBuffer else { return }
-        startEngineIfNeeded()
+        // The call to startEngineIfNeeded() is moved to the schedule function
         schedule(buffer: buf)
     }
 
@@ -64,11 +64,12 @@ final class SoundManager {
     func negative() {
         guard AppPrefsStore.shared.soundsOn else { return }
         guard let buf = negativeBuffer else { return }
-        startEngineIfNeeded()
+        // The call to startEngineIfNeeded() is moved to the schedule function
         schedule(buffer: buf)
     }
 
     private func startEngineIfNeeded() {
+        // This function is now always called on the audio processing queue.
         if !engine.isRunning {
             do { try engine.start() } catch { /* ignore */ }
         }
@@ -81,6 +82,10 @@ final class SoundManager {
     private func schedule(buffer: AVAudioPCMBuffer) {
         queue.async { [weak self] in
             guard let self = self else { return }
+            
+            // **FIX:** Ensure the engine is running *before* scheduling the buffer.
+            // This prevents a race condition and the resulting crash.
+            self.startEngineIfNeeded()
             self.player.scheduleBuffer(buffer, at: nil, options: [], completionHandler: nil)
         }
     }

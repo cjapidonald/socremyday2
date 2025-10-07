@@ -398,12 +398,12 @@ private struct ContributionChartView: View {
                                 DragGesture(minimumDistance: 0)
                                     .onEnded { value in
                                         guard let onSelectSlice = onSelectSlice else { return }
-                                        let origin = geometry[proxy.plotAreaFrame].origin
+                                        let origin = geometry[proxy.plotFrame].origin
                                         let location = CGPoint(
                                             x: value.location.x - origin.x,
                                             y: value.location.y - origin.y
                                         )
-                                        if let (series, plotValue) = proxy.value(at: location, as: (String, Double).self) {
+                                        if let (series, _) = proxy.value(at: location, as: (String, Double).self) {
                                             if let slice = slices.first(where: { $0.legendLabel == series }) {
                                                 onSelectSlice(slice)
                                             }

@@ -195,7 +195,7 @@ final class DeedsPageViewModel: ObservableObject {
     @discardableResult
     func log(cardID: UUID, amount: Double, note: String?) -> LogEntryResult? {
         guard let index = cards.firstIndex(where: { $0.id == cardID }) else { return nil }
-        let card = cards[index].card
+        _ = cards[index].card
         let timestamp = Date()
         let request = EntryCreationRequest(
             deedId: cardID,
