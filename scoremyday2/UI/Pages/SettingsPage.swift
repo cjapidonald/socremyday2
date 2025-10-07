@@ -61,7 +61,7 @@ struct SettingsPage: View {
                     resetAllData()
                 }
             } message: {
-                Text("This deletes all deeds, entries, and preferences. This action cannot be undone.")
+                Text("This deletes all deeds and entries. Preferences remain unchanged. This action cannot be undone.")
             }
             .fileExporter(
                 isPresented: $isPresentingJSONExporter,
@@ -338,6 +338,12 @@ struct SettingsPage: View {
 
     private func resetAllData() {
         guard !isResettingData && !isLoadingDemoData else { return }
+        let storedPrefs = (
+            dayCutoffHour: prefs.dayCutoffHour,
+            hapticsOn: prefs.hapticsOn,
+            soundsOn: prefs.soundsOn,
+            accentColorHex: prefs.accentColorHex
+        )
         isResettingData = true
 
         Task {
@@ -345,10 +351,19 @@ struct SettingsPage: View {
                 let service = DemoDataService(persistenceController: appEnvironment.persistenceController)
                 try service.resetAllData()
                 await MainActor.run {
-                    prefs.dayCutoffHour = 4
-                    prefs.hapticsOn = true
-                    prefs.soundsOn = true
-                    prefs.accentColorHex = nil
+                    if prefs.dayCutoffHour != storedPrefs.dayCutoffHour {
+                        prefs.dayCutoffHour = storedPrefs.dayCutoffHour
+                    }
+                    if prefs.hapticsOn != storedPrefs.hapticsOn {
+                        prefs.hapticsOn = storedPrefs.hapticsOn
+                    }
+                    if prefs.soundsOn != storedPrefs.soundsOn {
+                        prefs.soundsOn = storedPrefs.soundsOn
+                    }
+                    if prefs.accentColorHex != storedPrefs.accentColorHex {
+                        prefs.accentColorHex = storedPrefs.accentColorHex
+                    }
+                    dayCutoffSelection = SettingsPage.makeDate(forHour: storedPrefs.dayCutoffHour)
                     isResettingData = false
                     appEnvironment.notifyDataDidChange()
                 }

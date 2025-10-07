@@ -55,7 +55,6 @@ struct DemoDataService {
 
     func resetAllData() throws {
         try clearExistingData()
-        try prefsRepository.update(AppPrefs())
         _ = try InitialDataSeeder(context: context).seedDefaultDeedCards()
     }
 
