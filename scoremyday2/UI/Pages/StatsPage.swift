@@ -93,46 +93,48 @@ struct StatsPage: View {
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
-                Chart(viewModel.dailyNetSeries) { point in
-                    LineMark(
-                        x: .value("Day", point.date),
-                        y: .value("Net Score", point.value)
-                    )
-                    .interpolationMethod(.catmullRom)
-
-                    AreaMark(
-                        x: .value("Day", point.date),
-                        y: .value("Net Score", point.value)
-                    )
-                    .interpolationMethod(.catmullRom)
-                    .foregroundStyle(Color.accentColor.gradient.opacity(0.25))
-
-                    if point.date == viewModel.todayPoint?.date, let todayPoint = viewModel.todayPoint {
-                        PointMark(
-                            x: .value("Today", todayPoint.date),
-                            y: .value("Today Value", todayPoint.value)
+                StatsChartContainer(points: viewModel.dailyNetSeries) {
+                    Chart(viewModel.dailyNetSeries) { point in
+                        LineMark(
+                            x: .value("Day", point.date),
+                            y: .value("Net Score", point.value)
                         )
-                        .symbolSize(100)
-                        .foregroundStyle(Color.accentColor)
-                        .annotation(position: .top) {
-                            VStack(spacing: 4) {
-                                Text("TODAY")
-                                    .font(.caption)
-                                    .fontWeight(.semibold)
-                                    .foregroundStyle(.secondary)
-                                Text(todayPoint.formattedValue)
-                                    .font(.headline)
-                                    .fontWeight(.semibold)
+                        .interpolationMethod(.catmullRom)
+
+                        AreaMark(
+                            x: .value("Day", point.date),
+                            y: .value("Net Score", point.value)
+                        )
+                        .interpolationMethod(.catmullRom)
+                        .foregroundStyle(Color.accentColor.gradient.opacity(0.25))
+
+                        if point.date == viewModel.todayPoint?.date, let todayPoint = viewModel.todayPoint {
+                            PointMark(
+                                x: .value("Today", todayPoint.date),
+                                y: .value("Today Value", todayPoint.value)
+                            )
+                            .symbolSize(100)
+                            .foregroundStyle(Color.accentColor)
+                            .annotation(position: .top) {
+                                VStack(spacing: 4) {
+                                    Text("TODAY")
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(.secondary)
+                                    Text(todayPoint.formattedValue)
+                                        .font(.headline)
+                                        .fontWeight(.semibold)
+                                }
+                                .padding(8)
+                                .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                             }
-                            .padding(8)
-                            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
                         }
                     }
+                    .chartYAxis {
+                        AxisMarks(position: .leading)
+                    }
+                    .frame(height: 240)
                 }
-                .chartYAxis {
-                    AxisMarks(position: .leading)
-                }
-                .frame(height: 240)
             }
         }
     }
@@ -185,24 +187,26 @@ struct StatsPage: View {
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
-                    Chart(viewModel.cardTrendSeries) { point in
-                        LineMark(
-                            x: .value("Day", point.date),
-                            y: .value("Points", point.value)
-                        )
-                        .foregroundStyle(Color.accentColor)
-                        .interpolationMethod(.catmullRom)
+                    StatsChartContainer(points: viewModel.cardTrendSeries) {
+                        Chart(viewModel.cardTrendSeries) { point in
+                            LineMark(
+                                x: .value("Day", point.date),
+                                y: .value("Points", point.value)
+                            )
+                            .foregroundStyle(Color.accentColor)
+                            .interpolationMethod(.catmullRom)
 
-                        AreaMark(
-                            x: .value("Day", point.date),
-                            y: .value("Points", point.value)
-                        )
-                        .interpolationMethod(.catmullRom)
-                        .foregroundStyle(Color.accentColor.gradient.opacity(0.2))
-                    }
-                    .frame(height: 200)
-                    .chartYAxis {
-                        AxisMarks(position: .leading)
+                            AreaMark(
+                                x: .value("Day", point.date),
+                                y: .value("Points", point.value)
+                            )
+                            .interpolationMethod(.catmullRom)
+                            .foregroundStyle(Color.accentColor.gradient.opacity(0.2))
+                        }
+                        .frame(height: 200)
+                        .chartYAxis {
+                            AxisMarks(position: .leading)
+                        }
                     }
                 }
             }
