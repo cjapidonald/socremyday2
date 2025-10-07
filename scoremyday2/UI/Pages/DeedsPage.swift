@@ -196,7 +196,7 @@ struct DeedsPage: View {
     }
 
     private var cardsGrid: some View {
-        let columns = Array(repeating: GridItem(.flexible(), spacing: 14, alignment: .top), count: 5)
+        let columns = Array(repeating: GridItem(.flexible(), spacing: 14, alignment: .top), count: 3)
         return LazyVGrid(columns: columns, spacing: 14) {
             ForEach(viewModel.cards) { card in
                 DeedCardTile(
