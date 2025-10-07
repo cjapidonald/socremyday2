@@ -9,6 +9,7 @@ final class AppPrefsStore: ObservableObject {
     @Published var hapticsOn: Bool
     @Published var soundsOn: Bool
     @Published var accentColorHex: String?
+    @Published var showSuggestions: Bool
 
     private let repository: AppPrefsRepository
     private var prefsID: UUID
@@ -25,6 +26,7 @@ final class AppPrefsStore: ObservableObject {
         hapticsOn = storedPrefs.hapticsOn
         soundsOn = storedPrefs.soundsOn
         accentColorHex = storedPrefs.accentColorHex
+        showSuggestions = storedPrefs.showSuggestions
 
         bindPersistence()
     }
@@ -53,6 +55,12 @@ final class AppPrefsStore: ObservableObject {
             .removeDuplicates(by: { $0 == $1 })
             .sink { [weak self] _ in self?.persistChanges() }
             .store(in: &cancellables)
+
+        $showSuggestions
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] _ in self?.persistChanges() }
+            .store(in: &cancellables)
     }
 
     private func persistChanges() {
@@ -63,7 +71,8 @@ final class AppPrefsStore: ObservableObject {
             dayCutoffHour: dayCutoffHour,
             hapticsOn: hapticsOn,
             soundsOn: soundsOn,
-            accentColorHex: accentColorHex
+            accentColorHex: accentColorHex,
+            showSuggestions: showSuggestions
         )
         do {
             try repository.update(prefs)
