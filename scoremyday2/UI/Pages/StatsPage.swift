@@ -5,6 +5,7 @@ import SwiftUI
 struct StatsPage: View {
     @EnvironmentObject private var appEnvironment: AppEnvironment
     @StateObject private var viewModel = StatsPageViewModel()
+    @State private var deedSearchText: String = ""
 
     var body: some View {
         ZStack {
@@ -150,33 +151,103 @@ struct StatsPage: View {
                     .font(.callout)
                     .foregroundStyle(.secondary)
             } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(viewModel.topDeeds) { card in
-                            Button {
-                                viewModel.selectedDeedId = card.id
-                            } label: {
-                                HStack(spacing: 6) {
-                                    Text(card.emoji)
-                                    Text(card.name)
-                                        .lineLimit(1)
+                ScrollViewReader { proxy in
+                    let trimmedSearch = deedSearchText.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let filteredTop = viewModel.filteredTopDeeds(matching: trimmedSearch)
+                    let searchResults = viewModel.searchResults(for: trimmedSearch)
+
+                    VStack(alignment: .leading, spacing: 12) {
+                        deedSearchField(text: $deedSearchText)
+
+                        if filteredTop.isEmpty, !trimmedSearch.isEmpty {
+                            Text("No top cards match \"\(trimmedSearch)\".")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        } else {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 8) {
+                                    ForEach(filteredTop) { card in
+                                        Button {
+                                            viewModel.selectedDeedId = card.id
+                                        } label: {
+                                            HStack(spacing: 6) {
+                                                Text(card.emoji)
+                                                Text(card.name)
+                                                    .lineLimit(1)
+                                            }
+                                            .font(.subheadline)
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 8)
+                                            .background(
+                                                Capsule(style: .continuous)
+                                                    .fill(
+                                                        viewModel.selectedDeedId == card.id ? Color.accentColor.opacity(0.2) : Color(.systemBackground).opacity(0.6)
+                                                    )
+                                            )
+                                            .overlay(
+                                                Capsule(style: .continuous)
+                                                    .stroke(viewModel.selectedDeedId == card.id ? Color.accentColor : Color.clear, lineWidth: 1.5)
+                                            )
+                                            .foregroundStyle(viewModel.selectedDeedId == card.id ? Color.accentColor : .primary)
+                                        }
+                                        .id(card.id)
+                                        .buttonStyle(.plain)
+                                    }
                                 }
-                                .font(.subheadline)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 8)
+                            }
+                        }
+
+                        if !trimmedSearch.isEmpty {
+                            if searchResults.isEmpty {
+                                Text("No cards found.")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            } else {
+                                VStack(alignment: .leading, spacing: 0) {
+                                    ForEach(Array(searchResults.enumerated()), id: \.element.id) { index, result in
+                                        Button {
+                                            viewModel.focusOnDeed(withId: result.id)
+                                            deedSearchText = ""
+                                        } label: {
+                                            HStack(spacing: 12) {
+                                                Text(result.emoji)
+                                                VStack(alignment: .leading, spacing: 2) {
+                                                    Text(result.name)
+                                                        .font(.subheadline)
+                                                        .fontWeight(.semibold)
+                                                    Text(result.category)
+                                                        .font(.caption)
+                                                        .foregroundStyle(.secondary)
+                                                }
+                                                Spacer()
+                                            }
+                                            .padding(.vertical, 10)
+                                            .padding(.horizontal, 12)
+                                            .contentShape(Rectangle())
+                                        }
+                                        .buttonStyle(.plain)
+
+                                        if index < searchResults.count - 1 {
+                                            Divider()
+                                                .padding(.leading, 36)
+                                        }
+                                    }
+                                }
                                 .background(
-                                    Capsule(style: .continuous)
-                                        .fill(
-                                            viewModel.selectedDeedId == card.id ? Color.accentColor.opacity(0.2) : Color(.systemBackground).opacity(0.6)
-                                        )
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .fill(Color(.systemBackground).opacity(0.6))
                                 )
                                 .overlay(
-                                    Capsule(style: .continuous)
-                                        .stroke(viewModel.selectedDeedId == card.id ? Color.accentColor : Color.clear, lineWidth: 1.5)
+                                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                        .stroke(Color(.separator).opacity(0.5), lineWidth: 0.5)
                                 )
-                                .foregroundStyle(viewModel.selectedDeedId == card.id ? Color.accentColor : .primary)
                             }
-                            .buttonStyle(.plain)
+                        }
+                    }
+                    .onChange(of: viewModel.selectedDeedId) { id in
+                        guard let id else { return }
+                        withAnimation {
+                            proxy.scrollTo(id, anchor: .center)
                         }
                     }
                 }
@@ -211,6 +282,24 @@ struct StatsPage: View {
                 }
             }
         }
+    }
+
+    private func deedSearchField(text: Binding<String>) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "magnifyingglass")
+                .foregroundStyle(.secondary)
+
+            TextField("Search deeds", text: text)
+                .textFieldStyle(.plain)
+                .autocorrectionDisabled()
+                .textInputAutocapitalization(.never)
+        }
+        .padding(.vertical, 10)
+        .padding(.horizontal, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color(.systemBackground).opacity(0.6))
+        )
     }
 
     private var insightsSection: some View {
@@ -457,6 +546,62 @@ struct CorrelationInsight: Equatable {
     let coefficient: Double
 }
 
+struct DeedSearchIndex {
+    private(set) var allDeeds: [DeedCard] = []
+    private(set) var topDeeds: [DeedCard] = []
+
+    mutating func updateAllDeeds(_ deeds: [DeedCard]) {
+        allDeeds = deeds.sorted { lhs, rhs in
+            lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
+        }
+    }
+
+    mutating func updateTopDeeds(_ deeds: [DeedCard]) {
+        topDeeds = deeds
+    }
+
+    func filteredTopDeeds(query: String) -> [DeedCard] {
+        guard let components = prepareQuery(from: query) else { return topDeeds }
+        return filterTopDeeds(normalized: components.normalized, raw: components.raw)
+    }
+
+    func searchResults(query: String) -> [DeedCard] {
+        guard let components = prepareQuery(from: query) else { return [] }
+
+        let matchingTopIds = Set(filterTopDeeds(normalized: components.normalized, raw: components.raw).map(\.id))
+
+        return allDeeds.filter { deed in
+            matches(deed, normalizedQuery: components.normalized, rawQuery: components.raw) && !matchingTopIds.contains(deed.id)
+        }
+    }
+
+    private func filterTopDeeds(normalized: String, raw: String) -> [DeedCard] {
+        topDeeds.filter { matches($0, normalizedQuery: normalized, rawQuery: raw) }
+    }
+
+    private func prepareQuery(from query: String) -> (normalized: String, raw: String)? {
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        return (normalize(trimmed), trimmed)
+    }
+
+    private func matches(_ deed: DeedCard, normalizedQuery: String, rawQuery: String) -> Bool {
+        let normalizedName = normalize(deed.name)
+        if normalizedName.contains(normalizedQuery) { return true }
+
+        let normalizedCategory = normalize(deed.category)
+        if normalizedCategory.contains(normalizedQuery) { return true }
+
+        if deed.emoji.contains(rawQuery) { return true }
+
+        return false
+    }
+
+    private func normalize(_ value: String) -> String {
+        value.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: Locale.current)
+    }
+}
+
 @MainActor
 final class StatsPageViewModel: ObservableObject {
     @Published var selectedRange: StatsRange = .oneMonth {
@@ -478,7 +623,9 @@ final class StatsPageViewModel: ObservableObject {
     @Published private(set) var dailyNetSeries: [DailyStatPoint] = []
     @Published private(set) var todayPoint: DailyStatPoint?
     @Published private(set) var cardTrendSeries: [DailyStatPoint] = []
-    @Published private(set) var topDeeds: [DeedCard] = []
+    @Published private(set) var topDeeds: [DeedCard] = [] {
+        didSet { searchIndex.updateTopDeeds(topDeeds) }
+    }
     @Published private(set) var positiveSlices: [ContributionSlice] = []
     @Published private(set) var negativeSlices: [ContributionSlice] = []
     @Published private(set) var comparativeInsight: ComparativeInsight?
@@ -490,6 +637,14 @@ final class StatsPageViewModel: ObservableObject {
         return deed.name
     }
 
+    func filteredTopDeeds(matching query: String) -> [DeedCard] {
+        searchIndex.filteredTopDeeds(query: query)
+    }
+
+    func searchResults(for query: String) -> [DeedCard] {
+        searchIndex.searchResults(query: query)
+    }
+
     private var calendar: Calendar
     private var cutoffHour: Int = 4
     private var isReady = false
@@ -499,6 +654,7 @@ final class StatsPageViewModel: ObservableObject {
     private var perDeedPositivePoints: [UUID: [Date: Double]] = [:]
     private var perDeedNegativePoints: [UUID: [Date: Double]] = [:]
     private var perCategoryPositivePoints: [String: [Date: Double]] = [:]
+    private var searchIndex = DeedSearchIndex()
     private var persistenceController: PersistenceController?
 
     init() {
@@ -548,6 +704,7 @@ final class StatsPageViewModel: ObservableObject {
     private func loadData(context: NSManagedObjectContext) throws {
         let deeds = try DeedsRepository(context: context).fetchAll(includeArchived: true)
         deedsById = Dictionary(uniqueKeysWithValues: deeds.map { ($0.id, $0) })
+        searchIndex.updateAllDeeds(deeds.filter { $0.showOnStats })
 
         let range = dateRange(forDays: StatsRange.maxDays)
         let entries = try EntriesRepository(context: context).fetchEntries(in: range)
