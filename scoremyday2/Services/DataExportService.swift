@@ -67,7 +67,7 @@ struct DataExportService {
 }
 
 private extension DataExportService {
-    struct ExportableCard: Codable {
+    struct ExportableCard: Encodable {
         let id: UUID
         let name: String
         let emoji: String
@@ -157,7 +157,7 @@ private extension DataExportService {
         ]
     }
 
-    struct ExportableEntry: Codable {
+    struct ExportableEntry: Encodable {
         let id: UUID
         let deedId: UUID
         let timestamp: Date
