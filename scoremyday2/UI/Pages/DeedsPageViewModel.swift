@@ -61,15 +61,16 @@ final class DeedsPageViewModel: ObservableObject {
             let sortedCards = cards
                 .filter { !$0.isArchived }
                 .sorted { lhs, rhs in
-                    let lhsDate = lastUsed[lhs.id]
-                    let rhsDate = lastUsed[rhs.id]
-                    if let lhsDate, let rhsDate, lhsDate != rhsDate {
-                        return lhsDate > rhsDate
-                    } else if (lhsDate != nil) != (rhsDate != nil) {
-                        return lhsDate != nil
-                    } else {
-                        return lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending
-                    }
+                    let lhsDate = lastUsed[lhs.id] ?? lhs.createdAt
+                    let rhsDate = lastUsed[rhs.id] ?? rhs.createdAt
+                    return compare(
+                        lhsDate: lhsDate,
+                        rhsDate: rhsDate,
+                        lhsName: lhs.name,
+                        rhsName: rhs.name,
+                        lhsID: lhs.id,
+                        rhsID: rhs.id
+                    )
                 }
 
             var rememberedAmounts = lastAmount
@@ -232,19 +233,42 @@ final class DeedsPageViewModel: ObservableObject {
 
     private func resortCards() {
         cards.sort { lhs, rhs in
-            if let lhsDate = lhs.lastUsed, let rhsDate = rhs.lastUsed, lhsDate != rhsDate {
-                return lhsDate > rhsDate
-            } else if (lhs.lastUsed != nil) != (rhs.lastUsed != nil) {
-                return lhs.lastUsed != nil
-            } else {
-                return lhs.card.name.localizedCaseInsensitiveCompare(rhs.card.name) == .orderedAscending
-            }
+            let lhsDate = lhs.lastUsed ?? lhs.card.createdAt
+            let rhsDate = rhs.lastUsed ?? rhs.card.createdAt
+            return compare(
+                lhsDate: lhsDate,
+                rhsDate: rhsDate,
+                lhsName: lhs.card.name,
+                rhsName: rhs.card.name,
+                lhsID: lhs.card.id,
+                rhsID: rhs.card.id
+            )
         }
     }
 
     private func isDate(_ date: Date, inSameAppDayAs reference: Date) -> Bool {
         let range = appDayRange(for: reference, cutoffHour: cutoffHour)
         return date >= range.start && date < range.end
+    }
+
+    private func compare(
+        lhsDate: Date,
+        rhsDate: Date,
+        lhsName: String,
+        rhsName: String,
+        lhsID: UUID,
+        rhsID: UUID
+    ) -> Bool {
+        if lhsDate != rhsDate {
+            return lhsDate > rhsDate
+        }
+
+        let nameComparison = lhsName.localizedCaseInsensitiveCompare(rhsName)
+        if nameComparison != .orderedSame {
+            return nameComparison == .orderedAscending
+        }
+
+        return lhsID.uuidString < rhsID.uuidString
     }
 }
 
