@@ -23,7 +23,7 @@ struct GlassBackgroundModifier: ViewModifier {
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .simultaneousGesture(dragGesture)
-            .onChange(of: targetLocation) { newValue in
+            .onChange(of: targetLocation, initial: false) { oldValue, newValue in
                 withAnimation(.easeOut(duration: 0.28)) {
                     animatedLocation = newValue
                 }
@@ -66,7 +66,7 @@ private struct GlassMaterialView: View {
     var isInteracting: Bool
 
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.accessibilityContrast) private var accessibilityContrastLevel
+    @Environment(\.colorSchemeContrast) private var contrast
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
@@ -84,7 +84,7 @@ private struct GlassMaterialView: View {
                         .fill(Color(.systemBackground))
                         .overlay(
                             shape
-                                .stroke(tint.opacity(colorScheme == .dark ? 0.45 : 0.3), lineWidth: accessibilityContrastLevel == .increased ? 1.6 : 1)
+                                .stroke(tint.opacity(colorScheme == .dark ? 0.45 : 0.3), lineWidth: contrast == .increased ? 1.6 : 1)
                         )
                 } else {
                     shape
@@ -114,9 +114,9 @@ private struct GlassMaterialView: View {
     }
 
     private func tintGradient(normalized: CGPoint) -> LinearGradient {
-        let baseOpacity = accessibilityContrastLevel == .increased ? 0.55 : 0.35
-        let secondaryOpacity = accessibilityContrastLevel == .increased ? 0.42 : 0.25
-        let tertiaryOpacity = accessibilityContrastLevel == .increased ? 0.25 : 0.15
+        let baseOpacity = contrast == .increased ? 0.55 : 0.35
+        let secondaryOpacity = contrast == .increased ? 0.42 : 0.25
+        let tertiaryOpacity = contrast == .increased ? 0.25 : 0.15
         let adjustedTint = tint.opacity(colorScheme == .dark ? baseOpacity : baseOpacity * 0.8)
         let gradientColors: [Color] = [
             adjustedTint,
@@ -129,7 +129,7 @@ private struct GlassMaterialView: View {
     }
 
     private func innerHighlight(shape: RoundedRectangle, normalized: CGPoint) -> some View {
-        let highlightOpacity = accessibilityContrastLevel == .increased ? 0.75 : 0.55
+        let highlightOpacity = contrast == .increased ? 0.75 : 0.55
         let highlightGradient = LinearGradient(
             colors: [
                 Color.white.opacity(highlightOpacity),
@@ -139,7 +139,7 @@ private struct GlassMaterialView: View {
             endPoint: UnitPoint(x: 1, y: 1)
         )
         let glow = shape
-            .stroke(highlightGradient, lineWidth: accessibilityContrastLevel == .increased ? 1.8 : 1.1)
+            .stroke(highlightGradient, lineWidth: contrast == .increased ? 1.8 : 1.1)
             .blendMode(.screen)
             .opacity(0.65)
 
@@ -156,7 +156,7 @@ private struct GlassMaterialView: View {
     private func glassBorder(shape: RoundedRectangle) -> some View {
         let borderColor = tint.opacity(colorScheme == .dark ? 0.35 : 0.25)
         return shape
-            .strokeBorder(borderColor, lineWidth: accessibilityContrastLevel == .increased ? 1.6 : 1)
+            .strokeBorder(borderColor, lineWidth: contrast == .increased ? 1.6 : 1)
             .blendMode(.plusLighter)
             .opacity(cornerRadius < 1 ? 0 : 0.8)
     }
@@ -164,17 +164,17 @@ private struct GlassMaterialView: View {
     private var shadowColor: Color {
         guard cornerRadius > 0.5 else { return .clear }
         let baseOpacity: Double = colorScheme == .dark ? 0.55 : 0.25
-        return Color.black.opacity(accessibilityContrastLevel == .increased ? baseOpacity * 0.6 : baseOpacity)
+        return Color.black.opacity(contrast == .increased ? baseOpacity * 0.6 : baseOpacity)
     }
 
     private var shadowRadius: CGFloat {
         guard cornerRadius > 0.5 else { return 0 }
-        return accessibilityContrastLevel == .increased ? 10 : 18
+        return contrast == .increased ? 10 : 18
     }
 
     private var shadowYOffset: CGFloat {
         guard cornerRadius > 0.5 else { return 0 }
-        return accessibilityContrastLevel == .increased ? 6 : 12
+        return contrast == .increased ? 6 : 12
     }
 
     private func lensOffset(normalized: CGPoint) -> CGSize {
@@ -189,7 +189,7 @@ private struct GlassMaterialView: View {
     private func lensScale(normalized: CGPoint) -> CGFloat {
         guard !reduceMotion else { return 0 }
         let distance = sqrt(pow(normalized.x - 0.5, 2) + pow(normalized.y - 0.5, 2))
-        let maxScale: CGFloat = (accessibilityContrastLevel == .increased ? 0.008 : 0.012) * (isInteracting ? 1 : 0.6)
+        let maxScale: CGFloat = (contrast == .increased ? 0.008 : 0.012) * (isInteracting ? 1 : 0.6)
         return max(0, (1 - min(distance * 2, 1)) * maxScale)
     }
 }

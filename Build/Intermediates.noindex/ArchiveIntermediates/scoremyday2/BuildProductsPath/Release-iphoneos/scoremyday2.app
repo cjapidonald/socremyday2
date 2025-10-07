@@ -1,0 +1,1 @@
+../../InstallationBuildProductsLocation/Applications/scoremyday2.app

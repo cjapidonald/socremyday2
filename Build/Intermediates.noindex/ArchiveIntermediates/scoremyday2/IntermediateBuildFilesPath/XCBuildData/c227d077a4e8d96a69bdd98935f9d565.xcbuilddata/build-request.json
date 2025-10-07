@@ -1,0 +1,81 @@
+{
+  "buildCommand" : {
+    "command" : "build",
+    "skipDependencies" : false,
+    "style" : "buildAndRun"
+  },
+  "configuredTargets" : [
+    {
+      "guid" : "7324f55508f34c1a8684efec65ed58694faac33b2097537b585e81ca748e178a"
+    }
+  ],
+  "containerPath" : "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2.xcodeproj",
+  "continueBuildingAfterErrors" : false,
+  "dependencyScope" : "workspace",
+  "enableIndexBuildArena" : false,
+  "hideShellScriptEnvironment" : false,
+  "parameters" : {
+    "action" : "install",
+    "activeArchitecture" : "undefined_arch",
+    "activeRunDestination" : {
+      "disableOnlyActiveArch" : true,
+      "platform" : "iphoneos",
+      "sdk" : "iphoneos26.0",
+      "sdkVariant" : "iphoneos",
+      "supportedArchitectures" : [
+        "armv4t",
+        "armv5",
+        "armv6",
+        "armv7",
+        "armv7f",
+        "armv7s",
+        "armv7k",
+        "arm64",
+        "arm64e"
+      ],
+      "targetArchitecture" : "undefined_arch"
+    },
+    "arenaInfo" : {
+      "buildIntermediatesPath" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex",
+      "buildProductsPath" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Products",
+      "derivedDataPath" : "/Users/donaldcjapi/Library/Developer/Xcode/DerivedData",
+      "indexDataStoreFolderPath" : "/Users/donaldcjapi/Library/Developer/Xcode/DerivedData/scoremyday2-bpjanhjzseqkxndnlnanjlrysesw/Index.noindex/DataStore",
+      "indexEnableDataStore" : true,
+      "indexPCHPath" : "/Users/donaldcjapi/Library/Developer/Xcode/DerivedData/scoremyday2-bpjanhjzseqkxndnlnanjlrysesw/Index.noindex/PrecompiledHeaders",
+      "pchPath" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/PrecompiledHeaders"
+    },
+    "configurationName" : "Release",
+    "overrides" : {
+      "synthesized" : {
+        "table" : {
+          "ACTION" : "install",
+          "ASSET_PACK_FOLDER_PATH" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/InstallationBuildProductsLocation/OnDemandResources",
+          "ASSETCATALOG_COMPILER_FLATTENED_APP_ICON_PATH" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/BuildProductsPath/ProductIcon.png",
+          "DEPLOYMENT_LOCATION" : "YES",
+          "DEPLOYMENT_POSTPROCESSING" : "YES",
+          "DSTROOT" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/InstallationBuildProductsLocation",
+          "EMBED_ASSET_PACKS_IN_PRODUCT_BUNDLE" : "NO",
+          "ENABLE_PREVIEWS" : "NO",
+          "ENABLE_SIGNATURE_AGGREGATION" : "YES",
+          "ENABLE_XOJIT_PREVIEWS" : "YES",
+          "INDEX_ENABLE_DATA_STORE" : "NO",
+          "MESSAGES_APPLICATION_EXTENSION_SUPPORT_FOLDER_PATH" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/BuildProductsPath/MessagesApplicationExtensionSupport",
+          "MESSAGES_APPLICATION_SUPPORT_FOLDER_PATH" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/BuildProductsPath/MessagesApplicationSupport",
+          "OBJROOT" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath",
+          "ONLY_ACTIVE_ARCH" : "YES",
+          "SHARED_PRECOMPS_DIR" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/PrecompiledHeaders",
+          "SIGNATURE_METADATA_FOLDER_PATH" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/BuildProductsPath/Signatures",
+          "SWIFT_STDLIB_TOOL_UNSIGNED_DESTINATION_DIR" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/BuildProductsPath/SwiftSupport",
+          "SYMROOT" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/BuildProductsPath",
+          "WATCHKIT_2_SUPPORT_FOLDER_PATH" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/BuildProductsPath/WatchKitSupport2"
+        }
+      }
+    }
+  },
+  "schemeCommand" : "archive",
+  "showNonLoggedProgress" : true,
+  "useDryRun" : false,
+  "useImplicitDependencies" : true,
+  "useLegacyBuildLocations" : false,
+  "useParallelTargets" : true
+}

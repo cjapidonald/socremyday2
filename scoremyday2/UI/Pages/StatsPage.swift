@@ -397,22 +397,16 @@ private struct ContributionChartView: View {
                             .gesture(
                                 DragGesture(minimumDistance: 0)
                                     .onEnded { value in
-                                        guard let onSelectSlice else { return }
-                                        guard let plotFrame = proxy.plotAreaFrame else { return }
-                                        guard plotFrame.contains(value.location) else { return }
-
+                                        guard let onSelectSlice = onSelectSlice else { return }
+                                        let origin = geometry[proxy.plotAreaFrame].origin
                                         let location = CGPoint(
-                                            x: value.location.x - plotFrame.origin.x,
-                                            y: value.location.y - plotFrame.origin.y
+                                            x: value.location.x - origin.x,
+                                            y: value.location.y - origin.y
                                         )
-
-                                        if let label: String = proxy.value(
-                                            at: CGPoint(x: location.x, y: location.y),
-                                            as: String.self
-                                        ),
-                                        let slice = slices.first(where: { $0.legendLabel == label }),
-                                        slice.deedId != nil {
-                                            onSelectSlice(slice)
+                                        if let (series, plotValue) = proxy.value(at: location, as: (String, Double).self) {
+                                            if let slice = slices.first(where: { $0.legendLabel == series }) {
+                                                onSelectSlice(slice)
+                                            }
                                         }
                                     }
                             )
@@ -1092,4 +1086,3 @@ enum StatsMath {
     StatsPage()
         .environmentObject(AppEnvironment())
 }
-

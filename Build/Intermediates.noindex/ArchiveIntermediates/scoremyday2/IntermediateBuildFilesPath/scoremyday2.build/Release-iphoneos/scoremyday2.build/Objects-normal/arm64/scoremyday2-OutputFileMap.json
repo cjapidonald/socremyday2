@@ -1,0 +1,231 @@
+{
+  "" : {
+    "const-values" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/scoremyday2-primary.swiftconstvalues",
+    "dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/scoremyday2-primary.d",
+    "diagnostics" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/scoremyday2-primary.dia",
+    "emit-module-dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/scoremyday2-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/scoremyday2-primary-emit-module.dia",
+    "pch" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/scoremyday2-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/scoremyday2-primary.swiftdeps"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/GeneratedAssetSymbols.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Analytics/AnalyticsEngine.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AnalyticsEngine.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AnalyticsEngine.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AnalyticsEngine.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Data/AppDataBootstrapper.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppDataBootstrapper.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppDataBootstrapper.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppDataBootstrapper.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Models/AppSettings.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppSettings.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppSettings.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppSettings.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Models/DeedModels.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedModels.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedModels.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedModels.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Persistence/ManagedObjects.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/ManagedObjects.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/ManagedObjects.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/ManagedObjects.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Persistence/Mappings.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/Mappings.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/Mappings.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/Mappings.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Persistence/NSManagedObjectContext+Helpers.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/NSManagedObjectContext+Helpers.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/NSManagedObjectContext+Helpers.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/NSManagedObjectContext+Helpers.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Persistence/PersistenceController.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/PersistenceController.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/PersistenceController.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/PersistenceController.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Repositories/AppPrefsRepository.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppPrefsRepository.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppPrefsRepository.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppPrefsRepository.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Repositories/DeedsRepository.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedsRepository.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedsRepository.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedsRepository.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Repositories/EntriesRepository.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/EntriesRepository.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/EntriesRepository.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/EntriesRepository.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Repositories/ScoresRepository.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/ScoresRepository.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/ScoresRepository.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/ScoresRepository.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/ScoreMyDayApp.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/ScoreMyDayApp.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/ScoreMyDayApp.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/ScoreMyDayApp.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/AccountStore.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AccountStore.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AccountStore.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AccountStore.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/AppEnvironment.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppEnvironment.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppEnvironment.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppEnvironment.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/AppPrefsStore.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppPrefsStore.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppPrefsStore.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppPrefsStore.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/DataExportService.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DataExportService.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DataExportService.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DataExportService.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/DeedSuggestionsService.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedSuggestionsService.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedSuggestionsService.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedSuggestionsService.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/DemoDataService.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DemoDataService.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DemoDataService.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DemoDataService.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/HapticsManager.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/HapticsManager.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/HapticsManager.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/HapticsManager.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/InitialDataSeeder.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/InitialDataSeeder.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/InitialDataSeeder.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/InitialDataSeeder.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/SoundManager.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/SoundManager.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/SoundManager.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/SoundManager.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/Color+AppAccent.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/Color+AppAccent.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/Color+AppAccent.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/Color+AppAccent.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/Color+Hex.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/Color+Hex.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/Color+Hex.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/Color+Hex.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/DeedIconView.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedIconView.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedIconView.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedIconView.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/GlassBackground.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/GlassBackground.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/GlassBackground.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/GlassBackground.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/LiquidBackgroundView.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/LiquidBackgroundView.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/LiquidBackgroundView.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/LiquidBackgroundView.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/ParticleOverlayView.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/ParticleOverlayView.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/ParticleOverlayView.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/ParticleOverlayView.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/SparklineView.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/SparklineView.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/SparklineView.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/SparklineView.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/StatsChartContainer.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/StatsChartContainer.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/StatsChartContainer.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/StatsChartContainer.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Pages/AddEditDeedSheet.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AddEditDeedSheet.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AddEditDeedSheet.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AddEditDeedSheet.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Pages/DeedsPage.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedsPage.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedsPage.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedsPage.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Pages/DeedsPageViewModel.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedsPageViewModel.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedsPageViewModel.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DeedsPageViewModel.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Pages/RootView.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/RootView.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/RootView.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/RootView.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Pages/SettingsPage.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/SettingsPage.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/SettingsPage.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/SettingsPage.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Pages/StatsPage.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/StatsPage.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/StatsPage.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/StatsPage.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Utilities/FloatingDeltaQueue.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/FloatingDeltaQueue.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/FloatingDeltaQueue.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/FloatingDeltaQueue.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Utilities/FolderExportDocument.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/FolderExportDocument.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/FolderExportDocument.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/FolderExportDocument.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Utilities/Accessibility.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/Accessibility.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/Accessibility.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/Accessibility.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Utilities/AppDayRange.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppDayRange.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppDayRange.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/AppDayRange.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Utilities/DynamicTypeHelpers.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DynamicTypeHelpers.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DynamicTypeHelpers.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/DynamicTypeHelpers.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Utilities/MotionTransparency.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/MotionTransparency.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/MotionTransparency.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/MotionTransparency.o"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Utilities/RootTab.swift" : {
+    "index-unit-output-path" : "/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/RootTab.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/RootTab.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/ArchiveIntermediates/scoremyday2/IntermediateBuildFilesPath/scoremyday2.build/Release-iphoneos/scoremyday2.build/Objects-normal/arm64/RootTab.o"
+  }
+}
