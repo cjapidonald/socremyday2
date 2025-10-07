@@ -292,7 +292,6 @@ final class DeedsPageViewModel: ObservableObject {
 
         return lhsID.uuidString < rhsID.uuidString
     }
-}
 
     private func refreshSuggestions(using baseCards: [DeedCard]? = nil) {
         let cardsToUse: [DeedCard]
@@ -325,6 +324,8 @@ final class DeedsPageViewModel: ObservableObject {
             suggestions = mapped
         }
     }
+
+}
 
 private struct LastAmountStore {
     private let defaults: UserDefaults
