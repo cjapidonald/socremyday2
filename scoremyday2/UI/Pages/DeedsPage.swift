@@ -477,35 +477,36 @@ private struct DeedCardTile: View {
     let onSetShowOnStats: (Bool) -> Void
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            VStack(alignment: .leading, spacing: 10) {
-                DeedIconView(value: state.card.emoji, tint: state.accentColor)
+        Button(action: onTap) {
+            ZStack(alignment: .topLeading) {
+                VStack(alignment: .leading, spacing: 10) {
+                    DeedIconView(value: state.card.emoji, tint: state.accentColor)
 
-                Text(state.card.name)
-                    .font(.headline)
-                    .foregroundStyle(.primary)
-                    .lineLimit(1)
+                    Text(state.card.name)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+                        .lineLimit(1)
 
-                Text(state.card.unitLabel)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    Text(state.card.unitLabel)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding(16)
+
+                if state.card.isPrivate {
+                    Image(systemName: "eye.slash.fill")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(.secondary)
+                        .padding(10)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                }
             }
-            .padding(16)
-
-            if state.card.isPrivate {
-                Image(systemName: "eye.slash.fill")
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(.secondary)
-                    .padding(10)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-            }
+            .frame(height: 120)
+            .glassBackground(cornerRadius: 20, tint: state.accentColor, warpStrength: 3.5)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(state.card.accessibilityLabel(lastAmount: state.lastAmount, unit: state.card.unitLabel))
         }
-        .frame(height: 120)
-        .glassBackground(cornerRadius: 20, tint: state.accentColor, warpStrength: 3.5)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(state.card.accessibilityLabel(lastAmount: state.lastAmount, unit: state.card.unitLabel))
-        .accessibilityAddTraits(.isButton)
-        .onTapGesture { onTap() }
+        .buttonStyle(.plain)
         .contextMenu {
             Button {
                 onQuickAdd()
@@ -545,18 +546,20 @@ private struct AddCardTile: View {
     let action: () -> Void
 
     var body: some View {
-        VStack(spacing: 8) {
-            Image(systemName: "plus")
-                .font(.system(size: 24, weight: .bold))
-            Text("New")
-                .font(.subheadline.weight(.semibold))
+        Button(action: action) {
+            VStack(spacing: 8) {
+                Image(systemName: "plus")
+                    .font(.system(size: 24, weight: .bold))
+                Text("New")
+                    .font(.subheadline.weight(.semibold))
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .foregroundStyle(.primary)
+            .frame(height: 120)
+            .glassBackground(cornerRadius: 20, tint: Color.accentColor, warpStrength: 3)
+            .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .foregroundStyle(.primary)
-        .frame(height: 120)
-        .glassBackground(cornerRadius: 20, tint: Color.accentColor, warpStrength: 3)
-        .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .onTapGesture { action() }
+        .buttonStyle(.plain)
     }
 }
 
