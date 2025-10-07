@@ -14,10 +14,20 @@ final class DeedsPageViewModel: ObservableObject {
         var isPositive: Bool { card.polarity == .positive }
     }
 
+    struct SuggestionState: Identifiable, Equatable {
+        let kind: DeedSuggestion.Kind
+        let card: CardState
+        let amount: Double
+        let note: String?
+
+        var id: UUID { card.id }
+    }
+
     private let deedsRepository: DeedsRepository
     private let entriesRepository: EntriesRepository
     private let prefsRepository: AppPrefsRepository
     private let scoresRepository: ScoresRepository
+    private let suggestionsService = DeedSuggestionsService()
     private let lastAmountStore = LastAmountStore()
 
     @Published var cards: [CardState] = []
@@ -26,8 +36,10 @@ final class DeedsPageViewModel: ObservableObject {
     @Published private(set) var cutoffHour: Int = 4
     @Published var pendingRatingCard: CardState?
     @Published var categorySuggestions: [String] = []
+    @Published var suggestions: [SuggestionState] = []
 
     private var hasLoaded = false
+    private var allEntries: [DeedEntry] = []
 
     init(persistenceController: PersistenceController = .shared) {
         let context = persistenceController.viewContext
@@ -50,6 +62,7 @@ final class DeedsPageViewModel: ObservableObject {
 
             let cards = try deedsRepository.fetchAll(includeArchived: false)
             let entries = try entriesRepository.fetchEntries()
+            allEntries = entries
 
             var lastUsed: [UUID: Date] = [:]
             var lastAmount: [UUID: Double] = [:]
@@ -93,6 +106,7 @@ final class DeedsPageViewModel: ObservableObject {
 
             todayNetScore = try computeTodayScore()
             sparklineValues = try computeSparkline()
+            refreshSuggestions(using: limitedCards)
         } catch {
             assertionFailure("Failed to load deeds: \(error)")
         }
@@ -105,6 +119,7 @@ final class DeedsPageViewModel: ObservableObject {
         do {
             todayNetScore = try computeTodayScore()
             sparklineValues = try computeSparkline()
+            refreshSuggestions()
         } catch {
             assertionFailure("Failed to recompute metrics: \(error)")
         }
@@ -192,6 +207,7 @@ final class DeedsPageViewModel: ObservableObject {
             cards[index].lastUsed = entry.timestamp
             cards[index].lastAmount = entry.amount
             lastAmountStore.setAmount(entry.amount, for: cardID)
+            allEntries.append(entry)
             resortCards()
             if isDate(entry.timestamp, inSameAppDayAs: Date()) {
                 todayNetScore += entry.computedPoints
@@ -202,11 +218,16 @@ final class DeedsPageViewModel: ObservableObject {
                 todayNetScore = try computeTodayScore()
                 sparklineValues = try computeSparkline()
             }
+            refreshSuggestions()
             return result
         } catch {
             assertionFailure("Failed to log entry: \(error)")
             return nil
         }
+    }
+
+    func performSuggestion(_ suggestion: SuggestionState) -> LogEntryResult? {
+        log(cardID: suggestion.card.id, amount: suggestion.amount, note: suggestion.note)
     }
 
     func toggleArchive(for cardID: UUID) {
@@ -272,6 +293,38 @@ final class DeedsPageViewModel: ObservableObject {
         return lhsID.uuidString < rhsID.uuidString
     }
 }
+
+    private func refreshSuggestions(using baseCards: [DeedCard]? = nil) {
+        let cardsToUse: [DeedCard]
+        if let baseCards {
+            cardsToUse = baseCards
+        } else {
+            cardsToUse = cards.map { $0.card }
+        }
+
+        guard !cardsToUse.isEmpty else {
+            if !suggestions.isEmpty {
+                suggestions = []
+            }
+            return
+        }
+
+        let generated = suggestionsService.makeSuggestions(
+            cards: cardsToUse,
+            entries: allEntries,
+            cutoffHour: cutoffHour
+        )
+
+        let mapped: [SuggestionState] = generated.compactMap { suggestion in
+            guard let cardState = cards.first(where: { $0.id == suggestion.cardID }) else { return nil }
+            let amount = defaultAmount(for: cardState)
+            return SuggestionState(kind: suggestion.kind, card: cardState, amount: amount, note: nil)
+        }
+
+        if suggestions != mapped {
+            suggestions = mapped
+        }
+    }
 
 private struct LastAmountStore {
     private let defaults: UserDefaults
