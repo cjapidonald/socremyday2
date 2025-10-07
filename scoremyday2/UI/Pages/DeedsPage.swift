@@ -1,11 +1,12 @@
 import SwiftUI
+import UIKit
 
 struct DeedsPage: View {
     @StateObject private var viewModel = DeedsPageViewModel()
 
     @State private var quickAddState: QuickAddState?
     @State private var floatingDeltas: [FloatingDelta] = []
-    @State private var sparkleBursts: [SparkleBurst] = []
+    @State private var particleBursts: [ParticleOverlayView.Event] = []
     @State private var cardFrames: [UUID: CGRect] = [:]
     @State private var headerFrame: CGRect = .zero
     @State private var deedEditorState: DeedEditorState?
@@ -32,9 +33,7 @@ struct DeedsPage: View {
                     FloatingDeltaView(delta: delta)
                 }
 
-                ForEach(sparkleBursts) { burst in
-                    SparkleBurstView(burst: burst)
-                }
+                ParticleOverlayView(events: particleBursts)
             }
             .onPreferenceChange(CardFramePreferenceKey.self) { anchors in
                 var updated: [UUID: CGRect] = [:]
@@ -158,7 +157,7 @@ struct DeedsPage: View {
         }
 
         if polarity == .positive, let card = viewModel.cards.first(where: { $0.id == cardID }) {
-            handleSparkle(for: card, startFrame: startFrameOverride)
+            handleSparkle(for: card, points: points, startFrame: startFrameOverride)
         }
     }
 
@@ -192,14 +191,15 @@ struct DeedsPage: View {
         String(format: "%02d:00", viewModel.cutoffHour)
     }
 
-    private func handleSparkle(for card: DeedsPageViewModel.CardState, startFrame: CGRect?) {
+    private func handleSparkle(for card: DeedsPageViewModel.CardState, points: Double, startFrame: CGRect?) {
+        guard !UIAccessibility.isReduceMotionEnabled else { return }
         let frame = startFrame ?? cardFrames[card.id] ?? .zero
         guard !frame.isEmpty else { return }
-        let center = CGPoint(x: frame.midX, y: frame.midY)
-        let burst = SparkleBurst(center: center, color: card.accentColor)
-        sparkleBursts.append(burst)
+        let style: ParticleOverlayView.Event.Style = abs(points) >= 50 ? .confetti : .sparkle
+        let burst = ParticleOverlayView.Event(frame: frame, color: UIColor(card.accentColor), style: style)
+        particleBursts.append(burst)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            sparkleBursts.removeAll { $0.id == burst.id }
+            particleBursts.removeAll { $0.id == burst.id }
         }
     }
 
@@ -222,11 +222,6 @@ struct DeedsPage: View {
         let end: CGPoint
     }
 
-    struct SparkleBurst: Identifiable {
-        let id = UUID()
-        let center: CGPoint
-        let color: Color
-    }
 }
 
 private struct CardFramePreferenceKey: PreferenceKey {
@@ -271,47 +266,6 @@ private struct FloatingDeltaView: View {
             x: delta.start.x + (delta.end.x - delta.start.x) * progress,
             y: delta.start.y + (delta.end.y - delta.start.y) * progress - 40 * progress
         )
-    }
-}
-
-private struct SparkleBurstView: View {
-    let burst: DeedsPage.SparkleBurst
-    @State private var progress: CGFloat = 0
-
-    var body: some View {
-        ZStack {
-            ForEach(0..<6, id: \.self) { index in
-                Circle()
-                    .fill(burst.color.opacity(Double(1 - progress)))
-                    .frame(width: circleSize(for: progress), height: circleSize(for: progress))
-                    .offset(
-                        x: CGFloat(direction(for: index).dx) * radius(for: progress),
-                        y: CGFloat(direction(for: index).dy) * radius(for: progress)
-                    )
-                    .blur(radius: progress * 2)
-            }
-        }
-        .position(burst.center)
-        .opacity(Double(1 - progress * 0.6))
-        .onAppear {
-            withAnimation(.easeOut(duration: 0.9)) {
-                progress = 1
-            }
-        }
-        .allowsHitTesting(false)
-    }
-
-    private func circleSize(for progress: CGFloat) -> CGFloat {
-        6 + progress * 14
-    }
-
-    private func radius(for progress: CGFloat) -> CGFloat {
-        12 + progress * 36
-    }
-
-    private func direction(for index: Int) -> CGVector {
-        let radians = Double(index) / 6.0 * .pi * 2
-        return CGVector(dx: cos(radians), dy: sin(radians))
     }
 }
 
