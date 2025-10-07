@@ -44,10 +44,10 @@ struct StatsPage: View {
         .task {
             await viewModel.configureIfNeeded(environment: appEnvironment)
         }
-        .onChange(of: appEnvironment.settings.dayCutoffHour) { newValue in
+        .onChange(of: appEnvironment.settings.dayCutoffHour, initial: false) { oldValue, newValue in
             Task { await viewModel.updateCutoffHour(newValue) }
         }
-        .onChange(of: appEnvironment.dataVersion) { _ in
+        .onChange(of: appEnvironment.dataVersion, initial: false) { _, _ in
             Task { await viewModel.forceReload() }
         }
     }
@@ -245,7 +245,7 @@ struct StatsPage: View {
                             }
                         }
                     }
-                    .onChange(of: viewModel.selectedDeedId) { id in
+                    .onChange(of: viewModel.selectedDeedId, initial: false) { _, id in
                         guard let id else { return }
                         withAnimation {
                             proxy.scrollTo(id, anchor: .center)
@@ -1092,3 +1092,4 @@ enum StatsMath {
     StatsPage()
         .environmentObject(AppEnvironment())
 }
+

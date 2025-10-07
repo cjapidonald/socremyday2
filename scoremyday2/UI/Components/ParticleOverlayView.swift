@@ -4,13 +4,13 @@ import UIKit
 struct ParticleOverlayView: UIViewRepresentable {
     var events: [Event]
 
-    func makeUIView(context: Context) -> ParticleOverlayUIView {
+    fileprivate func makeUIView(context: Context) -> ParticleOverlayUIView {
         let view = ParticleOverlayUIView()
         view.isUserInteractionEnabled = false
         return view
     }
 
-    func updateUIView(_ uiView: ParticleOverlayUIView, context: Context) {
+    fileprivate func updateUIView(_ uiView: ParticleOverlayUIView, context: Context) {
         uiView.update(events: events)
     }
 }
