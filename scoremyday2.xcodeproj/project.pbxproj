@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
                 9F4D72EC7CF4442DAD0B12B1 /* AppDayRangeTests.swift in Sources */ = {isa = PBXBuildFile; file = 39F5DF71227A4AFE9E8E7B3D /* AppDayRangeTests.swift */; };
                 BD136B4E922740EC92644730 /* EntriesRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; file = F7972FDA75924E0CB688140B /* EntriesRepositoryTests.swift */; };
+                2F44C2358A3B4C6D9E0F1A2B /* PositiveBooleanDailyCapTests.swift in Sources */ = {isa = PBXBuildFile; file = 3A55D1E8C9624F0AB1234567 /* PositiveBooleanDailyCapTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -16,6 +17,7 @@
                 0EA3727FF57848ACB86820FA /* scoremyday2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = scoremyday2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
                 39F5DF71227A4AFE9E8E7B3D /* AppDayRangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDayRangeTests.swift; sourceTree = "<group>"; };
                 F7972FDA75924E0CB688140B /* EntriesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntriesRepositoryTests.swift; sourceTree = "<group>"; };
+                3A55D1E8C9624F0AB1234567 /* PositiveBooleanDailyCapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveBooleanDailyCapTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -90,6 +92,7 @@
                         children = (
                                 39F5DF71227A4AFE9E8E7B3D /* AppDayRangeTests.swift */,
                                 F7972FDA75924E0CB688140B /* EntriesRepositoryTests.swift */,
+                                3A55D1E8C9624F0AB1234567 /* PositiveBooleanDailyCapTests.swift */,
                         );
                         path = scoremyday2Tests;
                         sourceTree = "<group>";
@@ -237,6 +240,7 @@
                         files = (
                                 9F4D72EC7CF4442DAD0B12B1 /* AppDayRangeTests.swift in Sources */,
                                 BD136B4E922740EC92644730 /* EntriesRepositoryTests.swift in Sources */,
+                                2F44C2358A3B4C6D9E0F1A2B /* PositiveBooleanDailyCapTests.swift in Sources */,
                         );
                         runOnlyForDeploymentPostprocessing = 0;
                 };

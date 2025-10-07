@@ -142,9 +142,15 @@ struct AddEditDeedSheet: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    TextField("Daily Cap (optional)", text: $dailyCapText)
-                        .keyboardType(.decimalPad)
-                        .disabled(unitType == .boolean && polarity == .positive)
+                    if unitType == .boolean && polarity == .positive {
+                        LabeledContent("Daily Cap") {
+                            Text("1 completion per day")
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
+                        TextField("Daily Cap (optional)", text: $dailyCapText)
+                            .keyboardType(.decimalPad)
+                    }
                 }
 
                 Section("Visibility") {

@@ -21,13 +21,15 @@ final class EntriesRepository {
                 throw NSError(domain: "EntriesRepository", code: 1, userInfo: [NSLocalizedDescriptionKey: "Deed not found"])
             }
 
-            let rawPoints = request.amount * deed.pointsPerUnit
+            let rawAmount = request.amount
+            let rawPoints = rawAmount * deed.pointsPerUnit
             let computedPoints: Double
             if let cap = deed.dailyCap?.doubleValue, cap >= 0, rawPoints > 0 {
                 let dayRange = appDayRange(for: request.timestamp, cutoffHour: cutoffHour)
-                let existingPoints = try pointsAwarded(for: deed, within: dayRange, positiveOnly: true)
-                let remaining = max(0, cap - existingPoints)
-                computedPoints = max(0, min(rawPoints, remaining))
+                let existingAmount = try amountCountedTowardCap(for: deed, within: dayRange)
+                let remainingAmount = max(0, cap - existingAmount)
+                let amountAwarded = max(0, min(rawAmount, remainingAmount))
+                computedPoints = amountAwarded * deed.pointsPerUnit
             } else {
                 computedPoints = rawPoints
             }
@@ -81,10 +83,9 @@ final class EntriesRepository {
         }
     }
 
-    private func pointsAwarded(
+    private func amountCountedTowardCap(
         for deed: DeedCardMO,
-        within range: (start: Date, end: Date),
-        positiveOnly: Bool
+        within range: (start: Date, end: Date)
     ) throws -> Double {
         let request = DeedEntryMO.fetchRequest()
         request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
@@ -93,12 +94,8 @@ final class EntriesRepository {
         ])
         let entries = try context.fetch(request)
         return entries.reduce(0) { partialResult, entry in
-            let value = entry.computedPoints
-            if positiveOnly {
-                return partialResult + max(0, value)
-            } else {
-                return partialResult + value
-            }
+            guard entry.computedPoints > 0 else { return partialResult }
+            return partialResult + max(0, entry.amount)
         }
     }
 }
