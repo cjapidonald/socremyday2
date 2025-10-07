@@ -16,18 +16,25 @@ struct StatsPage: View {
                         .font(.largeTitle)
                         .fontWeight(.bold)
 
-                    Picker("Range", selection: $viewModel.selectedRange) {
-                        ForEach(StatsRange.allCases) { range in
-                            Text(range.label)
-                                .tag(range)
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    } else if !viewModel.hasAnyEntries {
+                        emptyStateView
+                    } else {
+                        Picker("Range", selection: $viewModel.selectedRange) {
+                            ForEach(StatsRange.allCases) { range in
+                                Text(range.label)
+                                    .tag(range)
+                            }
                         }
-                    }
-                    .pickerStyle(.segmented)
+                        .pickerStyle(.segmented)
 
-                    mainNetScoreSection
-                    perCardTrendSection
-                    insightsSection
-                    contributionSection
+                        mainNetScoreSection
+                        perCardTrendSection
+                        insightsSection
+                        contributionSection
+                    }
                 }
                 .padding()
             }
@@ -40,16 +47,44 @@ struct StatsPage: View {
         }
     }
 
+    private var emptyStateView: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "chart.pie")
+                .font(.system(size: 44))
+                .foregroundStyle(.secondary)
+
+            Text("No stats yet")
+                .font(.title3)
+                .fontWeight(.semibold)
+
+            Text("Log your first deed to unlock insights and charts.")
+                .font(.callout)
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.secondary)
+
+            Button {
+                appEnvironment.selectedTab = .deeds
+            } label: {
+                Text("Log your first deed")
+                    .fontWeight(.semibold)
+                    .padding(.horizontal, 24)
+                    .padding(.vertical, 12)
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .padding(24)
+        .frame(maxWidth: .infinity)
+        .glassBackground(cornerRadius: 20, tint: Color.accentColor, warpStrength: 2.5)
+    }
+
     private var mainNetScoreSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Main Net Score")
                 .font(.title2)
                 .fontWeight(.semibold)
 
-            if viewModel.isLoading {
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-            } else if viewModel.dailyNetSeries.isEmpty {
+            if viewModel.dailyNetSeries.isEmpty {
                 Text("No score activity yet. Start logging deeds to see insights.")
                     .font(.callout)
                     .foregroundStyle(.secondary)
@@ -126,8 +161,15 @@ struct StatsPage: View {
                                 .padding(.vertical, 8)
                                 .background(
                                     Capsule(style: .continuous)
-                                        .fill(viewModel.selectedDeedId == card.id ? Color.accentColor.opacity(0.2) : Color(.systemBackground).opacity(0.6))
+                                        .fill(
+                                            viewModel.selectedDeedId == card.id ? Color.accentColor.opacity(0.2) : Color(.systemBackground).opacity(0.6)
+                                        )
                                 )
+                                .overlay(
+                                    Capsule(style: .continuous)
+                                        .stroke(viewModel.selectedDeedId == card.id ? Color.accentColor : Color.clear, lineWidth: 1.5)
+                                )
+                                .foregroundStyle(viewModel.selectedDeedId == card.id ? Color.accentColor : .primary)
                             }
                             .buttonStyle(.plain)
                         }
@@ -197,8 +239,26 @@ struct StatsPage: View {
                 .font(.title2)
                 .fontWeight(.semibold)
 
-            ContributionChartView(title: "Sources of Positives", slices: viewModel.positiveSlices)
-            ContributionChartView(title: "Sources of Negatives", slices: viewModel.negativeSlices)
+            ContributionChartView(
+                title: "Sources of Positives",
+                slices: viewModel.positiveSlices,
+                selectedDeedId: viewModel.selectedDeedId,
+                onSelectSlice: { slice in
+                    if let id = slice.deedId {
+                        viewModel.focusOnDeed(withId: id)
+                    }
+                }
+            )
+            ContributionChartView(
+                title: "Sources of Negatives",
+                slices: viewModel.negativeSlices,
+                selectedDeedId: viewModel.selectedDeedId,
+                onSelectSlice: { slice in
+                    if let id = slice.deedId {
+                        viewModel.focusOnDeed(withId: id)
+                    }
+                }
+            )
         }
     }
 }
@@ -206,6 +266,8 @@ struct StatsPage: View {
 private struct ContributionChartView: View {
     var title: String
     var slices: [ContributionSlice]
+    var selectedDeedId: UUID?
+    var onSelectSlice: ((ContributionSlice) -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -228,21 +290,76 @@ private struct ContributionChartView: View {
                         Text(slice.emoji)
                             .font(.caption)
                     }
+                    .opacity(slice.deedId == nil || slice.deedId == selectedDeedId || selectedDeedId == nil ? 1 : 0.35)
+                }
+                .chartOverlay { proxy in
+                    GeometryReader { geometry in
+                        Rectangle()
+                            .fill(.clear)
+                            .contentShape(Rectangle())
+                            .gesture(
+                                DragGesture(minimumDistance: 0)
+                                    .onEnded { value in
+                                        guard let onSelectSlice else { return }
+                                        guard let plotFrame = proxy.plotAreaFrame else { return }
+                                        guard plotFrame.contains(value.location) else { return }
+
+                                        let location = CGPoint(
+                                            x: value.location.x - plotFrame.origin.x,
+                                            y: value.location.y - plotFrame.origin.y
+                                        )
+
+                                        if let label: String = proxy.value(
+                                            at: CGPoint(x: location.x, y: location.y),
+                                            as: String.self
+                                        ),
+                                        let slice = slices.first(where: { $0.legendLabel == label }),
+                                        slice.deedId != nil {
+                                            onSelectSlice(slice)
+                                        }
+                                    }
+                            )
+                    }
                 }
                 .chartLegend(.hidden)
                 .frame(height: 220)
 
                 VStack(alignment: .leading, spacing: 6) {
                     ForEach(slices) { slice in
-                        HStack {
-                            Text(slice.emoji)
-                            Text(slice.legendLabel)
-                                .fontWeight(.semibold)
-                            Spacer()
-                            Text(slice.percentageString)
-                                .foregroundStyle(.secondary)
+                        if let deedId = slice.deedId, let onSelectSlice {
+                            Button {
+                                onSelectSlice(slice)
+                            } label: {
+                                HStack {
+                                    Text(slice.emoji)
+                                    Text(slice.legendLabel)
+                                        .fontWeight(.semibold)
+                                    Spacer()
+                                    Text("\(slice.pointsString) • \(slice.percentageString)")
+                                        .font(.caption)
+                                        .foregroundStyle(
+                                            deedId == selectedDeedId ? Color.accentColor : Color.secondary
+                                        )
+                                }
+                                .font(.subheadline)
+                                .foregroundStyle(
+                                    deedId == selectedDeedId ? Color.accentColor : Color.primary
+                                )
+                            }
+                            .buttonStyle(.plain)
+                        } else {
+                            HStack {
+                                Text(slice.emoji)
+                                Text(slice.legendLabel)
+                                    .fontWeight(.semibold)
+                                Spacer()
+                                Text("\(slice.pointsString) • \(slice.percentageString)")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                         }
-                        .font(.subheadline)
                     }
                 }
             }
@@ -303,10 +420,18 @@ struct DailyStatPoint: Identifiable, Equatable {
 
 struct ContributionSlice: Identifiable, Equatable {
     let id = UUID()
+    let deedId: UUID?
     let emoji: String
     let legendLabel: String
     let value: Double
     let percentage: Double
+
+    var pointsString: String {
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 1
+        formatter.minimumFractionDigits = 0
+        return "\(formatter.string(from: NSNumber(value: value)) ?? "0") pts"
+    }
 
     var percentageString: String {
         let formatter = NumberFormatter()
@@ -351,6 +476,7 @@ final class StatsPageViewModel: ObservableObject {
     @Published private(set) var negativeSlices: [ContributionSlice] = []
     @Published private(set) var comparativeInsight: ComparativeInsight?
     @Published private(set) var correlationInsight: CorrelationInsight?
+    @Published private(set) var hasAnyEntries: Bool = false
 
     var selectedDeedName: String {
         guard let id = selectedDeedId, let deed = deedsById[id] else { return "this card" }
@@ -393,6 +519,7 @@ final class StatsPageViewModel: ObservableObject {
         guard let persistence = persistenceController else { return }
         isReady = false
         isLoading = true
+        hasAnyEntries = false
 
         do {
             try loadData(context: persistence.viewContext)
@@ -413,6 +540,8 @@ final class StatsPageViewModel: ObservableObject {
 
         let range = dateRange(forDays: StatsRange.maxDays)
         let entries = try EntriesRepository(context: context).fetchEntries(in: range)
+
+        hasAnyEntries = !entries.isEmpty
 
         ingest(entries: entries)
         rebuildTopDeeds()
@@ -453,12 +582,26 @@ final class StatsPageViewModel: ObservableObject {
         .sorted { $0.1 > $1.1 }
         .prefix(10)
 
-        topDeeds = ranked.map { $0.0 }
+        var updated = ranked.map { $0.0 }
+
+        if let selected = selectedDeedId,
+           let deed = deedsById[selected],
+           !updated.contains(where: { $0.id == selected }) {
+            updated.insert(deed, at: 0)
+        }
+
+        if updated.count > 10 {
+            updated = Array(updated.prefix(10))
+        }
+
+        topDeeds = updated
 
         if topDeeds.isEmpty {
             selectedDeedId = nil
-        } else if let first = topDeeds.first, selectedDeedId == nil || !topDeeds.contains(where: { $0.id == selectedDeedId }) {
-            selectedDeedId = first.id
+        } else if let current = selectedDeedId, topDeeds.contains(where: { $0.id == current }) {
+            return
+        } else {
+            selectedDeedId = topDeeds.first?.id
         }
     }
 
@@ -467,6 +610,21 @@ final class StatsPageViewModel: ObservableObject {
         updateContributionSlices()
         updateCardTrend()
         updateInsights()
+    }
+
+    func focusOnDeed(withId id: UUID) {
+        guard let deed = deedsById[id] else { return }
+
+        var updated = topDeeds
+        if let existingIndex = updated.firstIndex(where: { $0.id == id }) {
+            updated.remove(at: existingIndex)
+        }
+        updated.insert(deed, at: 0)
+        if updated.count > 10 {
+            updated = Array(updated.prefix(10))
+        }
+        topDeeds = updated
+        selectedDeedId = id
     }
 
     private func updateDailyNetSeries() {
@@ -530,6 +688,7 @@ final class StatsPageViewModel: ObservableObject {
 
         var slices: [ContributionSlice] = top.map { deed, value in
             ContributionSlice(
+                deedId: deed.id,
                 emoji: includeEmoji ? deed.emoji : "",
                 legendLabel: deed.name,
                 value: value,
@@ -540,6 +699,7 @@ final class StatsPageViewModel: ObservableObject {
         if remainder > 0 {
             slices.append(
                 ContributionSlice(
+                    deedId: nil,
                     emoji: "…",
                     legendLabel: "Others",
                     value: remainder,

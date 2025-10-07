@@ -3,6 +3,7 @@ import Combine
 
 final class AppEnvironment: ObservableObject {
     @Published var settings = AppSettings()
+    @Published var selectedTab: RootTab = .deeds
     let persistenceController: PersistenceController
     private var cancellables: Set<AnyCancellable> = []
 
