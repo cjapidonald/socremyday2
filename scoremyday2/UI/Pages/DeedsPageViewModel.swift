@@ -24,6 +24,7 @@ final class DeedsPageViewModel: ObservableObject {
     @Published var sparklineValues: [Double] = Array(repeating: 0, count: 7)
     @Published private(set) var cutoffHour: Int = 4
     @Published var pendingRatingCard: CardState?
+    @Published var categorySuggestions: [String] = []
 
     private var hasLoaded = false
 
@@ -71,6 +72,8 @@ final class DeedsPageViewModel: ObservableObject {
                 }
 
             let limitedCards = Array(sortedCards.prefix(14))
+            let categories = Set(cards.map { $0.category }.filter { !$0.isEmpty })
+            categorySuggestions = categories.sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
             self.cards = limitedCards.map { card in
                 CardState(
                     card: card,
@@ -83,6 +86,15 @@ final class DeedsPageViewModel: ObservableObject {
             sparklineValues = try computeSparkline()
         } catch {
             assertionFailure("Failed to load deeds: \(error)")
+        }
+    }
+
+    func upsert(card: DeedCard) {
+        do {
+            try deedsRepository.upsert(card)
+            reload()
+        } catch {
+            assertionFailure("Failed to upsert deed: \(error)")
         }
     }
 

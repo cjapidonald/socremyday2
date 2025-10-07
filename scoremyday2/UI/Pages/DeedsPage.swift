@@ -11,7 +11,7 @@ struct DeedsPage: View {
     @State private var sparkleBursts: [SparkleBurst] = []
     @State private var cardFrames: [UUID: CGRect] = [:]
     @State private var headerFrame: CGRect = .zero
-    @State private var showingAddDeedSheet = false
+    @State private var deedEditorState: DeedEditorState?
 
     var body: some View {
         GeometryReader { proxy in
@@ -69,29 +69,16 @@ struct DeedsPage: View {
                 }
             }
         }
-        .sheet(isPresented: $showingAddDeedSheet) {
-            NavigationStack {
-                VStack(spacing: 16) {
-                    Image(systemName: "square.and.pencil")
-                        .font(.system(size: 44))
-                        .padding(.top, 32)
-                    Text("Add / Edit Deed")
-                        .font(.title3.weight(.semibold))
-                    Text("This sheet will be implemented in the next step.")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                    Spacer()
+        .sheet(item: $deedEditorState, onDismiss: { deedEditorState = nil }) { state in
+            AddEditDeedSheet(
+                initialCard: state.card,
+                categorySuggestions: viewModel.categorySuggestions,
+                onSave: { card in
+                    viewModel.upsert(card: card)
                 }
-                .padding()
-                .toolbar {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Done") { showingAddDeedSheet = false }
-                    }
-                }
-            }
-            .presentationDetents([.medium])
+            )
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
         }
     }
 
@@ -134,18 +121,20 @@ struct DeedsPage: View {
             ForEach(viewModel.cards) { card in
                 DeedCardTile(state: card) {
                     handleTap(on: card)
-                } onLongPress: {
+                } onQuickAdd: {
                     quickAddState = QuickAddState(
                         card: card,
                         amount: viewModel.defaultAmount(for: card),
                         note: ""
                     )
+                } onEdit: {
+                    deedEditorState = DeedEditorState(card: card.card)
                 }
                 .anchorPreference(key: CardFramePreferenceKey.self, value: .bounds) { [card.id: $0] }
             }
 
             AddCardTile {
-                showingAddDeedSheet = true
+                deedEditorState = DeedEditorState(card: nil)
             }
         }
     }
@@ -328,10 +317,16 @@ private struct SparkleBurstView: View {
     }
 }
 
+private struct DeedEditorState: Identifiable {
+    let id = UUID()
+    let card: DeedCard?
+}
+
 private struct DeedCardTile: View {
     let state: DeedsPageViewModel.CardState
     let onTap: () -> Void
-    let onLongPress: () -> Void
+    let onQuickAdd: () -> Void
+    let onEdit: () -> Void
 
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
@@ -343,8 +338,7 @@ private struct DeedCardTile: View {
                 )
 
             VStack(alignment: .leading, spacing: 10) {
-                Text(state.card.emoji)
-                    .font(.system(size: 30))
+                DeedIconView(value: state.card.emoji)
 
                 Text(state.card.name)
                     .font(.headline)
@@ -368,7 +362,19 @@ private struct DeedCardTile: View {
         .frame(height: 120)
         .contentShape(shape)
         .onTapGesture { onTap() }
-        .onLongPressGesture(minimumDuration: 0.45) { onLongPress() }
+        .contextMenu {
+            Button {
+                onQuickAdd()
+            } label: {
+                Label("Quick Add", systemImage: "bolt.badge.clock")
+            }
+
+            Button {
+                onEdit()
+            } label: {
+                Label("Edit", systemImage: "pencil")
+            }
+        }
     }
 }
 

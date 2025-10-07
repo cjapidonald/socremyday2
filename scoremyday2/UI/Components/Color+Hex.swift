@@ -1,5 +1,11 @@
 import SwiftUI
 
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(AppKit)
+import AppKit
+#endif
+
 extension Color {
     init(hex: String, fallback: Color = .gray) {
         let sanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -33,5 +39,42 @@ extension Color {
         }
 
         self = Color(red: r, green: g, blue: b, opacity: a)
+    }
+
+    func toHex(includeAlpha: Bool = false) -> String? {
+        #if canImport(UIKit)
+        let platformColor = UIColor(self)
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        var a: CGFloat = 0
+        guard platformColor.getRed(&r, green: &g, blue: &b, alpha: &a) else { return nil }
+        #elseif canImport(AppKit)
+        let platformColor = NSColor(self)
+        guard let converted = platformColor.usingColorSpace(.deviceRGB) else { return nil }
+        let r = converted.redComponent
+        let g = converted.greenComponent
+        let b = converted.blueComponent
+        let a = converted.alphaComponent
+        #else
+        return nil
+        #endif
+
+        if includeAlpha {
+            return String(
+                format: "#%02X%02X%02X%02X",
+                Int(round(r * 255)),
+                Int(round(g * 255)),
+                Int(round(b * 255)),
+                Int(round(a * 255))
+            )
+        } else {
+            return String(
+                format: "#%02X%02X%02X",
+                Int(round(r * 255)),
+                Int(round(g * 255)),
+                Int(round(b * 255))
+            )
+        }
     }
 }
