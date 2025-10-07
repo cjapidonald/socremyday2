@@ -13,6 +13,7 @@ final class DeedCardMO: NSManagedObject {
     @NSManaged var pointsPerUnit: Double
     @NSManaged var dailyCap: NSNumber?
     @NSManaged var isPrivate: Bool
+    @NSManaged var showOnStats: Bool
     @NSManaged var createdAt: Date
     @NSManaged var isArchived: Bool
     @NSManaged var entries: Set<DeedEntryMO>

@@ -59,6 +59,7 @@ final class PersistenceController {
             attribute(name: "pointsPerUnit", type: .doubleAttributeType),
             attribute(name: "dailyCap", type: .doubleAttributeType, optional: true, allowsExternalBinaryData: false),
             attribute(name: "isPrivate", type: .booleanAttributeType),
+            attribute(name: "showOnStats", type: .booleanAttributeType, defaultValue: true),
             attribute(name: "createdAt", type: .dateAttributeType),
             attribute(name: "isArchived", type: .booleanAttributeType)
         ]
@@ -112,13 +113,15 @@ final class PersistenceController {
         name: String,
         type: NSAttributeType,
         optional: Bool = false,
-        allowsExternalBinaryData: Bool = false
+        allowsExternalBinaryData: Bool = false,
+        defaultValue: Any? = nil
     ) -> NSAttributeDescription {
         let attribute = NSAttributeDescription()
         attribute.name = name
         attribute.attributeType = type
         attribute.isOptional = optional
         attribute.allowsExternalBinaryDataStorage = allowsExternalBinaryData
+        attribute.defaultValue = defaultValue
         return attribute
     }
 

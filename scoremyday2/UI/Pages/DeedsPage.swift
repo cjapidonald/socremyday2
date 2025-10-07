@@ -113,17 +113,20 @@ struct DeedsPage: View {
         let columns = Array(repeating: GridItem(.flexible(), spacing: 14, alignment: .top), count: 5)
         return LazyVGrid(columns: columns, spacing: 14) {
             ForEach(viewModel.cards) { card in
-                DeedCardTile(state: card) {
-                    handleTap(on: card)
-                } onQuickAdd: {
-                    quickAddState = QuickAddState(
-                        card: card,
-                        amount: viewModel.defaultAmount(for: card),
-                        note: ""
-                    )
-                } onEdit: {
-                    deedEditorState = DeedEditorState(card: card.card)
-                }
+                DeedCardTile(
+                    state: card,
+                    onTap: { handleTap(on: card) },
+                    onQuickAdd: {
+                        quickAddState = QuickAddState(
+                            card: card,
+                            amount: viewModel.defaultAmount(for: card),
+                            note: ""
+                        )
+                    },
+                    onEdit: { deedEditorState = DeedEditorState(card: card.card) },
+                    onToggleArchive: { viewModel.toggleArchive(for: card.id) },
+                    onSetShowOnStats: { value in viewModel.setShowOnStats(value, for: card.id) }
+                )
                 .anchorPreference(key: CardFramePreferenceKey.self, value: .bounds) { [card.id: $0] }
             }
 
@@ -231,7 +234,19 @@ struct DeedsPage: View {
         var note: String
 
         var computedPoints: Double {
-            amount * card.card.pointsPerUnit
+            normalizedAmount * card.card.pointsPerUnit
+        }
+
+        var normalizedAmount: Double {
+            switch card.card.unitType {
+            case .rating:
+                let clamped = max(1, min(5, Int(amount.rounded())))
+                return Double(clamped)
+            case .boolean:
+                return amount > 0.5 ? 1 : 0
+            default:
+                return amount
+            }
         }
     }
 
@@ -353,6 +368,8 @@ private struct DeedCardTile: View {
     let onTap: () -> Void
     let onQuickAdd: () -> Void
     let onEdit: () -> Void
+    let onToggleArchive: () -> Void
+    let onSetShowOnStats: (Bool) -> Void
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -392,6 +409,25 @@ private struct DeedCardTile: View {
                 onEdit()
             } label: {
                 Label("Edit", systemImage: "pencil")
+            }
+
+            Button {
+                onToggleArchive()
+            } label: {
+                Label(
+                    state.card.isArchived ? "Unarchive" : "Archive",
+                    systemImage: state.card.isArchived ? "tray.and.arrow.up" : "archivebox"
+                )
+            }
+
+            Toggle(isOn: Binding(
+                get: { state.card.showOnStats },
+                set: { newValue in
+                    guard newValue != state.card.showOnStats else { return }
+                    onSetShowOnStats(newValue)
+                }
+            )) {
+                Label("Show on Stats Page", systemImage: "chart.bar.xaxis")
             }
         }
     }
@@ -458,9 +494,10 @@ private struct QuickAddSheet: View {
                     Text(localState.card.card.unitLabel.isEmpty ? "Completed" : localState.card.card.unitLabel)
                 }
             case .rating:
-                Stepper(value: $localState.amount, in: 1...5, step: 1) {
-                    Text("Rating: \(Int(localState.amount))")
-                }
+                RatingSlider(rating: Binding(
+                    get: { max(1, min(5, Int(localState.amount.rounded()))) },
+                    set: { localState.amount = Double($0) }
+                ))
             case .count:
                 Stepper(value: $localState.amount, in: 0...100, step: 1) {
                     Text("\(Int(localState.amount)) \(localState.card.card.unitLabel)")
@@ -491,6 +528,7 @@ private struct QuickAddSheet: View {
     }
 
     private func save() {
+        localState.amount = localState.normalizedAmount
         onSave(localState)
         dismiss()
     }
@@ -507,6 +545,42 @@ private struct QuickAddSheet: View {
         formatter.minimumFractionDigits = 0
         let number = NSNumber(value: value)
         return formatter.string(from: number) ?? String(format: "%.1f", value)
+    }
+}
+
+private struct RatingSlider: View {
+    @Binding var rating: Int
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 6) {
+                ForEach(1...5, id: \.self) { value in
+                    Image(systemName: value <= rating ? "star.fill" : "star")
+                        .foregroundStyle(value <= rating ? Color.yellow : Color.secondary)
+                        .font(.title3)
+                        .onTapGesture {
+                            rating = value
+                        }
+                }
+            }
+
+            Slider(
+                value: Binding(
+                    get: { Double(rating) },
+                    set: { rating = Int(round($0)) }
+                ),
+                in: 1...5,
+                step: 1
+            ) {
+                Text("Rating")
+            }
+            .tint(.yellow)
+
+            Text("\(rating) \(rating == 1 ? "star" : "stars")")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, 4)
     }
 }
 

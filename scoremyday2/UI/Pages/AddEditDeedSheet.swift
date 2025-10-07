@@ -17,6 +17,7 @@ struct AddEditDeedSheet: View {
     @State private var pointsPerUnitText: String
     @State private var dailyCapText: String
     @State private var isPrivate: Bool
+    @State private var showOnStats: Bool
     @State private var showingSymbolPicker = false
 
     private let isEditing: Bool
@@ -53,6 +54,15 @@ struct AddEditDeedSheet: View {
             _dailyCapText = State(initialValue: "")
         }
         _isPrivate = State(initialValue: initialCard?.isPrivate ?? false)
+        _showOnStats = State(initialValue: initialCard?.showOnStats ?? true)
+
+        if defaultUnitType == .boolean {
+            if defaultPolarity == .positive {
+                _dailyCapText = State(initialValue: Self.format(1))
+            } else if initialCard?.dailyCap == nil {
+                _dailyCapText = State(initialValue: "")
+            }
+        }
     }
 
     var body: some View {
@@ -112,9 +122,16 @@ struct AddEditDeedSheet: View {
                     }
                     .pickerStyle(.segmented)
 
-                    TextField("Unit Label", text: $unitLabel)
-                        .textInputAutocapitalization(.never)
-                        .disableAutocorrection(true)
+                    if unitType == .boolean {
+                        LabeledContent("Unit Label") {
+                            Text(unitLabel.isEmpty ? Self.placeholderLabel(for: unitType) : unitLabel)
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
+                        TextField("Unit Label", text: $unitLabel)
+                            .textInputAutocapitalization(.never)
+                            .disableAutocorrection(true)
+                    }
 
                     TextField("Points per Unit", text: $pointsPerUnitText)
                         .keyboardType(.decimalPad)
@@ -127,9 +144,11 @@ struct AddEditDeedSheet: View {
 
                     TextField("Daily Cap (optional)", text: $dailyCapText)
                         .keyboardType(.decimalPad)
+                        .disabled(unitType == .boolean && polarity == .positive)
                 }
 
-                Section("Privacy") {
+                Section("Visibility") {
+                    Toggle("Show on Stats Page", isOn: $showOnStats)
                     Toggle("Private", isOn: $isPrivate)
                 }
             }
@@ -147,8 +166,9 @@ struct AddEditDeedSheet: View {
         .onChange(of: unitType) { newValue in
             applyDefaults(for: newValue)
         }
-        .onChange(of: polarity) { _ in
+        .onChange(of: polarity) { newValue in
             syncPointsWithPolarity()
+            enforceBooleanDailyCapIfNeeded(force: unitType == .boolean && newValue == .negative)
         }
     }
 
@@ -233,6 +253,7 @@ struct AddEditDeedSheet: View {
             pointsPerUnit: pointsPerUnitValue ?? 0,
             dailyCap: dailyCapValue,
             isPrivate: isPrivate,
+            showOnStats: showOnStats,
             createdAt: initialCard?.createdAt ?? Date(),
             isArchived: initialCard?.isArchived ?? false
         )
@@ -299,6 +320,7 @@ struct AddEditDeedSheet: View {
             pointsPerUnit: points,
             dailyCap: dailyCapValue,
             isPrivate: isPrivate,
+            showOnStats: showOnStats,
             createdAt: initialCard?.createdAt ?? Date(),
             isArchived: initialCard?.isArchived ?? false
         )
@@ -317,6 +339,7 @@ struct AddEditDeedSheet: View {
         } else {
             dailyCapText = ""
         }
+        enforceBooleanDailyCapIfNeeded(force: true)
     }
 
     private func syncPointsWithPolarity() {
@@ -324,6 +347,17 @@ struct AddEditDeedSheet: View {
         let magnitude = abs(value)
         let signed = polarity == .positive ? magnitude : -magnitude
         pointsPerUnitText = Self.format(signed)
+    }
+
+    private func enforceBooleanDailyCapIfNeeded(force: Bool = false) {
+        guard unitType == .boolean else { return }
+        if polarity == .positive {
+            if force || abs((dailyCapValue ?? 0) - 1) > 0.0001 {
+                dailyCapText = Self.format(1)
+            }
+        } else if force {
+            dailyCapText = ""
+        }
     }
 
     private func formatAmount(_ amount: Double) -> String {

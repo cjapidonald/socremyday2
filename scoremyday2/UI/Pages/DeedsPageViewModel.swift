@@ -18,6 +18,7 @@ final class DeedsPageViewModel: ObservableObject {
     private let entriesRepository: EntriesRepository
     private let prefsRepository: AppPrefsRepository
     private let scoresRepository: ScoresRepository
+    private let lastAmountStore = LastAmountStore()
 
     @Published var cards: [CardState] = []
     @Published var todayNetScore: Double = 0
@@ -71,6 +72,13 @@ final class DeedsPageViewModel: ObservableObject {
                     }
                 }
 
+            var rememberedAmounts = lastAmount
+            for card in sortedCards {
+                if rememberedAmounts[card.id] == nil, let stored = lastAmountStore.amount(for: card.id) {
+                    rememberedAmounts[card.id] = stored
+                }
+            }
+
             let limitedCards = Array(sortedCards.prefix(14))
             let categories = Set(cards.map { $0.category }.filter { !$0.isEmpty })
             categorySuggestions = categories.sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
@@ -78,7 +86,7 @@ final class DeedsPageViewModel: ObservableObject {
                 CardState(
                     card: card,
                     lastUsed: lastUsed[card.id],
-                    lastAmount: lastAmount[card.id]
+                    lastAmount: rememberedAmounts[card.id]
                 )
             }
 
@@ -169,6 +177,7 @@ final class DeedsPageViewModel: ObservableObject {
             let entry = try entriesRepository.logEntry(request, cutoffHour: cutoffHour)
             cards[index].lastUsed = entry.timestamp
             cards[index].lastAmount = entry.amount
+            lastAmountStore.setAmount(entry.amount, for: cardID)
             resortCards()
             if isDate(entry.timestamp, inSameAppDayAs: Date()) {
                 todayNetScore += entry.computedPoints
@@ -183,6 +192,29 @@ final class DeedsPageViewModel: ObservableObject {
         } catch {
             assertionFailure("Failed to log entry: \(error)")
             return nil
+        }
+    }
+
+    func toggleArchive(for cardID: UUID) {
+        do {
+            guard var card = try deedsRepository.get(id: cardID) else { return }
+            card.isArchived.toggle()
+            try deedsRepository.upsert(card)
+            reload()
+        } catch {
+            assertionFailure("Failed to toggle archive: \(error)")
+        }
+    }
+
+    func setShowOnStats(_ isVisible: Bool, for cardID: UUID) {
+        do {
+            guard var card = try deedsRepository.get(id: cardID) else { return }
+            guard card.showOnStats != isVisible else { return }
+            card.showOnStats = isVisible
+            try deedsRepository.upsert(card)
+            reload()
+        } catch {
+            assertionFailure("Failed to update stats visibility: \(error)")
         }
     }
 
@@ -201,5 +233,22 @@ final class DeedsPageViewModel: ObservableObject {
     private func isDate(_ date: Date, inSameAppDayAs reference: Date) -> Bool {
         let range = appDayRange(for: reference, cutoffHour: cutoffHour)
         return date >= range.start && date < range.end
+    }
+}
+
+private struct LastAmountStore {
+    private let defaults: UserDefaults
+    private let keyPrefix = "deedLastAmount."
+
+    init(userDefaults: UserDefaults = .standard) {
+        self.defaults = userDefaults
+    }
+
+    func amount(for id: UUID) -> Double? {
+        defaults.object(forKey: keyPrefix + id.uuidString) as? Double
+    }
+
+    func setAmount(_ amount: Double, for id: UUID) {
+        defaults.set(amount, forKey: keyPrefix + id.uuidString)
     }
 }

@@ -12,6 +12,7 @@ struct DefaultDeedCardSeed {
     let dailyCap: Double?
     let colorHex: String
     let isPrivate: Bool
+    let showOnStats: Bool
 }
 
 struct InitialDataSeeder {
@@ -49,6 +50,7 @@ struct InitialDataSeeder {
                     card.dailyCap = nil
                 }
                 card.isPrivate = seed.isPrivate
+                card.showOnStats = seed.showOnStats
                 card.createdAt = now.addingTimeInterval(TimeInterval(-index * 60))
                 card.isArchived = false
                 createdCards.append(card)
@@ -89,7 +91,8 @@ private extension DefaultDeedCardSeed {
             pointsPerUnit: 5,
             dailyCap: 2,
             colorHex: "#5ED3F3",
-            isPrivate: false
+            isPrivate: false,
+            showOnStats: true
         ),
         DefaultDeedCardSeed(
             name: "Pray",
@@ -101,7 +104,8 @@ private extension DefaultDeedCardSeed {
             pointsPerUnit: 20,
             dailyCap: nil,
             colorHex: "#9B59B6",
-            isPrivate: false
+            isPrivate: false,
+            showOnStats: true
         ),
         DefaultDeedCardSeed(
             name: "Read Book",
@@ -113,7 +117,8 @@ private extension DefaultDeedCardSeed {
             pointsPerUnit: 1.5,
             dailyCap: 120,
             colorHex: "#F5B041",
-            isPrivate: false
+            isPrivate: false,
+            showOnStats: true
         ),
         DefaultDeedCardSeed(
             name: "Meditation",
@@ -125,7 +130,8 @@ private extension DefaultDeedCardSeed {
             pointsPerUnit: 2,
             dailyCap: 60,
             colorHex: "#2ECC71",
-            isPrivate: false
+            isPrivate: false,
+            showOnStats: true
         ),
         DefaultDeedCardSeed(
             name: "Drink Water",
@@ -137,7 +143,8 @@ private extension DefaultDeedCardSeed {
             pointsPerUnit: 0.02,
             dailyCap: 4000,
             colorHex: "#3498DB",
-            isPrivate: false
+            isPrivate: false,
+            showOnStats: true
         ),
         DefaultDeedCardSeed(
             name: "Family Time",
@@ -149,7 +156,8 @@ private extension DefaultDeedCardSeed {
             pointsPerUnit: 1,
             dailyCap: 180,
             colorHex: "#E67E22",
-            isPrivate: false
+            isPrivate: false,
+            showOnStats: true
         ),
         DefaultDeedCardSeed(
             name: "Workout",
@@ -161,7 +169,8 @@ private extension DefaultDeedCardSeed {
             pointsPerUnit: 2.5,
             dailyCap: 120,
             colorHex: "#E74C3C",
-            isPrivate: false
+            isPrivate: false,
+            showOnStats: true
         ),
         DefaultDeedCardSeed(
             name: "No Phone after 10pm",
@@ -173,7 +182,8 @@ private extension DefaultDeedCardSeed {
             pointsPerUnit: 20,
             dailyCap: 1,
             colorHex: "#16A085",
-            isPrivate: false
+            isPrivate: false,
+            showOnStats: true
         ),
         DefaultDeedCardSeed(
             name: "Junk Food",
@@ -185,7 +195,8 @@ private extension DefaultDeedCardSeed {
             pointsPerUnit: -15,
             dailyCap: nil,
             colorHex: "#C0392B",
-            isPrivate: false
+            isPrivate: false,
+            showOnStats: true
         ),
         DefaultDeedCardSeed(
             name: "Smoked",
@@ -197,7 +208,8 @@ private extension DefaultDeedCardSeed {
             pointsPerUnit: -40,
             dailyCap: nil,
             colorHex: "#8E44AD",
-            isPrivate: true
+            isPrivate: true,
+            showOnStats: true
         ),
         DefaultDeedCardSeed(
             name: "Doomscrolling",
@@ -209,7 +221,8 @@ private extension DefaultDeedCardSeed {
             pointsPerUnit: -1,
             dailyCap: nil,
             colorHex: "#7F8C8D",
-            isPrivate: false
+            isPrivate: false,
+            showOnStats: true
         ),
         DefaultDeedCardSeed(
             name: "Focus Rating",
@@ -221,7 +234,8 @@ private extension DefaultDeedCardSeed {
             pointsPerUnit: 4,
             dailyCap: 5,
             colorHex: "#F1C40F",
-            isPrivate: false
+            isPrivate: false,
+            showOnStats: true
         )
     ]
 }
