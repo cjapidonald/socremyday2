@@ -36,7 +36,7 @@ extension ParticleOverlayView {
     }
 }
 
-private final class ParticleOverlayUIView: UIView {
+final class ParticleOverlayUIView: UIView {
     private var activeEmitters: [UUID: CAEmitterLayer] = [:]
     private lazy var particleImage: CGImage? = Self.makeParticleImage()
 
