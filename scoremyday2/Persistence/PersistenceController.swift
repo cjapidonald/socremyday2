@@ -16,6 +16,11 @@ final class PersistenceController {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
         }
 
+        if let description = container.persistentStoreDescriptions.first {
+            description.shouldMigrateStoreAutomatically = true
+            description.shouldInferMappingModelAutomatically = true
+        }
+
         container.loadPersistentStores { _, error in
             if let error = error {
                 assertionFailure("Unresolved Core Data error: \(error.localizedDescription)")
@@ -78,7 +83,8 @@ final class PersistenceController {
             attribute(name: "dayCutoffHour", type: .integer16AttributeType),
             attribute(name: "hapticsOn", type: .booleanAttributeType),
             attribute(name: "soundsOn", type: .booleanAttributeType),
-            attribute(name: "themeAccent", type: .stringAttributeType, optional: true)
+            attribute(name: "themeAccent", type: .stringAttributeType, optional: true),
+            attribute(name: "showSuggestions", type: .booleanAttributeType, defaultValue: true)
         ]
 
         let cardToEntries = NSRelationshipDescription()
@@ -137,6 +143,7 @@ final class PersistenceController {
             prefs.hapticsOn = true
             prefs.soundsOn = true
             prefs.themeAccent = nil
+            prefs.showSuggestions = true
             try context.save()
         }
     }

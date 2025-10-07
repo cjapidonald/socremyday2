@@ -26,8 +26,11 @@ final class DeedsPageViewModel: ObservableObject {
     @Published private(set) var cutoffHour: Int = 4
     @Published var pendingRatingCard: CardState?
     @Published var categorySuggestions: [String] = []
+    @Published var suggestions: [SuggestionState] = []
 
     private var hasLoaded = false
+    private let suggestionService = DeedSuggestionService()
+    private var cachedEntries: [DeedEntry] = []
 
     init(persistenceController: PersistenceController = .shared) {
         let context = persistenceController.viewContext
@@ -92,6 +95,8 @@ final class DeedsPageViewModel: ObservableObject {
 
             todayNetScore = try computeTodayScore()
             sparklineValues = try computeSparkline()
+            cachedEntries = entries
+            refreshSuggestions(entries: entries)
         } catch {
             assertionFailure("Failed to load deeds: \(error)")
         }
@@ -104,6 +109,7 @@ final class DeedsPageViewModel: ObservableObject {
         do {
             todayNetScore = try computeTodayScore()
             sparklineValues = try computeSparkline()
+            refreshSuggestions()
         } catch {
             assertionFailure("Failed to recompute metrics: \(error)")
         }
@@ -200,6 +206,8 @@ final class DeedsPageViewModel: ObservableObject {
                 todayNetScore = try computeTodayScore()
                 sparklineValues = try computeSparkline()
             }
+            cachedEntries.append(entry)
+            refreshSuggestions()
             return entry
         } catch {
             assertionFailure("Failed to log entry: \(error)")
@@ -245,6 +253,38 @@ final class DeedsPageViewModel: ObservableObject {
     private func isDate(_ date: Date, inSameAppDayAs reference: Date) -> Bool {
         let range = appDayRange(for: reference, cutoffHour: cutoffHour)
         return date >= range.start && date < range.end
+    }
+
+    func logSuggestion(_ suggestion: SuggestionState) -> DeedEntry? {
+        log(cardID: suggestion.card.id, amount: suggestion.amount, note: suggestion.note)
+    }
+
+    private func refreshSuggestions(entries: [DeedEntry]? = nil) {
+        guard !cards.isEmpty else {
+            suggestions = []
+            return
+        }
+        let entriesToUse = entries ?? cachedEntries
+        let inputs = cards.map { card in
+            DeedSuggestionService.CardInput(card: card.card, lastUsed: card.lastUsed)
+        }
+        let computed = suggestionService.suggestions(for: inputs, entries: entriesToUse, cutoffHour: cutoffHour)
+        suggestions = computed.compactMap { suggestion in
+            guard let card = cards.first(where: { $0.id == suggestion.cardID }) else { return nil }
+            let amount = suggestion.targetAmount ?? defaultAmount(for: card)
+            return SuggestionState(kind: suggestion.kind, card: card, amount: amount, note: suggestion.note)
+        }
+    }
+
+    struct SuggestionState: Identifiable, Equatable {
+        let kind: DeedSuggestionService.Kind
+        let card: CardState
+        let amount: Double
+        let note: String?
+
+        var id: String { "\(kind.rawValue)-\(card.id.uuidString)" }
+
+        var title: String { kind.displayTitle }
     }
 }
 

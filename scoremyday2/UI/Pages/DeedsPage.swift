@@ -33,6 +33,10 @@ struct DeedsPage: View {
                             .padding(.top, 32)
                             .anchorPreference(key: HeaderFramePreferenceKey.self, value: .bounds) { $0 }
 
+                        if appEnvironment.settings.showSuggestions, !viewModel.suggestions.isEmpty {
+                            suggestionsView
+                        }
+
                         cardsGrid
                     }
                     .padding(.horizontal, 20)
@@ -135,6 +139,58 @@ struct DeedsPage: View {
         .animation(.spring(response: 0.32, dampingFraction: 0.72, blendDuration: 0.2), value: scorePulsePhase)
     }
 
+    private var suggestionsView: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text("Suggestions")
+                .font(.caption.weight(.semibold))
+                .textCase(.uppercase)
+                .foregroundStyle(.secondary)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 14) {
+                    ForEach(viewModel.suggestions) { suggestion in
+                        Button {
+                            handleSuggestionTap(suggestion)
+                        } label: {
+                            suggestionChip(for: suggestion)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal, 6)
+            }
+        }
+        .padding(.vertical, 18)
+        .padding(.horizontal, 18)
+        .glassBackground(cornerRadius: 28, tint: Color.accentColor, warpStrength: 3)
+    }
+
+    private func suggestionChip(for suggestion: DeedsPageViewModel.SuggestionState) -> some View {
+        HStack(alignment: .center, spacing: 14) {
+            Text(suggestion.card.card.emoji)
+                .font(.title3)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(suggestion.title)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+
+                Text(suggestion.card.card.name)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+
+                Text(formattedSuggestionAmount(for: suggestion))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(.vertical, 12)
+        .padding(.horizontal, 14)
+        .glassBackground(cornerRadius: 20, tint: suggestion.card.accentColor, warpStrength: 2.5)
+    }
+
     private var cardsGrid: some View {
         let columns = Array(repeating: GridItem(.flexible(), spacing: 14, alignment: .top), count: 5)
         return LazyVGrid(columns: columns, spacing: 14) {
@@ -166,6 +222,18 @@ struct DeedsPage: View {
         let startFrame = cardFrames[card.id]
         if let entry = viewModel.prepareTap(on: card) {
             handleFeedback(for: card.card.polarity, points: entry.computedPoints, cardID: card.id, startFrameOverride: startFrame)
+        }
+    }
+
+    private func handleSuggestionTap(_ suggestion: DeedsPageViewModel.SuggestionState) {
+        let startFrame = cardFrames[suggestion.card.id]
+        if let entry = viewModel.logSuggestion(suggestion) {
+            handleFeedback(
+                for: suggestion.card.card.polarity,
+                points: entry.computedPoints,
+                cardID: suggestion.card.id,
+                startFrameOverride: startFrame
+            )
         }
     }
 
@@ -228,6 +296,17 @@ struct DeedsPage: View {
 
     private func formattedCutoffHour() -> String {
         String(format: "%02d:00", viewModel.cutoffHour)
+    }
+
+    private func formattedSuggestionAmount(for suggestion: DeedsPageViewModel.SuggestionState) -> String {
+        let amount = suggestion.amount
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = amount.truncatingRemainder(dividingBy: 1).isZero ? 0 : 1
+        formatter.minimumFractionDigits = 0
+        let amountString = formatter.string(from: NSNumber(value: amount)) ?? String(format: "%.1f", amount)
+        let unit = suggestion.card.card.unitLabel
+        return "\(amountString) \(unit)"
     }
 
     private func triggerScorePulse(after delay: TimeInterval) {
