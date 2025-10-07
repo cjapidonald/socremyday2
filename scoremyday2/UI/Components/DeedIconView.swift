@@ -9,14 +9,17 @@ import AppKit
 struct DeedIconView: View {
     let value: String
     var fontSize: CGFloat = 30
+    var tint: Color?
 
     var body: some View {
         Group {
             if let symbolName = symbolNameIfValid(value) {
                 Image(systemName: symbolName)
                     .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(tint ?? .primary)
             } else {
                 Text(value)
+                    .foregroundStyle(tint ?? .primary)
             }
         }
         .font(.system(size: fontSize))
