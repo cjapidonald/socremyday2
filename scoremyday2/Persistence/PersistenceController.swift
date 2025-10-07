@@ -1,22 +1,6 @@
 import CoreData
 import Foundation
 
-struct DeedCardSeed: Decodable {
-    let id: UUID?
-    let name: String
-    let emoji: String
-    let colorHex: String
-    let category: String
-    let polarity: Polarity
-    let unitType: UnitType
-    let unitLabel: String
-    let pointsPerUnit: Double
-    let dailyCap: Double?
-    let isPrivate: Bool
-    let createdAt: Date?
-    let isArchived: Bool?
-}
-
 final class PersistenceController {
     static let shared = PersistenceController()
 
@@ -42,7 +26,7 @@ final class PersistenceController {
 
         do {
             try ensureAppPrefsExists()
-            try seedDefaultDeedCardsIfNeeded()
+            try InitialDataSeeder(context: container.viewContext).runIfNeeded()
         } catch {
             assertionFailure("Failed to seed persistent store: \(error)")
         }
@@ -154,47 +138,4 @@ final class PersistenceController {
         }
     }
 
-    private func seedDefaultDeedCardsIfNeeded() throws {
-        let context = viewContext
-        let request = DeedCardMO.fetchRequest()
-        request.fetchLimit = 1
-        let count = try context.count(for: request)
-        guard count == 0 else { return }
-
-        guard let url = Bundle.main.url(forResource: "DefaultDeedCards", withExtension: "json")
-            ?? Bundle(for: PersistenceController.self).url(forResource: "DefaultDeedCards", withExtension: "json")
-        else {
-            return
-        }
-
-        let data = try Data(contentsOf: url)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        let seeds = try decoder.decode([DeedCardSeed].self, from: data)
-
-        for seed in seeds {
-            let card = DeedCardMO(context: context)
-            card.id = seed.id ?? UUID()
-            card.name = seed.name
-            card.emoji = seed.emoji
-            card.colorHex = seed.colorHex
-            card.category = seed.category
-            card.polarityRaw = seed.polarity.rawValue
-            card.unitTypeRaw = seed.unitType.rawValue
-            card.unitLabel = seed.unitLabel
-            card.pointsPerUnit = seed.pointsPerUnit
-            if let cap = seed.dailyCap {
-                card.dailyCap = NSNumber(value: cap)
-            } else {
-                card.dailyCap = nil
-            }
-            card.isPrivate = seed.isPrivate
-            card.createdAt = seed.createdAt ?? Date()
-            card.isArchived = seed.isArchived ?? false
-        }
-
-        if context.hasChanges {
-            try context.save()
-        }
-    }
 }
