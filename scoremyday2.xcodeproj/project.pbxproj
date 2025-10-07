@@ -10,6 +10,7 @@
                 9F4D72EC7CF4442DAD0B12B1 /* AppDayRangeTests.swift in Sources */ = {isa = PBXBuildFile; file = 39F5DF71227A4AFE9E8E7B3D /* AppDayRangeTests.swift */; };
                 BD136B4E922740EC92644730 /* EntriesRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; file = F7972FDA75924E0CB688140B /* EntriesRepositoryTests.swift */; };
                 A7B64E0B5E394A669C6E7F2B /* DemoDataServiceTests.swift in Sources */ = {isa = PBXBuildFile; file = A7B64E0A5E394A669C6E7F2B /* DemoDataServiceTests.swift */; };
+                E6F5A8B19C3D4E0FAB123456 /* PositiveBooleanDailyCapTests.swift in Sources */ = {isa = PBXBuildFile; file = 5D1E2F3A4B5C6D7E8F901234 /* PositiveBooleanDailyCapTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -18,6 +19,7 @@
                 39F5DF71227A4AFE9E8E7B3D /* AppDayRangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDayRangeTests.swift; sourceTree = "<group>"; };
                 F7972FDA75924E0CB688140B /* EntriesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntriesRepositoryTests.swift; sourceTree = "<group>"; };
                 A7B64E0A5E394A669C6E7F2B /* DemoDataServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoDataServiceTests.swift; sourceTree = "<group>"; };
+                5D1E2F3A4B5C6D7E8F901234 /* PositiveBooleanDailyCapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveBooleanDailyCapTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -93,6 +95,7 @@
                                 39F5DF71227A4AFE9E8E7B3D /* AppDayRangeTests.swift */,
                                 F7972FDA75924E0CB688140B /* EntriesRepositoryTests.swift */,
                                 A7B64E0A5E394A669C6E7F2B /* DemoDataServiceTests.swift */,
+                                5D1E2F3A4B5C6D7E8F901234 /* PositiveBooleanDailyCapTests.swift */,
                         );
                         path = scoremyday2Tests;
                         sourceTree = "<group>";
@@ -241,6 +244,7 @@
                                 9F4D72EC7CF4442DAD0B12B1 /* AppDayRangeTests.swift in Sources */,
                                 BD136B4E922740EC92644730 /* EntriesRepositoryTests.swift in Sources */,
                                 A7B64E0B5E394A669C6E7F2B /* DemoDataServiceTests.swift in Sources */,
+                                E6F5A8B19C3D4E0FAB123456 /* PositiveBooleanDailyCapTests.swift in Sources */,
                         );
                         runOnlyForDeploymentPostprocessing = 0;
                 };

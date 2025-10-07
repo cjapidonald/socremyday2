@@ -142,9 +142,15 @@ struct AddEditDeedSheet: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    TextField("Daily Cap (optional)", text: $dailyCapText)
-                        .keyboardType(.decimalPad)
-                        .disabled(unitType == .boolean && polarity == .positive)
+                    if unitType == .boolean && polarity == .positive {
+                        LabeledContent("Daily Cap") {
+                            Text("1 completion per day")
+                                .foregroundStyle(.secondary)
+                        }
+                    } else {
+                        TextField("Daily Cap (optional)", text: $dailyCapText)
+                            .keyboardType(.decimalPad)
+                    }
                 }
 
                 Section("Visibility") {
@@ -202,7 +208,11 @@ struct AddEditDeedSheet: View {
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(previewModel.polarity == .positive ? Color.green : Color.red)
 
-                if let cap = previewModel.dailyCap {
+                if previewModel.unitType == .boolean && previewModel.polarity == .positive {
+                    Text("Daily cap: 1 completion per day")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                } else if let cap = previewModel.dailyCap {
                     Text("Daily cap: \(Self.format(cap))")
                         .font(.caption2)
                         .foregroundStyle(.secondary)
@@ -287,6 +297,9 @@ struct AddEditDeedSheet: View {
     }
 
     private var dailyCapValue: Double? {
+        if unitType == .boolean && polarity == .positive {
+            return 1
+        }
         let trimmed = dailyCapText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
         let sanitized = trimmed.replacingOccurrences(of: ",", with: ".")
