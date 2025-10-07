@@ -6,10 +6,12 @@ struct DeedsPage: View {
 
     @State private var quickAddState: QuickAddState?
     @State private var floatingDeltas: [FloatingDelta] = []
+    @State private var floatingDeltaQueue = FloatingDeltaQueue()
     @State private var particleBursts: [ParticleOverlayView.Event] = []
     @State private var cardFrames: [UUID: CGRect] = [:]
     @State private var headerFrame: CGRect = .zero
     @State private var deedEditorState: DeedEditorState?
+    @State private var scorePulsePhase: CGFloat = 0
 
     var body: some View {
         GeometryReader { proxy in
@@ -103,6 +105,8 @@ struct DeedsPage: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 18)
         .glassBackground(cornerRadius: 32, tint: Color.accentColor, warpStrength: 3.5)
+        .scaleEffect(1 + 0.05 * scorePulsePhase)
+        .animation(.spring(response: 0.32, dampingFraction: 0.72, blendDuration: 0.2), value: scorePulsePhase)
     }
 
     private var cardsGrid: some View {
@@ -162,11 +166,22 @@ struct DeedsPage: View {
         let start = CGPoint(x: startRect.midX, y: startRect.midY)
         let end = CGPoint(x: headerRect.midX, y: headerRect.midY)
         let accent = viewModel.cards.first(where: { $0.id == cardID })?.accentColor ?? (polarity == .positive ? Color.green : Color.red)
-        let delta = FloatingDelta(text: formattedPoints(points), color: accent.opacity(0.95), start: start, end: end)
+        let delay = floatingDeltaQueue.nextDelay()
+        let duration = UIAccessibility.isReduceMotionEnabled ? 0.3 : FloatingDelta.defaultAnimationDuration
+        let delta = FloatingDelta(
+            text: formattedPoints(points),
+            color: accent.opacity(0.95),
+            start: start,
+            end: end,
+            delay: delay,
+            duration: duration
+        )
         floatingDeltas.append(delta)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+        let removalDelay = delay + duration + 0.35
+        DispatchQueue.main.asyncAfter(deadline: .now() + removalDelay) {
             floatingDeltas.removeAll { $0.id == delta.id }
         }
+        triggerScorePulse(after: delay + duration)
     }
 
     private func formattedPoints(_ value: Double) -> String {
@@ -183,6 +198,18 @@ struct DeedsPage: View {
 
     private func formattedCutoffHour() -> String {
         String(format: "%02d:00", viewModel.cutoffHour)
+    }
+
+    private func triggerScorePulse(after delay: TimeInterval) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            scorePulsePhase = 0
+            DispatchQueue.main.async {
+                scorePulsePhase = 1
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.28) {
+                    scorePulsePhase = 0
+                }
+            }
+        }
     }
 
     private func handleSparkle(for card: DeedsPageViewModel.CardState, points: Double, startFrame: CGRect?) {
@@ -209,11 +236,15 @@ struct DeedsPage: View {
     }
 
     struct FloatingDelta: Identifiable {
+        static let defaultAnimationDuration: TimeInterval = 0.9
+
         let id = UUID()
         let text: String
         let color: Color
         let start: CGPoint
         let end: CGPoint
+        let delay: TimeInterval
+        let duration: TimeInterval
     }
 
 }
@@ -239,27 +270,76 @@ private struct HeaderFramePreferenceKey: PreferenceKey {
 private struct FloatingDeltaView: View {
     let delta: DeedsPage.FloatingDelta
     @State private var progress: CGFloat = 0
+    @State private var isActive: Bool = false
 
     var body: some View {
         Text(delta.text)
             .font(.headline.weight(.semibold))
             .foregroundColor(delta.color)
             .shadow(color: Color.black.opacity(0.3), radius: 6, x: 0, y: 2)
-            .position(position)
-            .opacity(Double(1 - progress))
+            .scaleEffect(1 + 0.18 * (1 - currentProgress))
+            .position(position(for: currentProgress))
+            .opacity(opacity)
             .onAppear {
-                withAnimation(.easeInOut(duration: 0.8)) {
-                    progress = 1
-                }
+                startAnimation()
             }
             .allowsHitTesting(false)
     }
 
-    private var position: CGPoint {
-        CGPoint(
-            x: delta.start.x + (delta.end.x - delta.start.x) * progress,
-            y: delta.start.y + (delta.end.y - delta.start.y) * progress - 40 * progress
-        )
+    private var opacity: Double {
+        guard isActive else { return 0 }
+        let fadeInEnd: CGFloat = 0.2
+        let fadeOutStart: CGFloat = 0.55
+
+        if progress <= fadeInEnd {
+            return Double(progress / fadeInEnd)
+        } else if progress <= fadeOutStart {
+            return 1
+        } else {
+            let fadeProgress = (progress - fadeOutStart) / (1 - fadeOutStart)
+            return Double(max(1 - fadeProgress, 0))
+        }
+    }
+
+    private var currentProgress: CGFloat {
+        isActive ? progress : 0
+    }
+
+    private func startAnimation() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delta.delay) {
+            isActive = true
+            withAnimation(.easeInOut(duration: delta.duration)) {
+                progress = 1
+            }
+        }
+    }
+
+    private func position(for progress: CGFloat) -> CGPoint {
+        guard !UIAccessibility.isReduceMotionEnabled else {
+            return CGPoint(
+                x: delta.start.x + (delta.end.x - delta.start.x) * progress,
+                y: delta.start.y + (delta.end.y - delta.start.y) * progress
+            )
+        }
+
+        let control = controlPoint
+        let x = quadraticBezier(t: progress, start: delta.start.x, control: control.x, end: delta.end.x)
+        let y = quadraticBezier(t: progress, start: delta.start.y, control: control.y, end: delta.end.y)
+        return CGPoint(x: x, y: y)
+    }
+
+    private var controlPoint: CGPoint {
+        let midX = (delta.start.x + delta.end.x) / 2
+        let verticalDistance = abs(delta.start.y - delta.end.y)
+        let arcHeight = max(60, verticalDistance * 0.35)
+        let peakY = min(delta.start.y, delta.end.y) - arcHeight
+        let horizontalOffset = (delta.end.x - delta.start.x) * 0.2
+        return CGPoint(x: midX + horizontalOffset, y: peakY)
+    }
+
+    private func quadraticBezier(t: CGFloat, start: CGFloat, control: CGFloat, end: CGFloat) -> CGFloat {
+        let oneMinusT = 1 - t
+        return oneMinusT * oneMinusT * start + 2 * oneMinusT * t * control + t * t * end
     }
 }
 
