@@ -730,6 +730,7 @@ private struct RatingPickerSheet: View {
         .onAppear {
             rating = Int(card.lastAmount ?? 3)
         }
+    }
 }
 
 #Preview {
