@@ -23,3 +23,55 @@ final class FloatingDeltaQueueTests: XCTestCase {
         XCTAssertEqual(finalDelay, 0, accuracy: 0.0001)
     }
 }
+
+final class DailyCapHintStoreTests: XCTestCase {
+    private var defaults: UserDefaults!
+    private var store: DailyCapHintStore!
+    private let suiteName = "DailyCapHintStoreTests"
+
+    override func setUpWithError() throws {
+        defaults = UserDefaults(suiteName: suiteName)
+        defaults.removePersistentDomain(forName: suiteName)
+        store = DailyCapHintStore(userDefaults: defaults)
+    }
+
+    override func tearDownWithError() throws {
+        defaults.removePersistentDomain(forName: suiteName)
+        store = nil
+        defaults = nil
+    }
+
+    func testShowsHintWhenNoRecordExists() {
+        let cardID = UUID()
+        let reference = Date(timeIntervalSince1970: 1_700_000_000)
+        XCTAssertTrue(store.shouldShowHint(for: cardID, on: reference, cutoffHour: 4, calendar: testCalendar))
+    }
+
+    func testDoesNotShowHintTwiceInSameAppDay() {
+        let cardID = UUID()
+        let reference = Date(timeIntervalSince1970: 1_700_000_000)
+        store.markHintShown(for: cardID, on: reference, cutoffHour: 4, calendar: testCalendar)
+
+        let laterSameDay = reference.addingTimeInterval(3600)
+        XCTAssertFalse(store.shouldShowHint(for: cardID, on: laterSameDay, cutoffHour: 4, calendar: testCalendar))
+    }
+
+    func testShowsHintAgainOnNewAppDay() {
+        let cardID = UUID()
+        let reference = Date(timeIntervalSince1970: 1_700_000_000)
+        store.markHintShown(for: cardID, on: reference, cutoffHour: 4, calendar: testCalendar)
+
+        let nextDay = testCalendar.date(byAdding: .day, value: 1, to: reference) ?? reference
+        let middayNextDay = nextDay.addingTimeInterval(6 * 3600)
+
+        XCTAssertTrue(store.shouldShowHint(for: cardID, on: middayNextDay, cutoffHour: 4, calendar: testCalendar))
+    }
+
+    private var testCalendar: Calendar {
+        var calendar = Calendar(identifier: .gregorian)
+        if let gmt = TimeZone(secondsFromGMT: 0) {
+            calendar.timeZone = gmt
+        }
+        return calendar
+    }
+}

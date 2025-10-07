@@ -40,19 +40,22 @@ final class EntriesRepositoryTests: XCTestCase {
             EntryCreationRequest(deedId: card.id, timestamp: timestamp, amount: 1, note: nil),
             cutoffHour: 4
         )
-        XCTAssertEqual(first.computedPoints, 5)
+        XCTAssertEqual(first.entry.computedPoints, 5)
+        XCTAssertFalse(first.wasCapped)
 
         let second = try entriesRepository.logEntry(
             EntryCreationRequest(deedId: card.id, timestamp: timestamp.addingTimeInterval(3600), amount: 2, note: nil),
             cutoffHour: 4
         )
-        XCTAssertEqual(second.computedPoints, 5)
+        XCTAssertEqual(second.entry.computedPoints, 5)
+        XCTAssertTrue(second.wasCapped)
 
         let third = try entriesRepository.logEntry(
             EntryCreationRequest(deedId: card.id, timestamp: timestamp.addingTimeInterval(7200), amount: 1, note: nil),
             cutoffHour: 4
         )
-        XCTAssertEqual(third.computedPoints, 0)
+        XCTAssertEqual(third.entry.computedPoints, 0)
+        XCTAssertTrue(third.wasCapped)
 
         let entries = try entriesRepository.fetchEntries(forDeed: card.id)
         XCTAssertEqual(entries.count, 3)

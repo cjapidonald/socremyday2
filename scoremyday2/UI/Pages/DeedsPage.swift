@@ -15,51 +15,67 @@ struct DeedsPage: View {
     @State private var scorePulsePhase: CGFloat = 0
     @State private var particlesDisabled = UIAccessibility.isReduceMotionEnabled
     @State private var opaqueBackgrounds = UIAccessibility.isReduceTransparencyEnabled
+    @State private var capHint: CapHintState?
+
+    private let capHintStore = DailyCapHintStore()
 
     var body: some View {
-        GeometryReader { proxy in
-            ZStack(alignment: .top) {
-                if opaqueBackgrounds {
-                    Color(.systemBackground)
-                        .ignoresSafeArea()
-                } else {
-                    LiquidBackgroundView()
-                        .ignoresSafeArea()
-                }
-
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 28) {
-                        headerView
-                            .padding(.top, 32)
-                            .anchorPreference(key: HeaderFramePreferenceKey.self, value: .bounds) { $0 }
-
-                        cardsGrid
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 80)
-                }
-
-                if !particlesDisabled {
-                    ForEach(floatingDeltas) { delta in
-                        FloatingDeltaView(delta: delta)
+        ZStack(alignment: .top) {
+            GeometryReader { proxy in
+                ZStack(alignment: .top) {
+                    if opaqueBackgrounds {
+                        Color(.systemBackground)
+                            .ignoresSafeArea()
+                    } else {
+                        LiquidBackgroundView()
+                            .ignoresSafeArea()
                     }
 
-                    ParticleOverlayView(events: particleBursts)
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 28) {
+                            headerView
+                                .padding(.top, 32)
+                                .anchorPreference(key: HeaderFramePreferenceKey.self, value: .bounds) { $0 }
+
+                            cardsGrid
+                        }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 80)
+                    }
+
+                    if !particlesDisabled {
+                        ForEach(floatingDeltas) { delta in
+                            FloatingDeltaView(delta: delta)
+                        }
+
+                        ParticleOverlayView(events: particleBursts)
+                    }
+                }
+                .onPreferenceChange(CardFramePreferenceKey.self) { anchors in
+                    var updated: [UUID: CGRect] = [:]
+                    for (id, anchor) in anchors {
+                        updated[id] = proxy[anchor]
+                    }
+                    cardFrames = updated
+                }
+                .onPreferenceChange(HeaderFramePreferenceKey.self) { anchor in
+                    if let anchor {
+                        headerFrame = proxy[anchor]
+                    }
                 }
             }
-            .onPreferenceChange(CardFramePreferenceKey.self) { anchors in
-                var updated: [UUID: CGRect] = [:]
-                for (id, anchor) in anchors {
-                    updated[id] = proxy[anchor]
+
+            if let hint = capHint {
+                CapHintBanner(message: hint.message) {
+                    dismissCapHint()
                 }
-                cardFrames = updated
-            }
-            .onPreferenceChange(HeaderFramePreferenceKey.self) { anchor in
-                if let anchor {
-                    headerFrame = proxy[anchor]
-                }
+                .padding(.horizontal, 20)
+                .padding(.top, 12)
+                .transition(.move(edge: .top).combined(with: .opacity))
+                .zIndex(1)
             }
         }
+        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: capHint?.id)
         .onAppear { viewModel.onAppear() }
         .onChange(of: appEnvironment.settings.dayCutoffHour) { newValue in
             viewModel.updateCutoffHour(newValue)
@@ -69,8 +85,10 @@ struct DeedsPage: View {
         }
         .sheet(item: $quickAddState) { state in
             QuickAddSheet(state: state, onSave: { updated in
-                if let entry = viewModel.log(cardID: updated.card.id, amount: updated.amount, note: updated.note.isEmpty ? nil : updated.note) {
+                if let result = viewModel.log(cardID: updated.card.id, amount: updated.amount, note: updated.note.isEmpty ? nil : updated.note) {
+                    let entry = result.entry
                     handleFeedback(for: updated.card.card.polarity, points: entry.computedPoints, cardID: updated.card.id, startFrameOverride: cardFrames[updated.card.id])
+                    handleDailyCapHint(for: updated.card, result: result)
                 }
             }) {
                 quickAddState = nil
@@ -78,8 +96,10 @@ struct DeedsPage: View {
         }
         .sheet(item: $viewModel.pendingRatingCard) { card in
             RatingPickerSheet(card: card) { rating in
-                if let entry = viewModel.confirmRatingSelection(rating) {
+                if let result = viewModel.confirmRatingSelection(rating) {
+                    let entry = result.entry
                     handleFeedback(for: card.card.polarity, points: entry.computedPoints, cardID: card.id)
+                    handleDailyCapHint(for: card, result: result)
                 }
             }
         }
@@ -164,8 +184,27 @@ struct DeedsPage: View {
 
     private func handleTap(on card: DeedsPageViewModel.CardState) {
         let startFrame = cardFrames[card.id]
-        if let entry = viewModel.prepareTap(on: card) {
+        if let result = viewModel.prepareTap(on: card) {
+            let entry = result.entry
             handleFeedback(for: card.card.polarity, points: entry.computedPoints, cardID: card.id, startFrameOverride: startFrame)
+            handleDailyCapHint(for: card, result: result)
+        }
+    }
+
+    private func handleDailyCapHint(for card: DeedsPageViewModel.CardState, result: LogEntryResult) {
+        guard result.wasCapped else { return }
+        let entry = result.entry
+        guard capHintStore.shouldShowHint(for: card.id, on: entry.timestamp, cutoffHour: viewModel.cutoffHour) else { return }
+        capHintStore.markHintShown(for: card.id, on: entry.timestamp, cutoffHour: viewModel.cutoffHour)
+        let message = "Daily cap reached for \(card.card.name). Additional logs won't earn points today."
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+            capHint = CapHintState(message: message)
+        }
+    }
+
+    private func dismissCapHint() {
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+            capHint = nil
         }
     }
 
@@ -289,6 +328,45 @@ struct DeedsPage: View {
         let duration: TimeInterval
     }
 
+    struct CapHintState: Identifiable {
+        let id = UUID()
+        let message: String
+    }
+
+}
+
+private struct CapHintBanner: View {
+    let message: String
+    let onDismiss: () -> Void
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 18, weight: .semibold))
+                .foregroundStyle(Color.yellow)
+
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(.primary)
+                .multilineTextAlignment(.leading)
+
+            Spacer(minLength: 12)
+
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(6)
+                    .background(Circle().fill(Color.secondary.opacity(0.15)))
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Dismiss daily cap hint")
+        }
+        .padding(.vertical, 12)
+        .padding(.horizontal, 16)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .shadow(color: Color.black.opacity(0.08), radius: 10, x: 0, y: 8)
+    }
 }
 
 private struct CardFramePreferenceKey: PreferenceKey {

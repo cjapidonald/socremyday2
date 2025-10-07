@@ -155,7 +155,7 @@ final class DeedsPageViewModel: ObservableObject {
         }
     }
 
-    func prepareTap(on card: CardState) -> DeedEntry? {
+    func prepareTap(on card: CardState) -> LogEntryResult? {
         if card.card.unitType == .rating, card.lastAmount == nil {
             pendingRatingCard = card
             return nil
@@ -164,7 +164,7 @@ final class DeedsPageViewModel: ObservableObject {
         return log(cardID: card.id, amount: amount, note: nil)
     }
 
-    func confirmRatingSelection(_ rating: Int) -> DeedEntry? {
+    func confirmRatingSelection(_ rating: Int) -> LogEntryResult? {
         guard var card = pendingRatingCard else { return nil }
         pendingRatingCard = nil
         let amount = Double(rating)
@@ -176,7 +176,7 @@ final class DeedsPageViewModel: ObservableObject {
     }
 
     @discardableResult
-    func log(cardID: UUID, amount: Double, note: String?) -> DeedEntry? {
+    func log(cardID: UUID, amount: Double, note: String?) -> LogEntryResult? {
         guard let index = cards.firstIndex(where: { $0.id == cardID }) else { return nil }
         let card = cards[index].card
         let timestamp = Date()
@@ -187,7 +187,8 @@ final class DeedsPageViewModel: ObservableObject {
             note: note
         )
         do {
-            let entry = try entriesRepository.logEntry(request, cutoffHour: cutoffHour)
+            let result = try entriesRepository.logEntry(request, cutoffHour: cutoffHour)
+            let entry = result.entry
             cards[index].lastUsed = entry.timestamp
             cards[index].lastAmount = entry.amount
             lastAmountStore.setAmount(entry.amount, for: cardID)
@@ -201,7 +202,7 @@ final class DeedsPageViewModel: ObservableObject {
                 todayNetScore = try computeTodayScore()
                 sparklineValues = try computeSparkline()
             }
-            return entry
+            return result
         } catch {
             assertionFailure("Failed to log entry: \(error)")
             return nil
@@ -286,5 +287,44 @@ private struct LastAmountStore {
 
     func setAmount(_ amount: Double, for id: UUID) {
         defaults.set(amount, forKey: keyPrefix + id.uuidString)
+    }
+}
+
+struct DailyCapHintStore {
+    private let defaults: UserDefaults
+    private let keyPrefix = "deedDailyCapHint."
+
+    init(userDefaults: UserDefaults = .standard) {
+        self.defaults = userDefaults
+    }
+
+    func shouldShowHint(
+        for cardID: UUID,
+        on date: Date,
+        cutoffHour: Int,
+        calendar: Calendar = .current
+    ) -> Bool {
+        let key = storageKey(for: cardID)
+        let dayStart = appDayRange(for: date, cutoffHour: cutoffHour, calendar: calendar).start
+        guard let stored = defaults.object(forKey: key) as? Double else {
+            return true
+        }
+        let target = dayStart.timeIntervalSinceReferenceDate
+        return abs(stored - target) > 0.5
+    }
+
+    func markHintShown(
+        for cardID: UUID,
+        on date: Date,
+        cutoffHour: Int,
+        calendar: Calendar = .current
+    ) {
+        let key = storageKey(for: cardID)
+        let dayStart = appDayRange(for: date, cutoffHour: cutoffHour, calendar: calendar).start
+        defaults.set(dayStart.timeIntervalSinceReferenceDate, forKey: key)
+    }
+
+    private func storageKey(for cardID: UUID) -> String {
+        keyPrefix + cardID.uuidString
     }
 }
