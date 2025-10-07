@@ -23,7 +23,7 @@ struct GlassBackgroundModifier: ViewModifier {
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .contentShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
             .simultaneousGesture(dragGesture)
-            .onChange(of: targetLocation) { newValue in
+            .onChange(of: targetLocation, initial: false) { oldValue, newValue in
                 withAnimation(.easeOut(duration: 0.28)) {
                     animatedLocation = newValue
                 }
