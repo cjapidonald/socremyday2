@@ -485,6 +485,10 @@ final class StatsPageViewModel: ObservableObject {
     @Published private(set) var correlationInsight: CorrelationInsight?
     @Published private(set) var hasAnyEntries: Bool = false
 
+#if DEBUG
+    static var correlationLogHandler: ((String, Double, Int) -> Void)?
+#endif
+
     var selectedDeedName: String {
         guard let id = selectedDeedId, let deed = deedsById[id] else { return "this card" }
         return deed.name
@@ -766,25 +770,51 @@ final class StatsPageViewModel: ObservableObject {
         let dayStarts = daySequence(forDays: 60)
         let netSeries = dayStarts.map { dailyNetValues[$0] ?? 0 }
 
-        var bestResult: (DeedCard, Double)?
+        var bestResult: (DeedCard, Double, Int)?
 
         for deed in positiveDeeds {
-            let deedSeries = dayStarts.map { perDeedPositivePoints[deed.id]?[$0] ?? 0 }
+            let positivePoints = perDeedPositivePoints[deed.id] ?? [:]
+            let sampleCount = dayStarts.reduce(into: 0) { count, dayStart in
+                guard dailyNetValues[dayStart] != nil, positivePoints[dayStart] != nil else { return }
+                count += 1
+            }
+
+            guard sampleCount >= 20 else { continue }
+
+            let deedSeries = dayStarts.map { positivePoints[$0] ?? 0 }
             guard deedSeries.contains(where: { $0 != 0 }) else { continue }
             guard let r = StatsMath.pearsonCorrelation(x: netSeries, y: deedSeries) else { continue }
-            guard r >= 0.35 else { continue }
+            guard abs(r) >= 0.35 else { continue }
 
-            if bestResult == nil || r > bestResult!.1 {
-                bestResult = (deed, r)
+            logCorrelation(deedName: deed.name, coefficient: r, sampleSize: sampleCount)
+
+            if bestResult == nil || abs(r) > abs(bestResult!.1) {
+                bestResult = (deed, r, sampleCount)
             }
         }
 
         guard let result = bestResult else { return nil }
         let deedName = result.0.name.lowercased()
+        let message: String
+        if result.1 >= 0 {
+            message = "You tend to score higher on days you \(deedName)"
+        } else {
+            message = "You tend to score lower on days you \(deedName)"
+        }
+
         return CorrelationInsight(
-            message: "You tend to score higher on days you \(deedName)",
+            message: message,
             coefficient: result.1
         )
+    }
+
+    private func logCorrelation(deedName: String, coefficient: Double, sampleSize: Int) {
+        let formatted = String(format: "%.4f", coefficient)
+        let message = "Correlation candidate for \(deedName): r=\(formatted), samples=\(sampleSize)"
+#if DEBUG
+        StatsPageViewModel.correlationLogHandler?(deedName, coefficient, sampleSize)
+#endif
+        print(message)
     }
 
     private func daySequence(for range: StatsRange) -> [Date] {
@@ -830,6 +860,28 @@ final class StatsPageViewModel: ObservableObject {
         return start...todayRange.end
     }
 }
+
+#if DEBUG
+extension StatsPageViewModel {
+    func testInjectCorrelationData(
+        deeds: [UUID: DeedCard],
+        dailyNet: [Date: Double],
+        positivePoints: [UUID: [Date: Double]]
+    ) {
+        deedsById = deeds
+        dailyNetValues = dailyNet
+        perDeedPositivePoints = positivePoints
+    }
+
+    func testCorrelationInsight() -> CorrelationInsight? {
+        buildCorrelationInsight()
+    }
+
+    func testDaySequence(forDays dayCount: Int) -> [Date] {
+        daySequence(forDays: dayCount)
+    }
+}
+#endif
 
 struct CategoryComparison: Equatable {
     let category: String
