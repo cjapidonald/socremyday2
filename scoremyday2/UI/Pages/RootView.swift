@@ -4,22 +4,32 @@ struct RootView: View {
     @EnvironmentObject private var appEnvironment: AppEnvironment
 
     var body: some View {
-        TabView {
-            DeedsPage()
-                .tabItem {
-                    Label("Deeds", systemImage: "square.grid.3x3")
-                }
+        ZStack {
+            LiquidBackgroundView()
+                .ignoresSafeArea()
 
-            StatsPage()
-                .tabItem {
-                    Label("Stats", systemImage: "chart.xyaxis.line")
-                }
+            TabView {
+                DeedsPage()
+                    .tabItem {
+                        Label("Deeds", systemImage: "square.grid.3x3")
+                    }
 
-            SettingsPage()
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape")
-                }
+                StatsPage()
+                    .tabItem {
+                        Label("Stats", systemImage: "chart.xyaxis.line")
+                    }
+
+                SettingsPage()
+                    .tabItem {
+                        Label("Settings", systemImage: "gearshape")
+                    }
+            }
         }
+        .glassBackground(
+            cornerRadius: 0,
+            tint: Color(appEnvironment.settings.accentColorIdentifier),
+            warpStrength: 2
+        )
         .accentColor(Color(appEnvironment.settings.accentColorIdentifier))
     }
 }

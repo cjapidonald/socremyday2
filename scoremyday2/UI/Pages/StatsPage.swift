@@ -187,7 +187,7 @@ struct StatsPage: View {
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .glassBackground(cornerRadius: 16, tint: Color.accentColor, warpStrength: 2.5)
         }
     }
 
@@ -249,7 +249,7 @@ private struct ContributionChartView: View {
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .glassBackground(cornerRadius: 16, tint: Color.accentColor, warpStrength: 2.5)
     }
 }
 

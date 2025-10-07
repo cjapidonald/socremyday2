@@ -84,15 +84,15 @@ struct DeedsPage: View {
                 Text("TODAY")
                     .font(.caption.weight(.semibold))
                     .textCase(.uppercase)
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundStyle(.secondary)
 
                 Text(formattedPoints(viewModel.todayNetScore))
                     .font(.system(size: 34, weight: .bold, design: .rounded))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(.primary)
 
                 Text("resets at \(formattedCutoffHour())")
                     .font(.caption2)
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundStyle(.secondary)
             }
 
             Spacer()
@@ -102,13 +102,7 @@ struct DeedsPage: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 18)
-        .background(.ultraThinMaterial.opacity(0.75))
-        .clipShape(Capsule())
-        .overlay(
-            Capsule()
-                .stroke(Color.white.opacity(0.18), lineWidth: 1)
-        )
-        .shadow(color: Color.black.opacity(0.2), radius: 14, x: 0, y: 12)
+        .glassBackground(cornerRadius: 32, tint: Color.accentColor, warpStrength: 3.5)
     }
 
     private var cardsGrid: some View {
@@ -281,38 +275,31 @@ private struct DeedCardTile: View {
     let onEdit: () -> Void
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
         ZStack(alignment: .topLeading) {
-            shape
-                .fill(.ultraThinMaterial)
-                .overlay(
-                    shape.stroke(state.accentColor.opacity(0.6), lineWidth: 1.5)
-                )
-
             VStack(alignment: .leading, spacing: 10) {
-                DeedIconView(value: state.card.emoji)
+                DeedIconView(value: state.card.emoji, tint: state.accentColor)
 
                 Text(state.card.name)
                     .font(.headline)
-                    .foregroundColor(.white)
+                    .foregroundStyle(.primary)
                     .lineLimit(1)
 
                 Text(state.card.unitLabel)
                     .font(.caption)
-                    .foregroundColor(.white.opacity(0.7))
+                    .foregroundStyle(.secondary)
             }
             .padding(16)
 
             if state.card.isPrivate {
                 Image(systemName: "eye.slash.fill")
                     .font(.system(size: 12, weight: .bold))
-                    .foregroundColor(.white.opacity(0.5))
+                    .foregroundStyle(.secondary)
                     .padding(10)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
             }
         }
         .frame(height: 120)
-        .contentShape(shape)
+        .glassBackground(cornerRadius: 20, tint: state.accentColor, warpStrength: 3.5)
         .onTapGesture { onTap() }
         .contextMenu {
             Button {
@@ -334,22 +321,18 @@ private struct AddCardTile: View {
     let action: () -> Void
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: 20, style: .continuous)
-        shape
-            .fill(.ultraThinMaterial)
-            .overlay(
-                VStack(spacing: 8) {
-                    Image(systemName: "plus")
-                        .font(.system(size: 24, weight: .bold))
-                    Text("New")
-                        .font(.subheadline.weight(.semibold))
-                }
-                .foregroundColor(.white)
-            )
-            .overlay(shape.stroke(Color.white.opacity(0.25), lineWidth: 1))
-            .frame(height: 120)
-            .contentShape(shape)
-            .onTapGesture { action() }
+        VStack(spacing: 8) {
+            Image(systemName: "plus")
+                .font(.system(size: 24, weight: .bold))
+            Text("New")
+                .font(.subheadline.weight(.semibold))
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .foregroundStyle(.primary)
+        .frame(height: 120)
+        .glassBackground(cornerRadius: 20, tint: Color.accentColor, warpStrength: 3)
+        .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .onTapGesture { action() }
     }
 }
 
