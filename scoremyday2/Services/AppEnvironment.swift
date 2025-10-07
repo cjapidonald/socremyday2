@@ -18,7 +18,6 @@ final class AppEnvironment: ObservableObject {
         updated.hapticsEnabled = prefs.hapticsOn
         updated.soundsEnabled = prefs.soundsOn
         updated.accentColorHex = prefs.accentColorHex
-        updated.showSuggestions = prefs.showSuggestions
         settings = updated
 
         prefs.$hapticsOn
@@ -65,16 +64,6 @@ final class AppEnvironment: ObservableObject {
             }
             .store(in: &cancellables)
 
-        prefs.$showSuggestions
-            .removeDuplicates()
-            .sink { [weak self] value in
-                guard let self else { return }
-                guard self.settings.showSuggestions != value else { return }
-                var current = self.settings
-                current.showSuggestions = value
-                self.settings = current
-            }
-            .store(in: &cancellables)
     }
 
     func notifyDataDidChange() {
