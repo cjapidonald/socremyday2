@@ -8,21 +8,27 @@ struct RootView: View {
             LiquidBackgroundView()
                 .ignoresSafeArea()
 
-            TabView {
+            TabView(selection: Binding(
+                get: { appEnvironment.selectedTab },
+                set: { appEnvironment.selectedTab = $0 }
+            )) {
                 DeedsPage()
                     .tabItem {
                         Label("Deeds", systemImage: "square.grid.3x3")
                     }
+                    .tag(RootTab.deeds)
 
                 StatsPage()
                     .tabItem {
                         Label("Stats", systemImage: "chart.xyaxis.line")
                     }
+                    .tag(RootTab.stats)
 
                 SettingsPage()
                     .tabItem {
                         Label("Settings", systemImage: "gearshape")
                     }
+                    .tag(RootTab.settings)
             }
         }
         .glassBackground(
