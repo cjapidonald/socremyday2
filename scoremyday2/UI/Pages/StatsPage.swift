@@ -391,25 +391,27 @@ private struct ContributionChartView: View {
                 }
                 .chartOverlay { proxy in
                     GeometryReader { geometry in
-                        Rectangle()
-                            .fill(.clear)
-                            .contentShape(Rectangle())
-                            .gesture(
-                                DragGesture(minimumDistance: 0)
-                                    .onEnded { value in
-                                        guard let onSelectSlice = onSelectSlice else { return }
-                                        let origin = geometry[proxy.plotFrame].origin
-                                        let location = CGPoint(
-                                            x: value.location.x - origin.x,
-                                            y: value.location.y - origin.y
-                                        )
-                                        if let (series, _) = proxy.value(at: location, as: (String, Double).self) {
-                                            if let slice = slices.first(where: { $0.legendLabel == series }) {
-                                                onSelectSlice(slice)
+                        if let plotFrame: Anchor<CGRect> = proxy.plotFrame {
+                            let origin = geometry[plotFrame].origin
+                            Rectangle()
+                                .fill(.clear)
+                                .contentShape(Rectangle())
+                                .gesture(
+                                    DragGesture(minimumDistance: 0)
+                                        .onEnded { value in
+                                            guard let onSelectSlice = onSelectSlice else { return }
+                                            let location = CGPoint(
+                                                x: value.location.x - origin.x,
+                                                y: value.location.y - origin.y
+                                            )
+                                            if let (series, _) = proxy.value(at: location, as: (String, Double).self) {
+                                                if let slice = slices.first(where: { $0.legendLabel == series }) {
+                                                    onSelectSlice(slice)
+                                                }
                                             }
                                         }
-                                    }
-                            )
+                                )
+                        }
                     }
                 }
                 .chartLegend(.hidden)
@@ -1086,3 +1088,4 @@ enum StatsMath {
     StatsPage()
         .environmentObject(AppEnvironment())
 }
+
