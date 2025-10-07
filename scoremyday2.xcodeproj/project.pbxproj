@@ -6,19 +6,37 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+                9F4D72EC7CF4442DAD0B12B1 /* AppDayRangeTests.swift in Sources */ = {isa = PBXBuildFile; file = 39F5DF71227A4AFE9E8E7B3D /* AppDayRangeTests.swift */; };
+                BD136B4E922740EC92644730 /* EntriesRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; file = F7972FDA75924E0CB688140B /* EntriesRepositoryTests.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
-		49AC91792E948B0500777C6A /* scoremyday2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = scoremyday2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+                49AC91792E948B0500777C6A /* scoremyday2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = scoremyday2.app; sourceTree = BUILT_PRODUCTS_DIR; };
+                0EA3727FF57848ACB86820FA /* scoremyday2Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = scoremyday2Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+                39F5DF71227A4AFE9E8E7B3D /* AppDayRangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDayRangeTests.swift; sourceTree = "<group>"; };
+                F7972FDA75924E0CB688140B /* EntriesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntriesRepositoryTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		49AC91862E948B0600777C6A /* Exceptions for "scoremyday2" folder in "scoremyday2" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
+                49AC91862E948B0600777C6A /* Exceptions for "scoremyday2" folder in "scoremyday2" target */ = {
+                        isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+                        membershipExceptions = (
+                                Info.plist,
 			);
 			target = 49AC91782E948B0500777C6A /* scoremyday2 */;
-		};
+                };
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXContainerItemProxy section */
+                52C25640B8AD4796B1C92E1C /* PBXContainerItemProxy */ = {
+                        isa = PBXContainerItemProxy;
+                        containerPortal = 49AC91712E948B0500777C6A /* Project object */;
+                        proxyType = 1;
+                        remoteGlobalIDString = 49AC91782E948B0500777C6A;
+                        remoteInfo = scoremyday2;
+                };
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		49AC917B2E948B0500777C6A /* scoremyday2 */ = {
@@ -32,73 +50,121 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		49AC91762E948B0500777C6A /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+                49AC91762E948B0500777C6A /* Frameworks */ = {
+                        isa = PBXFrameworksBuildPhase;
+                        buildActionMask = 2147483647;
+                        files = (
+                        );
+                        runOnlyForDeploymentPostprocessing = 0;
+                };
+                229A71376514473B88BC14FF /* Frameworks */ = {
+                        isa = PBXFrameworksBuildPhase;
+                        buildActionMask = 2147483647;
+                        files = (
+                        );
+                        runOnlyForDeploymentPostprocessing = 0;
+                };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		49AC91702E948B0500777C6A = {
-			isa = PBXGroup;
-			children = (
-				49AC917B2E948B0500777C6A /* scoremyday2 */,
-				49AC917A2E948B0500777C6A /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		49AC917A2E948B0500777C6A /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				49AC91792E948B0500777C6A /* scoremyday2.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
+                49AC91702E948B0500777C6A = {
+                        isa = PBXGroup;
+                        children = (
+                                49AC917B2E948B0500777C6A /* scoremyday2 */,
+                                6AAB1BD55F134D7AA527823D /* scoremyday2Tests */,
+                                49AC917A2E948B0500777C6A /* Products */,
+                        );
+                        sourceTree = "<group>";
+                };
+                49AC917A2E948B0500777C6A /* Products */ = {
+                        isa = PBXGroup;
+                        children = (
+                                49AC91792E948B0500777C6A /* scoremyday2.app */,
+                                0EA3727FF57848ACB86820FA /* scoremyday2Tests.xctest */,
+                        );
+                        name = Products;
+                        sourceTree = "<group>";
+                };
+                6AAB1BD55F134D7AA527823D /* scoremyday2Tests */ = {
+                        isa = PBXGroup;
+                        children = (
+                                39F5DF71227A4AFE9E8E7B3D /* AppDayRangeTests.swift */,
+                                F7972FDA75924E0CB688140B /* EntriesRepositoryTests.swift */,
+                        );
+                        path = scoremyday2Tests;
+                        sourceTree = "<group>";
+                };
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		49AC91782E948B0500777C6A /* scoremyday2 */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 49AC91872E948B0600777C6A /* Build configuration list for PBXNativeTarget "scoremyday2" */;
-			buildPhases = (
-				49AC91752E948B0500777C6A /* Sources */,
-				49AC91762E948B0500777C6A /* Frameworks */,
-				49AC91772E948B0500777C6A /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				49AC917B2E948B0500777C6A /* scoremyday2 */,
-			);
-			name = scoremyday2;
-			packageProductDependencies = (
-			);
-			productName = scoremyday2;
-			productReference = 49AC91792E948B0500777C6A /* scoremyday2.app */;
-			productType = "com.apple.product-type.application";
-		};
+                49AC91782E948B0500777C6A /* scoremyday2 */ = {
+                        isa = PBXNativeTarget;
+                        buildConfigurationList = 49AC91872E948B0600777C6A /* Build configuration list for PBXNativeTarget "scoremyday2" */;
+                        buildPhases = (
+                                49AC91752E948B0500777C6A /* Sources */,
+                                49AC91762E948B0500777C6A /* Frameworks */,
+                                49AC91772E948B0500777C6A /* Resources */,
+                        );
+                        buildRules = (
+                        );
+                        dependencies = (
+                        );
+                        fileSystemSynchronizedGroups = (
+                                49AC917B2E948B0500777C6A /* scoremyday2 */,
+                        );
+                        name = scoremyday2;
+                        packageProductDependencies = (
+                        );
+                        productName = scoremyday2;
+                        productReference = 49AC91792E948B0500777C6A /* scoremyday2.app */;
+                        productType = "com.apple.product-type.application";
+                };
+                F3A3E3F650E74751A0392C36 /* scoremyday2Tests */ = {
+                        isa = PBXNativeTarget;
+                        buildConfigurationList = 7AD8A4DEEAC14754B5020C30 /* Build configuration list for PBXNativeTarget "scoremyday2Tests" */;
+                        buildPhases = (
+                                CFD1B0BA42A9425C85C08D1E /* Sources */,
+                                229A71376514473B88BC14FF /* Frameworks */,
+                                731B4820B0A24E6B94738DDD /* Resources */,
+                        );
+                        buildRules = (
+                        );
+                        dependencies = (
+                                093C3827E9F1466E997919F0 /* PBXTargetDependency */,
+                        );
+                        name = scoremyday2Tests;
+                        productName = scoremyday2Tests;
+                        productReference = 0EA3727FF57848ACB86820FA /* scoremyday2Tests.xctest */;
+                        productType = "com.apple.product-type.bundle.unit-test";
+                };
 /* End PBXNativeTarget section */
 
+/* Begin PBXTargetDependency section */
+                093C3827E9F1466E997919F0 /* PBXTargetDependency */ = {
+                        isa = PBXTargetDependency;
+                        target = 49AC91782E948B0500777C6A /* scoremyday2 */;
+                        targetProxy = 52C25640B8AD4796B1C92E1C /* PBXContainerItemProxy */;
+                };
+/* End PBXTargetDependency section */
+
 /* Begin PBXProject section */
-		49AC91712E948B0500777C6A /* Project object */ = {
-			isa = PBXProject;
-			attributes = {
-				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2600;
-				LastUpgradeCheck = 2600;
-				TargetAttributes = {
-					49AC91782E948B0500777C6A = {
-						CreatedOnToolsVersion = 26.0.1;
-					};
-				};
-			};
-			buildConfigurationList = 49AC91742E948B0500777C6A /* Build configuration list for PBXProject "scoremyday2" */;
+                49AC91712E948B0500777C6A /* Project object */ = {
+                        isa = PBXProject;
+                        attributes = {
+                                BuildIndependentTargetsInParallel = 1;
+                                LastSwiftUpdateCheck = 2600;
+                                LastUpgradeCheck = 2600;
+                                TargetAttributes = {
+                                        49AC91782E948B0500777C6A = {
+                                                CreatedOnToolsVersion = 26.0.1;
+                                        };
+                                        F3A3E3F650E74751A0392C36 = {
+                                                CreatedOnToolsVersion = 26.0.1;
+                                                TestTargetID = 49AC91782E948B0500777C6A;
+                                        };
+                                };
+                        };
+                        buildConfigurationList = 49AC91742E948B0500777C6A /* Build configuration list for PBXProject "scoremyday2" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -111,30 +177,47 @@
 			productRefGroup = 49AC917A2E948B0500777C6A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
-			targets = (
-				49AC91782E948B0500777C6A /* scoremyday2 */,
-			);
-		};
+                        targets = (
+                                49AC91782E948B0500777C6A /* scoremyday2 */,
+                                F3A3E3F650E74751A0392C36 /* scoremyday2Tests */,
+                        );
+                };
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		49AC91772E948B0500777C6A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+                49AC91772E948B0500777C6A /* Resources */ = {
+                        isa = PBXResourcesBuildPhase;
+                        buildActionMask = 2147483647;
+                        files = (
+                        );
+                        runOnlyForDeploymentPostprocessing = 0;
+                };
+                731B4820B0A24E6B94738DDD /* Resources */ = {
+                        isa = PBXResourcesBuildPhase;
+                        buildActionMask = 2147483647;
+                        files = (
+                        );
+                        runOnlyForDeploymentPostprocessing = 0;
+                };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		49AC91752E948B0500777C6A /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+                49AC91752E948B0500777C6A /* Sources */ = {
+                        isa = PBXSourcesBuildPhase;
+                        buildActionMask = 2147483647;
+                        files = (
+                        );
+                        runOnlyForDeploymentPostprocessing = 0;
+                };
+                CFD1B0BA42A9425C85C08D1E /* Sources */ = {
+                        isa = PBXSourcesBuildPhase;
+                        buildActionMask = 2147483647;
+                        files = (
+                                9F4D72EC7CF4442DAD0B12B1 /* AppDayRangeTests.swift in Sources */,
+                                BD136B4E922740EC92644730 /* EntriesRepositoryTests.swift in Sources */,
+                        );
+                        runOnlyForDeploymentPostprocessing = 0;
+                };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
@@ -270,11 +353,11 @@
 			};
 			name = Debug;
 		};
-		49AC918B2E948B0600777C6A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+                49AC918B2E948B0600777C6A /* Release */ = {
+                        isa = XCBuildConfiguration;
+                        buildSettings = {
+                                ALWAYS_SEARCH_USER_PATHS = NO;
+                                ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -324,13 +407,62 @@
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
+                        };
+                        name = Release;
+                };
+                EC18AA3CC56F4BFCB144F2E0 /* Debug */ = {
+                        isa = XCBuildConfiguration;
+                        buildSettings = {
+                                BUNDLE_LOADER = "$(TEST_HOST)";
+                                CODE_SIGN_STYLE = Automatic;
+                                CURRENT_PROJECT_VERSION = 1;
+                                DEVELOPMENT_TEAM = 59Q6X62P3A;
+                                GENERATE_INFOPLIST_FILE = YES;
+                                IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+                                LD_RUNPATH_SEARCH_PATHS = (
+                                        "$(inherited)",
+                                        "@executable_path/Frameworks",
+                                        "@loader_path/Frameworks",
+                                );
+                                MARKETING_VERSION = 1.0;
+                                PRODUCT_BUNDLE_IDENTIFIER = com.Donald.scoremyday2Tests;
+                                PRODUCT_NAME = "$(TARGET_NAME)";
+                                SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+                                SWIFT_VERSION = 5.0;
+                                TARGETED_DEVICE_FAMILY = "1,2";
+                                TEST_HOST = "$(BUILT_PRODUCTS_DIR)/scoremyday2.app/scoremyday2";
+                                TEST_TARGET_NAME = scoremyday2;
+                        };
+                        name = Debug;
+                };
+                D340B082FE9547CEB9F7D08D /* Release */ = {
+                        isa = XCBuildConfiguration;
+                        buildSettings = {
+                                BUNDLE_LOADER = "$(TEST_HOST)";
+                                CODE_SIGN_STYLE = Automatic;
+                                CURRENT_PROJECT_VERSION = 1;
+                                DEVELOPMENT_TEAM = 59Q6X62P3A;
+                                GENERATE_INFOPLIST_FILE = YES;
+                                IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+                                LD_RUNPATH_SEARCH_PATHS = (
+                                        "$(inherited)",
+                                        "@executable_path/Frameworks",
+                                        "@loader_path/Frameworks",
+                                );
+                                MARKETING_VERSION = 1.0;
+                                PRODUCT_BUNDLE_IDENTIFIER = com.Donald.scoremyday2Tests;
+                                PRODUCT_NAME = "$(TARGET_NAME)";
+                                SWIFT_VERSION = 5.0;
+                                TARGETED_DEVICE_FAMILY = "1,2";
+                                TEST_HOST = "$(BUILT_PRODUCTS_DIR)/scoremyday2.app/scoremyday2";
+                                TEST_TARGET_NAME = scoremyday2;
+                        };
+                        name = Release;
+                };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		49AC91742E948B0500777C6A /* Build configuration list for PBXProject "scoremyday2" */ = {
+                49AC91742E948B0500777C6A /* Build configuration list for PBXProject "scoremyday2" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49AC918A2E948B0600777C6A /* Debug */,
@@ -345,9 +477,18 @@
 				49AC91882E948B0600777C6A /* Debug */,
 				49AC91892E948B0600777C6A /* Release */,
 			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
+                        defaultConfigurationIsVisible = 0;
+                        defaultConfigurationName = Release;
+                };
+                7AD8A4DEEAC14754B5020C30 /* Build configuration list for PBXNativeTarget "scoremyday2Tests" */ = {
+                        isa = XCConfigurationList;
+                        buildConfigurations = (
+                                EC18AA3CC56F4BFCB144F2E0 /* Debug */,
+                                D340B082FE9547CEB9F7D08D /* Release */,
+                        );
+                        defaultConfigurationIsVisible = 0;
+                        defaultConfigurationName = Release;
+                };
 /* End XCConfigurationList section */
 	};
 	rootObject = 49AC91712E948B0500777C6A /* Project object */;
