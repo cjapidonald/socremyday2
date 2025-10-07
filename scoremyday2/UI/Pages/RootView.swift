@@ -37,6 +37,9 @@ struct RootView: View {
             warpStrength: 2
         )
         .accentColor(accentColor)
+        .overlay(alignment: .top) {
+            ToastOverlayView()
+        }
     }
 
     private var accentColor: Color {

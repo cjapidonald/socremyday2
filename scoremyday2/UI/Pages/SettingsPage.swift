@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 
 struct SettingsPage: View {
     @EnvironmentObject private var appEnvironment: AppEnvironment
+    @Environment(\.dismiss) private var dismiss
     @ObservedObject private var prefs = AppPrefsStore.shared
     @ObservedObject private var accountStore = AccountStore.shared
 
@@ -326,6 +327,8 @@ struct SettingsPage: View {
                 await MainActor.run {
                     isLoadingDemoData = false
                     appEnvironment.notifyDataDidChange()
+                    appEnvironment.showToast(message: "Demo data loaded.", iconSystemName: "checkmark.circle.fill")
+                    dismiss()
                 }
             } catch {
                 await MainActor.run {

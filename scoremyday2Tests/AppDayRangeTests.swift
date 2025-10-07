@@ -62,3 +62,30 @@ final class StatsInsightTests: XCTestCase {
         XCTAssertNil(StatsMath.pearsonCorrelation(x: netScores, y: deedPoints))
     }
 }
+
+@MainActor
+final class AppEnvironmentToastTests: XCTestCase {
+    func testToastClearsAfterDuration() async throws {
+        let environment = AppEnvironment(persistenceController: PersistenceController(inMemory: true))
+
+        environment.showToast(message: "Loaded", duration: 0.05)
+
+        XCTAssertEqual(environment.toast?.message, "Loaded")
+
+        try await Task.sleep(nanoseconds: 150_000_000)
+
+        XCTAssertNil(environment.toast)
+    }
+
+    func testLatestToastReplacesPrevious() async throws {
+        let environment = AppEnvironment(persistenceController: PersistenceController(inMemory: true))
+
+        environment.showToast(message: "First", duration: 1)
+        environment.showToast(message: "Second", duration: 1)
+
+        XCTAssertEqual(environment.toast?.message, "Second")
+
+        environment.hideToast()
+        XCTAssertNil(environment.toast)
+    }
+}
