@@ -132,6 +132,7 @@ struct StatsPage: View {
                             }
                         }
                     }
+                    .id(viewModel.selectedRange.rawValue)
                     .chartYAxis {
                         AxisMarks(position: .leading)
                     }
@@ -275,6 +276,7 @@ struct StatsPage: View {
                             .interpolationMethod(.catmullRom)
                             .foregroundStyle(Color.accentColor.gradient.opacity(0.2))
                         }
+                        .id("\(viewModel.selectedRange.rawValue)-\(viewModel.selectedDeedId?.uuidString ?? "none")")
                         .frame(height: 200)
                         .chartYAxis {
                             AxisMarks(position: .leading)

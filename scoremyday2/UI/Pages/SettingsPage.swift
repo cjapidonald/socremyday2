@@ -8,7 +8,6 @@ struct SettingsPage: View {
     @ObservedObject private var accountStore = AccountStore.shared
 
     @State private var dayCutoffSelection = SettingsPage.makeDate(forHour: AppPrefsStore.shared.dayCutoffHour)
-    @State private var isLoadingDemoData = false
     @State private var isResettingData = false
     @State private var showResetConfirmation = false
     @State private var actionError: String?
@@ -135,7 +134,6 @@ struct SettingsPage: View {
 
             Toggle("Haptics", isOn: $prefs.hapticsOn)
             Toggle("Sounds", isOn: $prefs.soundsOn)
-            Toggle("Suggestions", isOn: $prefs.showSuggestions)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Accent Color")
@@ -174,19 +172,6 @@ struct SettingsPage: View {
             }
             .disabled(isPreparingCSVExport)
 
-            Button {
-                loadDemoData()
-            } label: {
-                HStack {
-                    Label("Load Demo Data", systemImage: "sparkles")
-                    Spacer()
-                    if isLoadingDemoData {
-                        ProgressView()
-                    }
-                }
-            }
-            .disabled(isLoadingDemoData || isResettingData)
-
             Button(role: .destructive) {
                 showResetConfirmation = true
             } label: {
@@ -198,7 +183,7 @@ struct SettingsPage: View {
                     }
                 }
             }
-            .disabled(isResettingData || isLoadingDemoData)
+            .disabled(isResettingData)
         }
     }
 
@@ -316,29 +301,8 @@ struct SettingsPage: View {
         isPreparingCSVExport = false
     }
 
-    private func loadDemoData() {
-        guard !isLoadingDemoData && !isResettingData else { return }
-        isLoadingDemoData = true
-
-        Task {
-            do {
-                let service = DemoDataService(persistenceController: appEnvironment.persistenceController)
-                try service.loadDemoData()
-                await MainActor.run {
-                    isLoadingDemoData = false
-                    appEnvironment.notifyDataDidChange()
-                }
-            } catch {
-                await MainActor.run {
-                    isLoadingDemoData = false
-                    actionError = error.localizedDescription
-                }
-            }
-        }
-    }
-
     private func resetAllData() {
-        guard !isResettingData && !isLoadingDemoData else { return }
+        guard !isResettingData else { return }
         let storedPrefs = (
             dayCutoffHour: prefs.dayCutoffHour,
             hapticsOn: prefs.hapticsOn,
@@ -349,7 +313,7 @@ struct SettingsPage: View {
 
         Task {
             do {
-                let service = DemoDataService(persistenceController: appEnvironment.persistenceController)
+                let service = DataMaintenanceService(persistenceController: appEnvironment.persistenceController)
                 try service.resetAllData()
                 await MainActor.run {
                     if prefs.dayCutoffHour != storedPrefs.dayCutoffHour {

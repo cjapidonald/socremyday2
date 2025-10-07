@@ -5,5 +5,4 @@ struct AppSettings: Equatable {
     var hapticsEnabled: Bool = true
     var soundsEnabled: Bool = true
     var accentColorHex: String?
-    var showSuggestions: Bool = true
 }
