@@ -1,0 +1,32 @@
+{
+  "source": "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Pages/RootView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Deeds",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "Stats",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 23
+        }
+      },
+      {
+        "comment": "",
+        "key": "Settings",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 29
+        }
+      }
+    ]
+  },
+  "version": 1
+}
