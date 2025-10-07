@@ -4,13 +4,13 @@ import UIKit
 struct ParticleOverlayView: UIViewRepresentable {
     var events: [Event]
 
-    fileprivate func makeUIView(context: Context) -> ParticleOverlayUIView {
+    internal func makeUIView(context: Context) -> ParticleOverlayUIView {
         let view = ParticleOverlayUIView()
         view.isUserInteractionEnabled = false
         return view
     }
 
-    fileprivate func updateUIView(_ uiView: ParticleOverlayUIView, context: Context) {
+    internal func updateUIView(_ uiView: ParticleOverlayUIView, context: Context) {
         uiView.update(events: events)
     }
 }
@@ -36,7 +36,7 @@ extension ParticleOverlayView {
     }
 }
 
-fileprivate final class ParticleOverlayUIView: UIView {
+final class ParticleOverlayUIView: UIView {
     private var activeEmitters: [UUID: CAEmitterLayer] = [:]
     private lazy var particleImage: CGImage? = Self.makeParticleImage()
 
