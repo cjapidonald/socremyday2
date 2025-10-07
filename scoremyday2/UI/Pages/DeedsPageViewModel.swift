@@ -43,12 +43,16 @@ final class DeedsPageViewModel: ObservableObject {
     private var hasLoaded = false
     private var allEntries: [DeedEntry] = []
 
-    init(persistenceController: PersistenceController = .shared) {
+    init(persistenceController: PersistenceController) {
         let context = persistenceController.viewContext
         self.deedsRepository = DeedsRepository(context: context)
         self.entriesRepository = EntriesRepository(context: context)
         self.prefsRepository = AppPrefsRepository(context: context)
         self.scoresRepository = ScoresRepository(context: context)
+    }
+
+    convenience init() {
+        self.init(persistenceController: .shared)
     }
 
     func onAppear() {

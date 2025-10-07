@@ -6,6 +6,7 @@ struct DailyScore: Equatable {
     let totalPoints: Double
 }
 
+@MainActor
 final class ScoresRepository {
     private let context: NSManagedObjectContext
 

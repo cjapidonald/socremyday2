@@ -1,6 +1,7 @@
 import CoreData
 import Foundation
 
+@MainActor
 final class AppPrefsRepository {
     private let context: NSManagedObjectContext
 

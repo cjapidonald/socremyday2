@@ -1,14 +1,19 @@
 import CoreData
 import Foundation
 
+@MainActor
 struct DataExportService {
     private let deedsRepository: DeedsRepository
     private let entriesRepository: EntriesRepository
 
-    init(persistenceController: PersistenceController = .shared) {
+    init(persistenceController: PersistenceController) {
         let context = persistenceController.viewContext
         deedsRepository = DeedsRepository(context: context)
         entriesRepository = EntriesRepository(context: context)
+    }
+
+    init() {
+        self.init(persistenceController: .shared)
     }
 
     func makeJSONExport() throws -> [String: Data] {

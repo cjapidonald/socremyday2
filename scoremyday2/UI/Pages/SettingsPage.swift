@@ -34,7 +34,7 @@ struct SettingsPage: View {
             .onAppear {
                 SoundManager.shared.preload()
             }
-            .onChange(of: prefs.dayCutoffHour) { newValue in
+            .onChange(of: prefs.dayCutoffHour) { _, newValue in
                 let newDate = SettingsPage.makeDate(forHour: newValue)
                 if Calendar.current.component(.hour, from: dayCutoffSelection) != newValue {
                     dayCutoffSelection = newDate
@@ -129,7 +129,7 @@ struct SettingsPage: View {
             )
             .datePickerStyle(.wheel)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .onChange(of: dayCutoffSelection) { newValue in
+            .onChange(of: dayCutoffSelection) { _, newValue in
                 updateDayCutoff(with: newValue)
             }
 
@@ -320,19 +320,15 @@ struct SettingsPage: View {
         guard !isLoadingDemoData && !isResettingData else { return }
         isLoadingDemoData = true
 
-        Task {
+        Task { @MainActor in
             do {
                 let service = DemoDataService(persistenceController: appEnvironment.persistenceController)
                 try service.loadDemoData()
-                await MainActor.run {
-                    isLoadingDemoData = false
-                    appEnvironment.notifyDataDidChange()
-                }
+                isLoadingDemoData = false
+                appEnvironment.notifyDataDidChange()
             } catch {
-                await MainActor.run {
-                    isLoadingDemoData = false
-                    actionError = error.localizedDescription
-                }
+                isLoadingDemoData = false
+                actionError = error.localizedDescription
             }
         }
     }
@@ -347,32 +343,28 @@ struct SettingsPage: View {
         )
         isResettingData = true
 
-        Task {
+        Task { @MainActor in
             do {
                 let service = DemoDataService(persistenceController: appEnvironment.persistenceController)
                 try service.resetAllData()
-                await MainActor.run {
-                    if prefs.dayCutoffHour != storedPrefs.dayCutoffHour {
-                        prefs.dayCutoffHour = storedPrefs.dayCutoffHour
-                    }
-                    if prefs.hapticsOn != storedPrefs.hapticsOn {
-                        prefs.hapticsOn = storedPrefs.hapticsOn
-                    }
-                    if prefs.soundsOn != storedPrefs.soundsOn {
-                        prefs.soundsOn = storedPrefs.soundsOn
-                    }
-                    if prefs.accentColorHex != storedPrefs.accentColorHex {
-                        prefs.accentColorHex = storedPrefs.accentColorHex
-                    }
-                    dayCutoffSelection = SettingsPage.makeDate(forHour: storedPrefs.dayCutoffHour)
-                    isResettingData = false
-                    appEnvironment.notifyDataDidChange()
+                if prefs.dayCutoffHour != storedPrefs.dayCutoffHour {
+                    prefs.dayCutoffHour = storedPrefs.dayCutoffHour
                 }
+                if prefs.hapticsOn != storedPrefs.hapticsOn {
+                    prefs.hapticsOn = storedPrefs.hapticsOn
+                }
+                if prefs.soundsOn != storedPrefs.soundsOn {
+                    prefs.soundsOn = storedPrefs.soundsOn
+                }
+                if prefs.accentColorHex != storedPrefs.accentColorHex {
+                    prefs.accentColorHex = storedPrefs.accentColorHex
+                }
+                dayCutoffSelection = SettingsPage.makeDate(forHour: storedPrefs.dayCutoffHour)
+                isResettingData = false
+                appEnvironment.notifyDataDidChange()
             } catch {
-                await MainActor.run {
-                    isResettingData = false
-                    actionError = error.localizedDescription
-                }
+                isResettingData = false
+                actionError = error.localizedDescription
             }
         }
     }

@@ -9,7 +9,7 @@ final class AppEnvironment: ObservableObject {
     let persistenceController: PersistenceController
     private var cancellables: Set<AnyCancellable> = []
 
-    init(persistenceController: PersistenceController = .shared) {
+    init(persistenceController: PersistenceController) {
         self.persistenceController = persistenceController
 
         let prefs = AppPrefsStore.shared
@@ -75,6 +75,10 @@ final class AppEnvironment: ObservableObject {
                 self.settings = current
             }
             .store(in: &cancellables)
+    }
+
+    convenience init() {
+        self.init(persistenceController: .shared)
     }
 
     func notifyDataDidChange() {

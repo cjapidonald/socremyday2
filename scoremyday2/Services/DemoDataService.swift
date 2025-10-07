@@ -1,6 +1,7 @@
 import CoreData
 import Foundation
 
+@MainActor
 struct DemoDataService {
     private let context: NSManagedObjectContext
     private let deedsRepository: DeedsRepository
@@ -14,8 +15,12 @@ struct DemoDataService {
         self.prefsRepository = AppPrefsRepository(context: context)
     }
 
-    init(persistenceController: PersistenceController = .shared) {
+    init(persistenceController: PersistenceController) {
         self.init(context: persistenceController.viewContext)
+    }
+
+    init() {
+        self.init(persistenceController: .shared)
     }
 
     func loadDemoData() throws {

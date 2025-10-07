@@ -16,7 +16,7 @@ final class AppPrefsStore: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
     private var isPersisting = false
 
-    init(persistenceController: PersistenceController = .shared) {
+    init(persistenceController: PersistenceController) {
         let context = persistenceController.viewContext
         repository = AppPrefsRepository(context: context)
 
@@ -80,5 +80,9 @@ final class AppPrefsStore: ObservableObject {
             print("Failed to persist app prefs: \(error)")
         }
         isPersisting = false
+    }
+
+    convenience init() {
+        self.init(persistenceController: .shared)
     }
 }

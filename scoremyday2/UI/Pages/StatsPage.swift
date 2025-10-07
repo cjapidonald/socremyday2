@@ -688,7 +688,7 @@ final class StatsPageViewModel: ObservableObject {
         hasAnyEntries = false
 
         do {
-            try loadData(context: persistence.viewContext)
+            try await loadData(context: persistence.viewContext)
             isReady = true
             isLoading = false
             updateForRangeChange()
@@ -700,6 +700,7 @@ final class StatsPageViewModel: ObservableObject {
         }
     }
 
+    @MainActor
     private func loadData(context: NSManagedObjectContext) throws {
         let deeds = try DeedsRepository(context: context).fetchAll(includeArchived: true)
         deedsById = Dictionary(uniqueKeysWithValues: deeds.map { ($0.id, $0) })

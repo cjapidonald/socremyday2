@@ -81,10 +81,10 @@ struct DeedsPage: View {
         }
         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: capHint?.id)
         .onAppear { viewModel.onAppear() }
-        .onChange(of: appEnvironment.settings.dayCutoffHour) { newValue in
+        .onChange(of: appEnvironment.settings.dayCutoffHour) { _, newValue in
             viewModel.updateCutoffHour(newValue)
         }
-        .onChange(of: appEnvironment.dataVersion) { _ in
+        .onChange(of: appEnvironment.dataVersion) { _, _ in
             viewModel.reload()
         }
         .sheet(item: $quickAddState) { state in
