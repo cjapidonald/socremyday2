@@ -2,7 +2,7 @@ import XCTest
 import CoreData
 @testable import scoremyday2
 
-final class DemoDataServiceTests: XCTestCase {
+final class DataMaintenanceServiceTests: XCTestCase {
     var persistence: PersistenceController!
     var prefsRepository: AppPrefsRepository!
 
@@ -24,7 +24,7 @@ final class DemoDataServiceTests: XCTestCase {
         prefs.accentColorHex = "#123456"
         try prefsRepository.update(prefs)
 
-        let service = DemoDataService(persistenceController: persistence)
+        let service = DataMaintenanceService(persistenceController: persistence)
         try service.resetAllData()
 
         let storedPrefs = try prefsRepository.fetch()
