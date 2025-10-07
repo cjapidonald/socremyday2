@@ -29,12 +29,18 @@ final class EntriesRepository {
             let rawPoints = request.amount * deed.pointsPerUnit
             let computedPoints: Double
             let wasCapped: Bool
-            if let cap = deed.dailyCap?.doubleValue, cap >= 0, rawPoints > 0 {
+            if let capAmount = deed.dailyCap?.doubleValue,
+               capAmount >= 0,
+               rawPoints > 0,
+               deed.pointsPerUnit > 0
+            {
                 let dayRange = appDayRange(for: request.timestamp, cutoffHour: cutoffHour)
                 let existingPoints = try pointsAwarded(for: deed, within: dayRange, positiveOnly: true)
-                let remaining = max(0, cap - existingPoints)
-                computedPoints = max(0, min(rawPoints, remaining))
-                wasCapped = computedPoints < rawPoints
+                let existingAmount = existingPoints / deed.pointsPerUnit
+                let remainingAmount = max(0, capAmount - existingAmount)
+                let awardedAmount = max(0, min(request.amount, remainingAmount))
+                computedPoints = awardedAmount * deed.pointsPerUnit
+                wasCapped = awardedAmount < request.amount
             } else {
                 computedPoints = rawPoints
                 wasCapped = false
