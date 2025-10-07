@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SettingsPage: View {
     @EnvironmentObject private var appEnvironment: AppEnvironment
+    @ObservedObject private var prefs = AppPrefsStore.shared
     @State private var isLoadingDemoData = false
     @State private var demoDataError: String?
 
@@ -9,23 +10,8 @@ struct SettingsPage: View {
         NavigationStack {
             List {
                 Section("Preferences") {
-                    Toggle("Haptics", isOn: Binding(
-                        get: { appEnvironment.settings.hapticsEnabled },
-                        set: { newValue in
-                            var updated = appEnvironment.settings
-                            updated.hapticsEnabled = newValue
-                            appEnvironment.settings = updated
-                        }
-                    ))
-
-                    Toggle("Sounds", isOn: Binding(
-                        get: { appEnvironment.settings.soundsEnabled },
-                        set: { newValue in
-                            var updated = appEnvironment.settings
-                            updated.soundsEnabled = newValue
-                            appEnvironment.settings = updated
-                        }
-                    ))
+                    Toggle("Haptics", isOn: $prefs.hapticsOn)
+                    Toggle("Sounds", isOn: $prefs.soundsOn)
                 }
 
                 Section("QA") {
@@ -48,6 +34,9 @@ struct SettingsPage: View {
                 }
             }
             .navigationTitle("Settings")
+            .onAppear {
+                SoundManager.shared.preload()
+            }
             .alert("Unable to Load Demo Data", isPresented: Binding(
                 get: { demoDataError != nil },
                 set: { isPresented in

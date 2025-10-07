@@ -4,6 +4,10 @@ import SwiftUI
 struct ScoreMyDayApp: App {
     @StateObject private var appEnvironment = AppEnvironment()
 
+    init() {
+        SoundManager.shared.preload()
+    }
+
     var body: some Scene {
         WindowGroup {
             RootView()

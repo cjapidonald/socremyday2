@@ -1,9 +1,6 @@
-import AVFoundation
 import SwiftUI
-import UIKit
 
 struct DeedsPage: View {
-    @EnvironmentObject private var appEnvironment: AppEnvironment
     @StateObject private var viewModel = DeedsPageViewModel()
 
     @State private var quickAddState: QuickAddState?
@@ -147,12 +144,13 @@ struct DeedsPage: View {
     }
 
     private func handleFeedback(for polarity: Polarity, points: Double, cardID: UUID, startFrameOverride: CGRect? = nil) {
-        if appEnvironment.settings.hapticsEnabled {
-            FeedbackManager.shared.emitHaptic(for: polarity)
-        }
-
-        if appEnvironment.settings.soundsEnabled {
-            FeedbackManager.shared.playSound(for: polarity)
+        switch polarity {
+        case .positive:
+            HapticsManager.shared.positive()
+            SoundManager.shared.positive()
+        case .negative:
+            HapticsManager.shared.negative()
+            SoundManager.shared.negative()
         }
 
         if points != 0 {
@@ -533,57 +531,6 @@ private struct RatingPickerSheet: View {
         .onAppear {
             rating = Int(card.lastAmount ?? 3)
         }
-    }
-}
-
-private final class FeedbackManager {
-    static let shared = FeedbackManager()
-    private var players: [String: AVAudioPlayer] = [:]
-
-    func emitHaptic(for polarity: Polarity) {
-        let generator = UINotificationFeedbackGenerator()
-        generator.prepare()
-        switch polarity {
-        case .positive:
-            generator.notificationOccurred(.success)
-        case .negative:
-            generator.notificationOccurred(.warning)
-        }
-    }
-
-    func playSound(for polarity: Polarity) {
-        let resourceName: String
-        switch polarity {
-        case .positive:
-            resourceName = "positive-tone"
-        case .negative:
-            resourceName = "negative-tone"
-        }
-
-        if play(resourceName, ext: "mp3") { return }
-        _ = play(resourceName, ext: "wav")
-    }
-
-    @discardableResult
-    private func play(_ name: String, ext: String) -> Bool {
-        let key = "\(name).\(ext)"
-        if let player = players[key] {
-            player.currentTime = 0
-            player.play()
-            return true
-        }
-
-        guard let url = Bundle.main.url(forResource: name, withExtension: ext) else { return false }
-        do {
-            let player = try AVAudioPlayer(contentsOf: url)
-            player.prepareToPlay()
-            player.play()
-            players[key] = player
-            return true
-        } catch {
-            return false
-        }
-    }
 }
 
 #Preview {
