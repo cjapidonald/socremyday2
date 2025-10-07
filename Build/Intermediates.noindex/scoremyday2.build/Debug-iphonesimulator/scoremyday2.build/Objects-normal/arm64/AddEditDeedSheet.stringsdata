@@ -1,0 +1,224 @@
+{
+  "source": "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Pages/AddEditDeedSheet.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Edit Deed",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 161
+        }
+      },
+      {
+        "comment": "",
+        "key": "New Deed",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 161
+        }
+      },
+      {
+        "comment": "",
+        "key": "Details",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "Category",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 83
+        }
+      },
+      {
+        "comment": "",
+        "key": "Configuration",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 111
+        }
+      },
+      {
+        "comment": "",
+        "key": "Visibility",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 156
+        }
+      },
+      {
+        "comment": "",
+        "key": "Preview",
+        "location": {
+          "startingColumn": 17,
+          "startingLine": 182
+        }
+      },
+      {
+        "comment": "",
+        "key": "Name",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "Color",
+        "location": {
+          "startingColumn": 33,
+          "startingLine": 80
+        }
+      },
+      {
+        "comment": "",
+        "key": "Emoji",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 236
+        }
+      },
+      {
+        "comment": "",
+        "key": "Category",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 84
+        }
+      },
+      {
+        "comment": "",
+        "key": "Polarity",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 112
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unit Type",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 118
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unit Label",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 126
+        }
+      },
+      {
+        "comment": "",
+        "key": "Unit Label",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 131
+        }
+      },
+      {
+        "comment": "",
+        "key": "Points per Unit",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 136
+        }
+      },
+      {
+        "comment": "",
+        "key": "Daily Cap",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 146
+        }
+      },
+      {
+        "comment": "",
+        "key": "Daily Cap (optional)",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 151
+        }
+      },
+      {
+        "comment": "",
+        "key": "Positive",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 113
+        }
+      },
+      {
+        "comment": "",
+        "key": "Negative",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 114
+        }
+      },
+      {
+        "comment": "",
+        "key": "1 completion per day",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 147
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show on Stats Page",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 157
+        }
+      },
+      {
+        "comment": "",
+        "key": "Private",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 158
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 164
+        }
+      },
+      {
+        "comment": "",
+        "key": "Save",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 167
+        }
+      },
+      {
+        "comment": "",
+        "key": "Daily cap: 1 completion per day",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 212
+        }
+      },
+      {
+        "comment": "",
+        "key": "Daily cap: %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 216
+        }
+      }
+    ]
+  },
+  "version": 1
+}

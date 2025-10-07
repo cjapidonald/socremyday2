@@ -1,0 +1,264 @@
+{
+  "source": "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Pages/StatsPage.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Stats",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "Range",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "No stats yet",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 61
+        }
+      },
+      {
+        "comment": "",
+        "key": "Log your first deed to unlock insights and charts.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 65
+        }
+      },
+      {
+        "comment": "",
+        "key": "Log your first deed",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "Main Net Score",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "No score activity yet. Start logging deeds to see insights.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 93
+        }
+      },
+      {
+        "comment": "",
+        "key": "Day",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 101
+        }
+      },
+      {
+        "comment": "",
+        "key": "Net Score",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 102
+        }
+      },
+      {
+        "comment": "",
+        "key": "Day",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 107
+        }
+      },
+      {
+        "comment": "",
+        "key": "Net Score",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 108
+        }
+      },
+      {
+        "comment": "",
+        "key": "Today",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 115
+        }
+      },
+      {
+        "comment": "",
+        "key": "Today Value",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 116
+        }
+      },
+      {
+        "comment": "",
+        "key": "TODAY",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 122
+        }
+      },
+      {
+        "comment": "",
+        "key": "Per-Card Trend",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 146
+        }
+      },
+      {
+        "comment": "",
+        "key": "Log some deeds to unlock per-card insights.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 151
+        }
+      },
+      {
+        "comment": "",
+        "key": "No activity for %@ in this range.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 257
+        }
+      },
+      {
+        "comment": "",
+        "key": "No top cards match \"%@\".",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 164
+        }
+      },
+      {
+        "comment": "",
+        "key": "No cards found.",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 203
+        }
+      },
+      {
+        "comment": "",
+        "key": "Day",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 265
+        }
+      },
+      {
+        "comment": "",
+        "key": "Points",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 266
+        }
+      },
+      {
+        "comment": "",
+        "key": "Day",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 272
+        }
+      },
+      {
+        "comment": "",
+        "key": "Points",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 273
+        }
+      },
+      {
+        "comment": "",
+        "key": "Search deeds",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 293
+        }
+      },
+      {
+        "comment": "",
+        "key": "Insights",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 308
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keep logging to see month-over-month momentum.",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 317
+        }
+      },
+      {
+        "comment": "",
+        "key": "Contribution Breakdown",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 335
+        }
+      },
+      {
+        "comment": "",
+        "key": "No contributions in this range yet.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 375
+        }
+      },
+      {
+        "comment": "",
+        "key": "Value",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 381
+        }
+      },
+      {
+        "comment": "",
+        "key": "Label",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 385
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ • %@",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 429
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ • %@",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 447
+        }
+      }
+    ]
+  },
+  "version": 1
+}

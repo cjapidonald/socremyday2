@@ -232,21 +232,10 @@ struct AddEditDeedSheet: View {
     }
 
     private var emojiRow: some View {
-        HStack {
-            TextField("Emoji", text: $emoji)
-                .disableAutocorrection(true)
-                .textInputAutocapitalization(.never)
-            if #available(iOS 17.0, *) {
-                Button {
-                    showingSymbolPicker = true
-                } label: {
-                    Image(systemName: "square.grid.3x3")
-                }
-                .symbolRenderingMode(.hierarchical)
-                .buttonStyle(.borderless)
-                .symbolPicker(isPresented: $showingSymbolPicker, selection: $emoji)
-            }
-        }
+        // The picker button has been removed. Users can still type emojis.
+        TextField("Emoji", text: $emoji)
+            .disableAutocorrection(true)
+            .textInputAutocapitalization(.never)
     }
 
     private var previewModel: DeedCard {
