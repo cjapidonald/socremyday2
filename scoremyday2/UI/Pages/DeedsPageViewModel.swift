@@ -1,8 +1,10 @@
+import Combine
 import Foundation
 import SwiftUI
 
 @MainActor
 final class DeedsPageViewModel: ObservableObject {
+    nonisolated let objectWillChange = ObservableObjectPublisher()
     struct CardState: Identifiable, Equatable {
         let card: DeedCard
         var lastUsed: Date?
