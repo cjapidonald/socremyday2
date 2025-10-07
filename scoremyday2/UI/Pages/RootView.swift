@@ -33,10 +33,18 @@ struct RootView: View {
         }
         .glassBackground(
             cornerRadius: 0,
-            tint: Color(appEnvironment.settings.accentColorIdentifier),
+            tint: accentColor,
             warpStrength: 2
         )
-        .accentColor(Color(appEnvironment.settings.accentColorIdentifier))
+        .accentColor(accentColor)
+    }
+
+    private var accentColor: Color {
+        if let hex = appEnvironment.settings.accentColorHex, !hex.isEmpty {
+            return Color(hex: hex, fallback: .accentColor)
+        } else {
+            return .accentColor
+        }
     }
 }
 

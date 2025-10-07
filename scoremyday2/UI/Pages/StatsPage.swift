@@ -45,6 +45,9 @@ struct StatsPage: View {
         .onChange(of: appEnvironment.settings.dayCutoffHour) { newValue in
             Task { await viewModel.updateCutoffHour(newValue) }
         }
+        .onChange(of: appEnvironment.dataVersion) { _ in
+            Task { await viewModel.forceReload() }
+        }
     }
 
     private var emptyStateView: some View {
@@ -512,6 +515,10 @@ final class StatsPageViewModel: ObservableObject {
         guard hour != cutoffHour else { return }
         cutoffHour = hour
         // Re-ingest entries to respect the new cutoff boundaries.
+        await reloadData()
+    }
+
+    func forceReload() async {
         await reloadData()
     }
 

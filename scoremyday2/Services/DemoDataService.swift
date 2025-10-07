@@ -53,6 +53,12 @@ struct DemoDataService {
         }
     }
 
+    func resetAllData() throws {
+        try clearExistingData()
+        try prefsRepository.update(AppPrefs())
+        _ = try InitialDataSeeder(context: context).seedDefaultDeedCards()
+    }
+
     private func clearExistingData() throws {
         try context.performAndReturn {
             let entryRequest = DeedEntryMO.fetchRequest()

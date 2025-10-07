@@ -97,6 +97,18 @@ final class DeedsPageViewModel: ObservableObject {
         }
     }
 
+    func updateCutoffHour(_ hour: Int) {
+        guard cutoffHour != hour else { return }
+        cutoffHour = hour
+
+        do {
+            todayNetScore = try computeTodayScore()
+            sparklineValues = try computeSparkline()
+        } catch {
+            assertionFailure("Failed to recompute metrics: \(error)")
+        }
+    }
+
     func upsert(card: DeedCard) {
         do {
             try deedsRepository.upsert(card)

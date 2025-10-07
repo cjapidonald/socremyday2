@@ -2,6 +2,7 @@ import SwiftUI
 import UIKit
 
 struct DeedsPage: View {
+    @EnvironmentObject private var appEnvironment: AppEnvironment
     @StateObject private var viewModel = DeedsPageViewModel()
 
     @State private var quickAddState: QuickAddState?
@@ -51,6 +52,12 @@ struct DeedsPage: View {
             }
         }
         .onAppear { viewModel.onAppear() }
+        .onChange(of: appEnvironment.settings.dayCutoffHour) { newValue in
+            viewModel.updateCutoffHour(newValue)
+        }
+        .onChange(of: appEnvironment.dataVersion) { _ in
+            viewModel.reload()
+        }
         .sheet(item: $quickAddState) { state in
             QuickAddSheet(state: state, onSave: { updated in
                 if let entry = viewModel.log(cardID: updated.card.id, amount: updated.amount, note: updated.note.isEmpty ? nil : updated.note) {
