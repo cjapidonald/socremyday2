@@ -8,6 +8,11 @@ struct EntryCreationRequest {
     var note: String?
 }
 
+struct LogEntryResult {
+    let entry: DeedEntry
+    let wasCapped: Bool
+}
+
 final class EntriesRepository {
     private let context: NSManagedObjectContext
 
@@ -15,7 +20,7 @@ final class EntriesRepository {
         self.context = context
     }
 
-    func logEntry(_ request: EntryCreationRequest, cutoffHour: Int) throws -> DeedEntry {
+    func logEntry(_ request: EntryCreationRequest, cutoffHour: Int) throws -> LogEntryResult {
         try context.performAndReturn {
             guard let deed = try context.fetchDeedCard(id: request.deedId) else {
                 throw NSError(domain: "EntriesRepository", code: 1, userInfo: [NSLocalizedDescriptionKey: "Deed not found"])
@@ -23,13 +28,16 @@ final class EntriesRepository {
 
             let rawPoints = request.amount * deed.pointsPerUnit
             let computedPoints: Double
+            let wasCapped: Bool
             if let cap = deed.dailyCap?.doubleValue, cap >= 0, rawPoints > 0 {
                 let dayRange = appDayRange(for: request.timestamp, cutoffHour: cutoffHour)
                 let existingPoints = try pointsAwarded(for: deed, within: dayRange, positiveOnly: true)
                 let remaining = max(0, cap - existingPoints)
                 computedPoints = max(0, min(rawPoints, remaining))
+                wasCapped = computedPoints < rawPoints
             } else {
                 computedPoints = rawPoints
+                wasCapped = false
             }
 
             let entry = DeedEntryMO(context: context)
@@ -45,7 +53,8 @@ final class EntriesRepository {
                 try context.save()
             }
 
-            return DeedEntry(managedObject: entry)
+            let model = DeedEntry(managedObject: entry)
+            return LogEntryResult(entry: model, wasCapped: wasCapped)
         }
     }
 
