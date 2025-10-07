@@ -25,6 +25,7 @@ struct DeedCard: Identifiable, Equatable {
     var pointsPerUnit: Double
     var dailyCap: Double?
     var isPrivate: Bool
+    var showOnStats: Bool
     var createdAt: Date
     var isArchived: Bool
 
@@ -40,6 +41,7 @@ struct DeedCard: Identifiable, Equatable {
         pointsPerUnit: Double,
         dailyCap: Double?,
         isPrivate: Bool,
+        showOnStats: Bool = true,
         createdAt: Date = Date(),
         isArchived: Bool = false
     ) {
@@ -54,6 +56,7 @@ struct DeedCard: Identifiable, Equatable {
         self.pointsPerUnit = pointsPerUnit
         self.dailyCap = dailyCap
         self.isPrivate = isPrivate
+        self.showOnStats = showOnStats
         self.createdAt = createdAt
         self.isArchived = isArchived
     }

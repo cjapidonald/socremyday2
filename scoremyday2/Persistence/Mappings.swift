@@ -15,6 +15,7 @@ extension DeedCard {
             pointsPerUnit: managedObject.pointsPerUnit,
             dailyCap: managedObject.dailyCap?.doubleValue,
             isPrivate: managedObject.isPrivate,
+            showOnStats: managedObject.showOnStats,
             createdAt: managedObject.createdAt,
             isArchived: managedObject.isArchived
         )
@@ -38,6 +39,7 @@ extension DeedCardMO {
             dailyCap = nil
         }
         isPrivate = card.isPrivate
+        showOnStats = card.showOnStats
         createdAt = card.createdAt
         isArchived = card.isArchived
     }

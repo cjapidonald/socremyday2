@@ -431,6 +431,8 @@ final class StatsPageViewModel: ObservableObject {
             let value = entry.computedPoints
 
             dailyNetValues[dayStart, default: 0] += value
+            guard deed.showOnStats else { continue }
+
             perDeedPoints[deed.id, default: [:]][dayStart, default: 0] += value
 
             if value > 0 {
@@ -453,7 +455,9 @@ final class StatsPageViewModel: ObservableObject {
 
         topDeeds = ranked.map { $0.0 }
 
-        if let first = topDeeds.first, selectedDeedId == nil || !topDeeds.contains(where: { $0.id == selectedDeedId }) {
+        if topDeeds.isEmpty {
+            selectedDeedId = nil
+        } else if let first = topDeeds.first, selectedDeedId == nil || !topDeeds.contains(where: { $0.id == selectedDeedId }) {
             selectedDeedId = first.id
         }
     }
