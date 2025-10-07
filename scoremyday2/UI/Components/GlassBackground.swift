@@ -68,6 +68,7 @@ private struct GlassMaterialView: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.accessibilityContrast) private var contrast
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
 
     var body: some View {
         GeometryReader { proxy in
@@ -77,19 +78,30 @@ private struct GlassMaterialView: View {
             let offset = lensOffset(normalized: normalized)
             let scale = lensScale(normalized: normalized)
 
-            shape
-                .fill(.ultraThinMaterial)
-                .background(
+            Group {
+                if reduceTransparency {
                     shape
-                        .fill(tintGradient(normalized: normalized))
-                )
-                .overlay(innerHighlight(shape: shape, normalized: normalized))
-                .overlay(glassBorder(shape: shape))
-                .shadow(color: shadowColor, radius: shadowRadius, x: 0, y: shadowYOffset)
-                .scaleEffect(1 + scale)
-                .offset(offset)
-                .animation(.easeOut(duration: 0.35), value: normalized.x)
-                .animation(.easeOut(duration: 0.35), value: normalized.y)
+                        .fill(Color(.systemBackground))
+                        .overlay(
+                            shape
+                                .stroke(tint.opacity(colorScheme == .dark ? 0.45 : 0.3), lineWidth: contrast == .increased ? 1.6 : 1)
+                        )
+                } else {
+                    shape
+                        .fill(.ultraThinMaterial)
+                        .background(
+                            shape
+                                .fill(tintGradient(normalized: normalized))
+                        )
+                        .overlay(innerHighlight(shape: shape, normalized: normalized))
+                        .overlay(glassBorder(shape: shape))
+                }
+            }
+            .shadow(color: shadowColor, radius: shadowRadius, x: 0, y: shadowYOffset)
+            .scaleEffect(reduceTransparency ? 1 : 1 + scale)
+            .offset(reduceTransparency ? .zero : offset)
+            .animation(reduceTransparency ? nil : .easeOut(duration: 0.35), value: normalized.x)
+            .animation(reduceTransparency ? nil : .easeOut(duration: 0.35), value: normalized.y)
         }
     }
 

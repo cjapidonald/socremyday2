@@ -13,12 +13,19 @@ struct DeedsPage: View {
     @State private var headerFrame: CGRect = .zero
     @State private var deedEditorState: DeedEditorState?
     @State private var scorePulsePhase: CGFloat = 0
+    @State private var particlesDisabled = UIAccessibility.isReduceMotionEnabled
+    @State private var opaqueBackgrounds = UIAccessibility.isReduceTransparencyEnabled
 
     var body: some View {
         GeometryReader { proxy in
             ZStack(alignment: .top) {
-                LiquidBackgroundView()
-                    .ignoresSafeArea()
+                if opaqueBackgrounds {
+                    Color(.systemBackground)
+                        .ignoresSafeArea()
+                } else {
+                    LiquidBackgroundView()
+                        .ignoresSafeArea()
+                }
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: 28) {
@@ -32,11 +39,13 @@ struct DeedsPage: View {
                     .padding(.bottom, 80)
                 }
 
-                ForEach(floatingDeltas) { delta in
-                    FloatingDeltaView(delta: delta)
-                }
+                if !particlesDisabled {
+                    ForEach(floatingDeltas) { delta in
+                        FloatingDeltaView(delta: delta)
+                    }
 
-                ParticleOverlayView(events: particleBursts)
+                    ParticleOverlayView(events: particleBursts)
+                }
             }
             .onPreferenceChange(CardFramePreferenceKey.self) { anchors in
                 var updated: [UUID: CGRect] = [:]
@@ -85,6 +94,16 @@ struct DeedsPage: View {
             .presentationDetents([.large])
             .presentationDragIndicator(.visible)
         }
+        .modifier(MotionTransparencyEnv(
+            disableParticles: { value in
+                particlesDisabled = value
+                if value {
+                    floatingDeltas.removeAll()
+                    particleBursts.removeAll()
+                }
+            },
+            setOpaqueBackgrounds: { opaqueBackgrounds = $0 }
+        ))
     }
 
     private var headerView: some View {
@@ -170,6 +189,7 @@ struct DeedsPage: View {
     }
 
     private func enqueueFloatingDelta(points: Double, cardID: UUID, polarity: Polarity, startFrameOverride: CGRect? = nil) {
+        guard !particlesDisabled else { return }
         guard !headerFrame.isEmpty else { return }
         let headerRect = headerFrame
         guard let startRect = startFrameOverride ?? cardFrames[cardID] else { return }
@@ -177,7 +197,7 @@ struct DeedsPage: View {
         let end = CGPoint(x: headerRect.midX, y: headerRect.midY)
         let accent = viewModel.cards.first(where: { $0.id == cardID })?.accentColor ?? (polarity == .positive ? Color.green : Color.red)
         let delay = floatingDeltaQueue.nextDelay()
-        let duration = UIAccessibility.isReduceMotionEnabled ? 0.3 : FloatingDelta.defaultAnimationDuration
+        let duration = FloatingDelta.defaultAnimationDuration
         let delta = FloatingDelta(
             text: formattedPoints(points),
             color: accent.opacity(0.95),
@@ -223,7 +243,7 @@ struct DeedsPage: View {
     }
 
     private func handleSparkle(for card: DeedsPageViewModel.CardState, points: Double, startFrame: CGRect?) {
-        guard !UIAccessibility.isReduceMotionEnabled else { return }
+        guard !particlesDisabled else { return }
         let frame = startFrame ?? cardFrames[card.id] ?? .zero
         guard !frame.isEmpty else { return }
         let style: ParticleOverlayView.Event.Style = abs(points) >= 50 ? .confetti : .sparkle
@@ -404,6 +424,9 @@ private struct DeedCardTile: View {
         }
         .frame(height: 120)
         .glassBackground(cornerRadius: 20, tint: state.accentColor, warpStrength: 3.5)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(state.card.accessibilityLabel(lastAmount: state.lastAmount, unit: state.card.unitLabel))
+        .accessibilityAddTraits(.isButton)
         .onTapGesture { onTap() }
         .contextMenu {
             Button {

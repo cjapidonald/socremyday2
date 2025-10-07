@@ -103,6 +103,7 @@
                         buildPhases = (
                                 49AC91752E948B0500777C6A /* Sources */,
                                 49AC91762E948B0500777C6A /* Frameworks */,
+                                B2AA0D942F3F5B5600E8D0B3 /* GenerateAppIcons */,
                                 49AC91772E948B0500777C6A /* Resources */,
                         );
                         buildRules = (
@@ -200,6 +201,27 @@
                         runOnlyForDeploymentPostprocessing = 0;
                 };
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B2AA0D942F3F5B5600E8D0B3 /* GenerateAppIcons */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = GenerateAppIcons;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -euo pipefail\n\nAPPICON_SET=\"${SRCROOT}/scoremyday2/Resources/Assets.xcassets/AppIcon.appiconset\"\nmkdir -p \"$APPICON_SET\"\n\nSWIFT_SCRIPT=\"${SRCROOT}/Scripts/GenerateIcon.swift\"\nmkdir -p \"${SRCROOT}/Scripts\"\n\n# Write Swift script that renders a glassy emoji icon to 1024x1024 PNG (no assets).\ncat > \"$SWIFT_SCRIPT\" <<'SWIFT'\n// GenerateIcon.swift\nimport Foundation\nimport AppKit\nimport CoreGraphics\n\nlet size: CGFloat = 1024\nlet img = NSImage(size: NSSize(width: size, height: size))\nimg.lockFocus()\n\n// Background gradient (glassy)\nlet rect = NSRect(x: 0, y: 0, width: size, height: size)\nlet color1 = NSColor(calibratedRed: 0.10, green: 0.16, blue: 0.26, alpha: 1)\nlet color2 = NSColor(calibratedRed: 0.20, green: 0.34, blue: 0.56, alpha: 1)\nlet gradient = NSGradient(colors: [color1, color2])!\ngradient.draw(in: rect, angle: 90)\n\n// Subtle glass highlight\nlet highlight = NSBezierPath(ovalIn: NSRect(x: size*0.1, y: size*0.6, width: size*0.9, height: size*0.5))\nNSColor.white.withAlphaComponent(0.08).setFill()\nhighlight.fill()\n\n// Center emoji\nlet emoji = \"\u2728\u2795\u2796\"\nlet paragraph = NSMutableParagraphStyle()\nparagraph.alignment = .center\n\nlet fontSize = size * 0.42\nlet attributes: [NSAttributedString.Key: Any] = [\n    .font: NSFont.systemFont(ofSize: fontSize),\n    .paragraphStyle: paragraph,\n    .foregroundColor: NSColor.white\n]\nlet textRect = NSRect(x: 0, y: (size - fontSize)/2 - size*0.08, width: size, height: fontSize*1.2)\n(emoji as NSString).draw(in: textRect, withAttributes: attributes)\n\nimg.unlockFocus()\n\n// Save 1024 png\nlet pngPath = FileManager.default.currentDirectoryPath + \"/icon-1024.png\"\nguard let tiff = img.tiffRepresentation,\n      let rep  = NSBitmapImageRep(data: tiff),\n      let data = rep.representation(using: .png, properties: [:]) else {\n    fatalError(\"Failed to render icon\")\n}\ntry data.write(to: URL(fileURLWithPath: pngPath))\n\n// Resize helper via sips\nfunc gen(_ size: Int, _ name: String) {\n    let out = FileManager.default.currentDirectoryPath + \"/\\(name).png\"\n    let task = Process()\n    task.launchPath = \"/usr/bin/sips\"\n    task.arguments = [\"-z\", \"\\(size)\", \"\\(size)\", \"icon-1024.png\", \"--out\", out]\n    task.launch(); task.waitUntilExit()\n}\n\nlet sizes: [(Int, String)] = [\n    (20,  \"Icon-20\"),\n    (29,  \"Icon-29\"),\n    (40,  \"Icon-40\"),\n    (58,  \"Icon-58\"),\n    (60,  \"Icon-60\"),\n    (76,  \"Icon-76\"),\n    (80,  \"Icon-80\"),\n    (87,  \"Icon-87\"),\n    (120, \"Icon-120\"),\n    (152, \"Icon-152\"),\n    (167, \"Icon-167\"),\n    (180, \"Icon-180\"),\n    (1024,\"Icon-1024\")\n]\nfor (s,n) in sizes { gen(s,n) }\n\n// Write Contents.json\nlet json = \"\"\"\n{\n  \"images\": [\n    {\"size\":\"20x20\",\"idiom\":\"iphone\",\"scale\":\"2x\",\"filename\":\"Icon-40.png\"},\n    {\"size\":\"20x20\",\"idiom\":\"iphone\",\"scale\":\"3x\",\"filename\":\"Icon-60.png\"},\n    {\"size\":\"29x29\",\"idiom\":\"iphone\",\"scale\":\"2x\",\"filename\":\"Icon-58.png\"},\n    {\"size\":\"29x29\",\"idiom\":\"iphone\",\"scale\":\"3x\",\"filename\":\"Icon-87.png\"},\n    {\"size\":\"40x40\",\"idiom\":\"iphone\",\"scale\":\"2x\",\"filename\":\"Icon-80.png\"},\n    {\"size\":\"40x40\",\"idiom\":\"iphone\",\"scale\":\"3x\",\"filename\":\"Icon-120.png\"},\n    {\"size\":\"60x60\",\"idiom\":\"iphone\",\"scale\":\"2x\",\"filename\":\"Icon-120.png\"},\n    {\"size\":\"60x60\",\"idiom\":\"iphone\",\"scale\":\"3x\",\"filename\":\"Icon-180.png\"},\n    {\"size\":\"76x76\",\"idiom\":\"ipad\",\"scale\":\"1x\",\"filename\":\"Icon-76.png\"},\n    {\"size\":\"76x76\",\"idiom\":\"ipad\",\"scale\":\"2x\",\"filename\":\"Icon-152.png\"},\n    {\"size\":\"83.5x83.5\",\"idiom\":\"ipad\",\"scale\":\"2x\",\"filename\":\"Icon-167.png\"},\n    {\"size\":\"1024x1024\",\"idiom\":\"ios-marketing\",\"scale\":\"1x\",\"filename\":\"Icon-1024.png\"}\n  ],\n  \"info\": {\"version\":1,\"author\":\"xcode\"}\n}\n\"\"\"\ntry json.write(toFile: \"Contents.json\", atomically: true, encoding: .utf8)\nSWIFT\n\npushd \"$APPICON_SET\" >/dev/null\n/usr/bin/swift \"$SWIFT_SCRIPT\"\npopd >/dev/null\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
                 49AC91752E948B0500777C6A /* Sources */ = {
