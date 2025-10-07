@@ -135,7 +135,6 @@ struct SettingsPage: View {
 
             Toggle("Haptics", isOn: $prefs.hapticsOn)
             Toggle("Sounds", isOn: $prefs.soundsOn)
-            Toggle("Suggestions", isOn: $prefs.showSuggestions)
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Accent Color")

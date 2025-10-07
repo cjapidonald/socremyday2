@@ -33,10 +33,6 @@ struct DeedsPage: View {
 
                     ScrollView {
                         VStack(alignment: .leading, spacing: 28) {
-                            if appEnvironment.settings.showSuggestions, !viewModel.suggestions.isEmpty {
-                                suggestionsSection
-                            }
-
                             headerView
                                 .padding(.top, 32)
                                 .anchorPreference(key: HeaderFramePreferenceKey.self, value: .bounds) { $0 }
@@ -130,42 +126,6 @@ struct DeedsPage: View {
         ))
     }
 
-    private var suggestionsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Suggestions")
-                .font(.caption.weight(.semibold))
-                .textCase(.uppercase)
-                .foregroundStyle(.secondary)
-
-            HStack(spacing: 12) {
-                ForEach(viewModel.suggestions) { suggestion in
-                    Button {
-                        handleSuggestionTap(suggestion)
-                    } label: {
-                        HStack(spacing: 8) {
-                            Text(suggestion.card.card.emoji)
-                                .font(.system(size: 16))
-                            Text(suggestion.card.card.name)
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(.primary)
-                        }
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 10)
-                        .background(
-                            Capsule()
-                                .fill(suggestion.card.accentColor.opacity(0.22))
-                        )
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Log \(suggestion.card.card.name)")
-                }
-            }
-        }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 18)
-        .glassBackground(cornerRadius: 28, tint: Color.accentColor, warpStrength: 3)
-    }
-
     private var headerView: some View {
         HStack(alignment: .center, spacing: 16) {
             VStack(alignment: .leading, spacing: 6) {
@@ -228,20 +188,6 @@ struct DeedsPage: View {
             let entry = result.entry
             handleFeedback(for: card.card.polarity, points: entry.computedPoints, cardID: card.id, startFrameOverride: startFrame)
             handleDailyCapHint(for: card, result: result)
-        }
-    }
-
-    private func handleSuggestionTap(_ suggestion: DeedsPageViewModel.SuggestionState) {
-        let startFrame = cardFrames[suggestion.card.id]
-        if let result = viewModel.performSuggestion(suggestion) {
-            let entry = result.entry
-            handleFeedback(
-                for: suggestion.card.card.polarity,
-                points: entry.computedPoints,
-                cardID: suggestion.card.id,
-                startFrameOverride: startFrame
-            )
-            handleDailyCapHint(for: suggestion.card, result: result)
         }
     }
 

@@ -79,8 +79,7 @@ extension AppPrefs {
             dayCutoffHour: Int(managedObject.dayCutoffHour),
             hapticsOn: managedObject.hapticsOn,
             soundsOn: managedObject.soundsOn,
-            accentColorHex: managedObject.themeAccent,
-            showSuggestions: managedObject.showSuggestions
+            accentColorHex: managedObject.themeAccent
         )
     }
 }
@@ -92,7 +91,6 @@ extension AppPrefsMO {
         hapticsOn = prefs.hapticsOn
         soundsOn = prefs.soundsOn
         themeAccent = prefs.accentColorHex
-        showSuggestions = prefs.showSuggestions
     }
 }
 
