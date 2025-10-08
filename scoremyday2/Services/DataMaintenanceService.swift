@@ -8,7 +8,8 @@ struct DataMaintenanceService {
         self.context = context
     }
 
-    init(persistenceController: PersistenceController = .shared) {
+    init(persistenceController: PersistenceController? = nil) {
+        let persistenceController = persistenceController ?? .shared
         self.init(context: persistenceController.viewContext)
     }
 
