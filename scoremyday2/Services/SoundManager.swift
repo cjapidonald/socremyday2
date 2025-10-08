@@ -27,31 +27,25 @@ final class SoundManager {
 
         let format = engine.mainMixerNode.outputFormat(forBus: 0)
 
-        // Synthesize short pleasant chime and subtle low click
+        // Synthesize soft percussive clicks for positive/negative feedback
         let sr: Double = format.sampleRate > 0 ? format.sampleRate : 44_100
         let channels = max(format.channelCount, AVAudioChannelCount(1))
-        positiveBuffer = ToneSynth.makeChord(
+        positiveBuffer = ToneSynth.makeClick(
             sampleRate: sr,
             channels: channels,
-            duration: 0.25,
-            partials: [
-                .init(freq: 880,  gain: 0.9),   // A5
-                .init(freq: 1320, gain: 0.5),   // E6 (pleasant fifth)
-                .init(freq: 1760, gain: 0.25)   // A6 octave
-            ],
-            attack: 0.008, release: 0.08, curve: .exp
+            duration: 0.12,
+            baseFrequency: 1800,
+            accentFrequency: 3400,
+            gain: 0.45
         )
 
-        negativeBuffer = ToneSynth.makeSweep(
+        negativeBuffer = ToneSynth.makeClick(
             sampleRate: sr,
             channels: channels,
-            duration: 0.18,
-            startFreq: 380,
-            endFreq: 240,
-            gain: 0.9,
-            attack: 0.004,
-            release: 0.05,
-            curve: .exp
+            duration: 0.12,
+            baseFrequency: 900,
+            accentFrequency: 1500,
+            gain: 0.38
         )
 
         startEngineIfNeeded()
@@ -173,6 +167,42 @@ struct ToneSynth {
                 channelPtrs[ch][i] = sample
             }
         }
+        return buf
+    }
+
+    static func makeClick(
+        sampleRate sr: Double,
+        channels: AVAudioChannelCount,
+        duration: Double,
+        baseFrequency: Double,
+        accentFrequency: Double,
+        gain: Double
+    ) -> AVAudioPCMBuffer? {
+        guard sr > 0 else { return nil }
+
+        let channelCount = Int(channels)
+        guard channelCount > 0 else { return nil }
+
+        let nFrames = AVAudioFrameCount(duration * sr)
+        let format = AVAudioFormat(standardFormatWithSampleRate: sr, channels: channels)!
+        guard let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: nFrames) else { return nil }
+        buf.frameLength = nFrames
+        guard let basePtr = buf.floatChannelData else { return nil }
+        let channelPtrs = UnsafeBufferPointer(start: basePtr, count: channelCount)
+
+        for i in 0..<Int(nFrames) {
+            let t = Double(i) / sr
+            let fastDecay = exp(-t * 40)
+            let slowDecay = exp(-t * 28)
+            let main = sin(2.0 * .pi * baseFrequency * t) * slowDecay
+            let accent = sin(2.0 * .pi * accentFrequency * t) * fastDecay * 0.6
+            let highClick = sin(2.0 * .pi * min(baseFrequency * 6, 6000) * t) * fastDecay * 0.25
+            let sample = Float((main + accent + highClick) * gain * 0.5)
+            for ch in 0..<channelCount {
+                channelPtrs[ch][i] = sample
+            }
+        }
+
         return buf
     }
 

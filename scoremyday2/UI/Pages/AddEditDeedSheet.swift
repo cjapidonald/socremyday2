@@ -254,7 +254,8 @@ struct AddEditDeedSheet: View {
             isPrivate: isPrivate,
             showOnStats: showOnStats,
             createdAt: initialCard?.createdAt ?? Date(),
-            isArchived: initialCard?.isArchived ?? false
+            isArchived: initialCard?.isArchived ?? false,
+            sortOrder: initialCard?.sortOrder ?? -1
         )
     }
 
@@ -324,7 +325,8 @@ struct AddEditDeedSheet: View {
             isPrivate: isPrivate,
             showOnStats: showOnStats,
             createdAt: initialCard?.createdAt ?? Date(),
-            isArchived: initialCard?.isArchived ?? false
+            isArchived: initialCard?.isArchived ?? false,
+            sortOrder: initialCard?.sortOrder ?? -1
         )
 
         onSave(card)

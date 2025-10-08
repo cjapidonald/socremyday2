@@ -17,7 +17,8 @@ extension DeedCard {
             isPrivate: managedObject.isPrivate,
             showOnStats: managedObject.showOnStats,
             createdAt: managedObject.createdAt,
-            isArchived: managedObject.isArchived
+            isArchived: managedObject.isArchived,
+            sortOrder: Int(managedObject.sortOrder)
         )
     }
 }
@@ -42,6 +43,7 @@ extension DeedCardMO {
         showOnStats = card.showOnStats
         createdAt = card.createdAt
         isArchived = card.isArchived
+        sortOrder = Int32(card.sortOrder)
     }
 }
 

@@ -61,7 +61,8 @@ final class PersistenceController {
             attribute(name: "isPrivate", type: .booleanAttributeType),
             attribute(name: "showOnStats", type: .booleanAttributeType, defaultValue: true),
             attribute(name: "createdAt", type: .dateAttributeType),
-            attribute(name: "isArchived", type: .booleanAttributeType)
+            attribute(name: "isArchived", type: .booleanAttributeType),
+            attribute(name: "sortOrder", type: .integer32AttributeType, defaultValue: -1)
         ]
 
         deedEntry.properties = [

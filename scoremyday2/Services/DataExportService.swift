@@ -85,6 +85,7 @@ private extension DataExportService {
         let showOnStats: Bool
         let createdAt: Date
         let isArchived: Bool
+        let sortOrder: Int
 
         private let formatter: NumberFormatter
 
@@ -107,6 +108,7 @@ private extension DataExportService {
             showOnStats = card.showOnStats
             createdAt = card.createdAt
             isArchived = card.isArchived
+            sortOrder = card.sortOrder
             self.formatter = formatter
         }
 
@@ -125,6 +127,7 @@ private extension DataExportService {
             case showOnStats
             case createdAt
             case isArchived
+            case sortOrder
         }
 
         var csvRow: [String] {
@@ -142,7 +145,8 @@ private extension DataExportService {
                 String(isPrivate),
                 String(showOnStats),
                 ISO8601DateFormatter.exportFormatter.string(from: createdAt),
-                String(isArchived)
+                String(isArchived),
+                String(sortOrder)
             ]
         }
 
@@ -160,7 +164,8 @@ private extension DataExportService {
             "isPrivate",
             "showOnStats",
             "createdAt",
-            "isArchived"
+            "isArchived",
+            "sortOrder"
         ]
     }
 
