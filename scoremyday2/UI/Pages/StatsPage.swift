@@ -3,6 +3,17 @@ import Combine
 import CoreData
 import SwiftUI
 
+private struct HighlightedTodaySymbol: MarkSymbol {
+    func makeBody(configuration: Configuration) -> some View {
+        Circle()
+            .fill(Color.white)
+            .overlay(
+                Circle()
+                    .stroke(Color.black, lineWidth: 2)
+            )
+    }
+}
+
 struct StatsPage: View {
     @EnvironmentObject private var appEnvironment: AppEnvironment
     @StateObject private var viewModel = StatsPageViewModel()
@@ -118,20 +129,25 @@ struct StatsPage: View {
                                 x: .value("Today", todayPoint.date),
                                 y: .value("Today Value", todayPoint.value)
                             )
-                            .symbolSize(100)
-                            .foregroundStyle(Color.accentColor)
+                            .symbolSize(110)
+                            .symbol(HighlightedTodaySymbol())
                             .annotation(position: .top) {
                                 VStack(spacing: 4) {
                                     Text("TODAY")
                                         .font(.caption)
                                         .fontWeight(.semibold)
-                                        .foregroundStyle(.secondary)
+                                        .foregroundStyle(.primary)
                                     Text(todayPoint.formattedValue)
                                         .font(.headline)
                                         .fontWeight(.semibold)
+                                        .foregroundStyle(.primary)
                                 }
                                 .padding(8)
-                                .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                                .background(
+                                    RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                        .fill(Color.white)
+                                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+                                )
                             }
                         }
                     }
