@@ -169,10 +169,10 @@ struct AddEditDeedSheet: View {
                 }
             }
         }
-        .onChange(of: unitType) { newValue in
+        .onChange(of: unitType) { _, newValue in
             applyDefaults(for: newValue)
         }
-        .onChange(of: polarity) { newValue in
+        .onChange(of: polarity) { _, newValue in
             syncPointsWithPolarity()
             enforceBooleanDailyCapIfNeeded(force: unitType == .boolean && newValue == .negative)
         }

@@ -33,7 +33,7 @@ struct SettingsPage: View {
             .onAppear {
                 SoundManager.shared.preload()
             }
-            .onChange(of: prefs.dayCutoffHour) { newValue in
+            .onChange(of: prefs.dayCutoffHour) { _, newValue in
                 let newDate = SettingsPage.makeDate(forHour: newValue)
                 if Calendar.current.component(.hour, from: dayCutoffSelection) != newValue {
                     dayCutoffSelection = newDate
@@ -128,7 +128,7 @@ struct SettingsPage: View {
             )
             .datePickerStyle(.wheel)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .onChange(of: dayCutoffSelection) { newValue in
+            .onChange(of: dayCutoffSelection) { _, newValue in
                 updateDayCutoff(with: newValue)
             }
 

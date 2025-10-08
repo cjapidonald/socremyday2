@@ -7,20 +7,21 @@ final class AppEnvironment: ObservableObject {
     @Published var selectedTab: RootTab = .deeds
     @Published var dataVersion: Int = 0
     let persistenceController: PersistenceController
+    private let prefsStore: AppPrefsStore
     private var cancellables: Set<AnyCancellable> = []
 
-    init(persistenceController: PersistenceController = .shared) {
+    init(persistenceController: PersistenceController, prefsStore: AppPrefsStore) {
         self.persistenceController = persistenceController
+        self.prefsStore = prefsStore
 
-        let prefs = AppPrefsStore.shared
         var updated = settings
-        updated.dayCutoffHour = prefs.dayCutoffHour
-        updated.hapticsEnabled = prefs.hapticsOn
-        updated.soundsEnabled = prefs.soundsOn
-        updated.accentColorHex = prefs.accentColorHex
+        updated.dayCutoffHour = prefsStore.dayCutoffHour
+        updated.hapticsEnabled = prefsStore.hapticsOn
+        updated.soundsEnabled = prefsStore.soundsOn
+        updated.accentColorHex = prefsStore.accentColorHex
         settings = updated
 
-        prefs.$hapticsOn
+        prefsStore.$hapticsOn
             .removeDuplicates()
             .sink { [weak self] value in
                 guard let self else { return }
@@ -31,7 +32,7 @@ final class AppEnvironment: ObservableObject {
             }
             .store(in: &cancellables)
 
-        prefs.$soundsOn
+        prefsStore.$soundsOn
             .removeDuplicates()
             .sink { [weak self] value in
                 guard let self else { return }
@@ -42,7 +43,7 @@ final class AppEnvironment: ObservableObject {
             }
             .store(in: &cancellables)
 
-        prefs.$dayCutoffHour
+        prefsStore.$dayCutoffHour
             .removeDuplicates()
             .sink { [weak self] value in
                 guard let self else { return }
@@ -53,7 +54,7 @@ final class AppEnvironment: ObservableObject {
             }
             .store(in: &cancellables)
 
-        prefs.$accentColorHex
+        prefsStore.$accentColorHex
             .removeDuplicates(by: { $0 == $1 })
             .sink { [weak self] value in
                 guard let self else { return }
@@ -64,6 +65,10 @@ final class AppEnvironment: ObservableObject {
             }
             .store(in: &cancellables)
 
+    }
+
+    convenience init(persistenceController: PersistenceController = .shared) {
+        self.init(persistenceController: persistenceController, prefsStore: .shared)
     }
 
     func notifyDataDidChange() {

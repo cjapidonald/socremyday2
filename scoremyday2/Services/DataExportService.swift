@@ -1,6 +1,7 @@
 import CoreData
 import Foundation
 
+@MainActor
 struct DataExportService {
     private let deedsRepository: DeedsRepository
     private let entriesRepository: EntriesRepository
