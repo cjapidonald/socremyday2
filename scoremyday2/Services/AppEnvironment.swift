@@ -67,8 +67,14 @@ final class AppEnvironment: ObservableObject {
 
     }
 
-    convenience init(persistenceController: PersistenceController = .shared) {
-        self.init(persistenceController: persistenceController, prefsStore: .shared)
+    convenience init(
+        persistenceController: PersistenceController? = nil,
+        prefsStore: AppPrefsStore? = nil
+    ) {
+        self.init(
+            persistenceController: persistenceController ?? .shared,
+            prefsStore: prefsStore ?? AppPrefsStore.shared
+        )
     }
 
     func notifyDataDidChange() {
