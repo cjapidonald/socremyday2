@@ -53,6 +53,7 @@ struct InitialDataSeeder {
                 card.showOnStats = seed.showOnStats
                 card.createdAt = now.addingTimeInterval(TimeInterval(-index * 60))
                 card.isArchived = false
+                card.sortOrder = Int32(index)
                 createdCards.append(card)
             }
 

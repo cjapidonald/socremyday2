@@ -16,6 +16,11 @@ struct DeedsPage: View {
     @State private var particlesDisabled = UIAccessibility.isReduceMotionEnabled
     @State private var opaqueBackgrounds = UIAccessibility.isReduceTransparencyEnabled
     @State private var capHint: CapHintState?
+    @State private var draggingCardID: UUID?
+    @State private var pendingDragCardID: UUID?
+    @State private var dragTranslation: CGSize = .zero
+    @State private var dragStartCenter: CGPoint?
+    @State private var lastDragTargetID: UUID?
 
     private let capHintStore = DailyCapHintStore()
 
@@ -167,6 +172,7 @@ struct DeedsPage: View {
         let columns = Array(repeating: GridItem(.flexible(), spacing: 14, alignment: .top), count: 3)
         return LazyVGrid(columns: columns, spacing: 14) {
             ForEach(viewModel.cards) { card in
+                let isDragging = draggingCardID == card.id
                 DeedCardTile(
                     state: card,
                     onTap: { handleTap(on: card) },
@@ -181,6 +187,19 @@ struct DeedsPage: View {
                     onToggleArchive: { viewModel.toggleArchive(for: card.id) },
                     onSetShowOnStats: { value in viewModel.setShowOnStats(value, for: card.id) }
                 )
+                .scaleEffect(isDragging ? 1.05 : 1)
+                .offset(isDragging ? dragTranslation : .zero)
+                .zIndex(isDragging ? 1 : 0)
+                .disabled(isDragging || pendingDragCardID == card.id)
+                .simultaneousGesture(
+                    LongPressGesture(minimumDuration: 0.25)
+                        .onEnded { _ in beginDrag(for: card) }
+                )
+                .highPriorityGesture(
+                    DragGesture()
+                        .onChanged { value in updateDrag(for: card.id, translation: value.translation) }
+                        .onEnded { value in finishDrag(for: card.id, translation: value.translation) }
+                )
                 .anchorPreference(key: CardFramePreferenceKey.self, value: .bounds) { [card.id: $0] }
             }
 
@@ -188,6 +207,7 @@ struct DeedsPage: View {
                 deedEditorState = DeedEditorState(card: nil)
             }
         }
+        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: viewModel.cards)
     }
 
     private func handleTap(on card: DeedsPageViewModel.CardState) {
@@ -197,6 +217,69 @@ struct DeedsPage: View {
             handleFeedback(for: card.card.polarity, points: entry.computedPoints, cardID: card.id, startFrameOverride: startFrame)
             handleDailyCapHint(for: card, result: result)
         }
+    }
+
+    private func beginDrag(for card: DeedsPageViewModel.CardState) {
+        pendingDragCardID = card.id
+        dragTranslation = .zero
+        dragStartCenter = cardFrames[card.id].map(center(of:))
+        lastDragTargetID = nil
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+            if draggingCardID == nil, pendingDragCardID == card.id {
+                pendingDragCardID = nil
+                dragStartCenter = nil
+            }
+        }
+    }
+
+    private func updateDrag(for cardID: UUID, translation: CGSize) {
+        guard pendingDragCardID == cardID || draggingCardID == cardID else { return }
+        if draggingCardID == nil {
+            draggingCardID = cardID
+            pendingDragCardID = nil
+        }
+        guard draggingCardID == cardID else { return }
+        if dragStartCenter == nil {
+            dragStartCenter = cardFrames[cardID].map(center(of:))
+        }
+        dragTranslation = translation
+        handleDragMove(for: cardID, translation: translation)
+    }
+
+    private func finishDrag(for cardID: UUID, translation: CGSize) {
+        if draggingCardID == cardID {
+            dragTranslation = translation
+            viewModel.persistCardOrder()
+        }
+
+        pendingDragCardID = nil
+        draggingCardID = nil
+        dragStartCenter = nil
+        lastDragTargetID = nil
+
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+            dragTranslation = .zero
+        }
+    }
+
+    private func handleDragMove(for cardID: UUID, translation: CGSize) {
+        guard let start = dragStartCenter else { return }
+        let position = CGPoint(x: start.x + translation.width, y: start.y + translation.height)
+        guard let target = cardFrames.first(where: { $0.key != cardID && $0.value.contains(position) }) else {
+            lastDragTargetID = nil
+            return
+        }
+        guard lastDragTargetID != target.key else { return }
+        lastDragTargetID = target.key
+
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+            viewModel.moveCard(id: cardID, over: target.key)
+        }
+    }
+
+    private func center(of rect: CGRect) -> CGPoint {
+        CGPoint(x: rect.midX, y: rect.midY)
     }
 
     private func handleDailyCapHint(for card: DeedsPageViewModel.CardState, result: LogEntryResult) {

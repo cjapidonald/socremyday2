@@ -16,6 +16,7 @@ final class DeedCardMO: NSManagedObject {
     @NSManaged var showOnStats: Bool
     @NSManaged var createdAt: Date
     @NSManaged var isArchived: Bool
+    @NSManaged var sortOrder: Int32
     @NSManaged var entries: Set<DeedEntryMO>
 }
 

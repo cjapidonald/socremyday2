@@ -15,9 +15,33 @@ final class DeedsRepository {
             if !includeArchived {
                 request.predicate = NSPredicate(format: "isArchived == NO")
             }
-            request.sortDescriptors = [NSSortDescriptor(key: #keyPath(DeedCardMO.createdAt), ascending: true)]
+            request.sortDescriptors = [
+                NSSortDescriptor(key: #keyPath(DeedCardMO.sortOrder), ascending: true),
+                NSSortDescriptor(key: #keyPath(DeedCardMO.createdAt), ascending: true)
+            ]
             let objects = try context.fetch(request)
-            return objects.map(DeedCard.init(managedObject:))
+
+            var needsSave = false
+            for (index, object) in objects.enumerated() where object.sortOrder < 0 {
+                object.sortOrder = Int32(index)
+                needsSave = true
+            }
+
+            if needsSave, context.hasChanges {
+                try context.save()
+            }
+
+            return objects
+                .sorted { lhs, rhs in
+                    if lhs.sortOrder == rhs.sortOrder {
+                        if lhs.createdAt == rhs.createdAt {
+                            return lhs.id.uuidString < rhs.id.uuidString
+                        }
+                        return lhs.createdAt < rhs.createdAt
+                    }
+                    return lhs.sortOrder < rhs.sortOrder
+                }
+                .map(DeedCard.init(managedObject:))
         }
     }
 
@@ -29,8 +53,17 @@ final class DeedsRepository {
 
     func upsert(_ card: DeedCard) throws {
         try context.performAndWait {
-            let object = try context.fetchDeedCard(id: card.id) ?? DeedCardMO(context: context)
-            object.update(from: card)
+            var updatedCard = card
+            if let existing = try context.fetchDeedCard(id: card.id) {
+                existing.update(from: updatedCard)
+            } else {
+                let object = DeedCardMO(context: context)
+                if updatedCard.sortOrder < 0 {
+                    let next = try maxSortOrder() + 1
+                    updatedCard.sortOrder = Int(next)
+                }
+                object.update(from: updatedCard)
+            }
             if context.hasChanges {
                 try context.save()
             }
@@ -44,6 +77,29 @@ final class DeedsRepository {
             if context.hasChanges {
                 try context.save()
             }
+        }
+    }
+
+    func updateSortOrders(_ cards: [DeedCard]) throws {
+        guard !cards.isEmpty else { return }
+        try context.performAndWait {
+            for card in cards {
+                guard let object = try context.fetchDeedCard(id: card.id) else { continue }
+                object.sortOrder = Int32(card.sortOrder)
+            }
+            if context.hasChanges {
+                try context.save()
+            }
+        }
+    }
+
+    private func maxSortOrder() throws -> Int32 {
+        try context.performAndReturn {
+            let request = DeedCardMO.fetchRequest()
+            request.sortDescriptors = [NSSortDescriptor(key: #keyPath(DeedCardMO.sortOrder), ascending: false)]
+            request.fetchLimit = 1
+            let result = try context.fetch(request)
+            return result.first?.sortOrder ?? -1
         }
     }
 }

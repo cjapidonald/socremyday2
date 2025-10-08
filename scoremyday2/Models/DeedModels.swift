@@ -28,6 +28,7 @@ struct DeedCard: Identifiable, Equatable {
     var showOnStats: Bool
     var createdAt: Date
     var isArchived: Bool
+    var sortOrder: Int
 
     init(
         id: UUID = UUID(),
@@ -43,7 +44,8 @@ struct DeedCard: Identifiable, Equatable {
         isPrivate: Bool,
         showOnStats: Bool = true,
         createdAt: Date = Date(),
-        isArchived: Bool = false
+        isArchived: Bool = false,
+        sortOrder: Int = -1
     ) {
         self.id = id
         self.name = name
@@ -59,6 +61,7 @@ struct DeedCard: Identifiable, Equatable {
         self.showOnStats = showOnStats
         self.createdAt = createdAt
         self.isArchived = isArchived
+        self.sortOrder = sortOrder
     }
 }
 

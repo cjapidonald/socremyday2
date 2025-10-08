@@ -6,7 +6,7 @@ import SwiftUI
 final class DeedsPageViewModel: ObservableObject {
     nonisolated let objectWillChange = ObservableObjectPublisher()
     struct CardState: Identifiable, Equatable {
-        let card: DeedCard
+        var card: DeedCard
         var lastUsed: Date?
         var lastAmount: Double?
 
@@ -64,16 +64,13 @@ final class DeedsPageViewModel: ObservableObject {
             let sortedCards = cards
                 .filter { !$0.isArchived }
                 .sorted { lhs, rhs in
-                    let lhsDate = lastUsed[lhs.id] ?? lhs.createdAt
-                    let rhsDate = lastUsed[rhs.id] ?? rhs.createdAt
-                    return compare(
-                        lhsDate: lhsDate,
-                        rhsDate: rhsDate,
-                        lhsName: lhs.name,
-                        rhsName: rhs.name,
-                        lhsID: lhs.id,
-                        rhsID: rhs.id
-                    )
+                    if lhs.sortOrder != rhs.sortOrder {
+                        return lhs.sortOrder < rhs.sortOrder
+                    }
+                    if lhs.createdAt != rhs.createdAt {
+                        return lhs.createdAt < rhs.createdAt
+                    }
+                    return lhs.id.uuidString < rhs.id.uuidString
                 }
 
             var rememberedAmounts = lastAmount
@@ -195,7 +192,6 @@ final class DeedsPageViewModel: ObservableObject {
             cards[index].lastUsed = entry.timestamp
             cards[index].lastAmount = entry.amount
             lastAmountStore.setAmount(entry.amount, for: cardID)
-            resortCards()
             if isDate(entry.timestamp, inSameAppDayAs: Date()) {
                 todayNetScore += entry.computedPoints
                 if !sparklineValues.isEmpty {
@@ -235,18 +231,34 @@ final class DeedsPageViewModel: ObservableObject {
         }
     }
 
-    private func resortCards() {
-        cards.sort { lhs, rhs in
-            let lhsDate = lhs.lastUsed ?? lhs.card.createdAt
-            let rhsDate = rhs.lastUsed ?? rhs.card.createdAt
-            return compare(
-                lhsDate: lhsDate,
-                rhsDate: rhsDate,
-                lhsName: lhs.card.name,
-                rhsName: rhs.card.name,
-                lhsID: lhs.card.id,
-                rhsID: rhs.card.id
-            )
+    func moveCard(id: UUID, over targetID: UUID) {
+        guard let sourceIndex = cards.firstIndex(where: { $0.id == id }),
+              let targetIndex = cards.firstIndex(where: { $0.id == targetID }) else { return }
+        if sourceIndex == targetIndex { return }
+
+        var updatedCards = cards
+        let movingCard = updatedCards.remove(at: sourceIndex)
+        let destinationIndex: Int
+        if targetIndex > sourceIndex {
+            destinationIndex = min(targetIndex, updatedCards.count)
+        } else {
+            destinationIndex = max(0, targetIndex)
+        }
+        updatedCards.insert(movingCard, at: destinationIndex)
+
+        let baseOrder = cards.map { $0.card.sortOrder }.min() ?? 0
+        for index in updatedCards.indices {
+            updatedCards[index].card.sortOrder = baseOrder + index
+        }
+
+        cards = updatedCards
+    }
+
+    func persistCardOrder() {
+        do {
+            try deedsRepository.updateSortOrders(cards.map { $0.card })
+        } catch {
+            assertionFailure("Failed to persist card order: \(error)")
         }
     }
 
@@ -255,25 +267,6 @@ final class DeedsPageViewModel: ObservableObject {
         return date >= range.start && date < range.end
     }
 
-    private func compare(
-        lhsDate: Date,
-        rhsDate: Date,
-        lhsName: String,
-        rhsName: String,
-        lhsID: UUID,
-        rhsID: UUID
-    ) -> Bool {
-        if lhsDate != rhsDate {
-            return lhsDate > rhsDate
-        }
-
-        let nameComparison = lhsName.localizedCaseInsensitiveCompare(rhsName)
-        if nameComparison != .orderedSame {
-            return nameComparison == .orderedAscending
-        }
-
-        return lhsID.uuidString < rhsID.uuidString
-    }
 
 }
 
