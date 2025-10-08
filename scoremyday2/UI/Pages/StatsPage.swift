@@ -437,17 +437,16 @@ private struct ContributionChartView: View {
                                 .fill(.clear)
                                 .contentShape(Rectangle())
                                 .gesture(
-                                    DragGesture(minimumDistance: 0)
+                                    SpatialTapGesture()
                                         .onEnded { value in
                                             guard let onSelectSlice = onSelectSlice else { return }
                                             let location = CGPoint(
                                                 x: value.location.x - origin.x,
                                                 y: value.location.y - origin.y
                                             )
-                                            if let (series, _) = proxy.value(at: location, as: (String, Double).self) {
-                                                if let slice = slices.first(where: { $0.legendLabel == series }) {
-                                                    onSelectSlice(slice)
-                                                }
+                                            if let (series, _) = proxy.value(at: location, as: (String, Double).self),
+                                               let slice = slices.first(where: { $0.legendLabel == series }) {
+                                                onSelectSlice(slice)
                                             }
                                         }
                                 )
