@@ -150,7 +150,15 @@ struct DeedsPage: View {
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 18)
-        .glassBackground(cornerRadius: 32, tint: Color.accentColor, warpStrength: 3.5)
+        .background(
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .fill(Color(.secondarySystemBackground))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 28, style: .continuous)
+                .stroke(Color.primary.opacity(0.05))
+        )
+        .contentShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         .scaleEffect(1 + 0.05 * scorePulsePhase)
         .animation(.spring(response: 0.32, dampingFraction: 0.72, blendDuration: 0.2), value: scorePulsePhase)
     }
@@ -502,7 +510,15 @@ private struct DeedCardTile: View {
                 }
             }
             .frame(height: 120)
-            .glassBackground(cornerRadius: 20, tint: state.accentColor, warpStrength: 3.5)
+            .background(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(Color(.secondarySystemBackground))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .stroke(state.accentColor.opacity(0.25), lineWidth: 1)
+            )
+            .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(state.card.accessibilityLabel(lastAmount: state.lastAmount, unit: state.card.unitLabel))
         }
@@ -556,7 +572,14 @@ private struct AddCardTile: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .foregroundStyle(.primary)
             .frame(height: 120)
-            .glassBackground(cornerRadius: 20, tint: Color.accentColor, warpStrength: 3)
+            .background(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(Color(.secondarySystemBackground))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .stroke(Color.accentColor.opacity(0.3), lineWidth: 1)
+            )
             .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
         }
         .buttonStyle(.plain)
