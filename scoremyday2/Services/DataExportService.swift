@@ -6,8 +6,9 @@ struct DataExportService {
     private let deedsRepository: DeedsRepository
     private let entriesRepository: EntriesRepository
 
-    init(persistenceController: PersistenceController = .shared) {
-        let context = persistenceController.viewContext
+    init(persistenceController: PersistenceController? = nil) {
+        let controller = persistenceController ?? .shared
+        let context = controller.viewContext
         deedsRepository = DeedsRepository(context: context)
         entriesRepository = EntriesRepository(context: context)
     }
@@ -33,8 +34,9 @@ struct DataExportService {
         let cards = try deedsRepository.fetchAll(includeArchived: true)
         let entries = try entriesRepository.fetchEntries()
 
-        let cardsCSV = csvString(rows: cards.map { ExportableCard(card: $0, formatter: Self.doubleFormatter) }.map { $0.csvRow }, headers: ExportableCard.csvHeaders)
-        let entriesCSV = csvString(rows: entries.map { ExportableEntry(entry: $0, formatter: Self.doubleFormatter) }.map { $0.csvRow }, headers: ExportableEntry.csvHeaders)
+        let formatter = Self.makeDoubleFormatter()
+        let cardsCSV = csvString(rows: cards.map { ExportableCard(card: $0, formatter: formatter) }.map { $0.csvRow }, headers: ExportableCard.csvHeaders)
+        let entriesCSV = csvString(rows: entries.map { ExportableEntry(entry: $0, formatter: formatter) }.map { $0.csvRow }, headers: ExportableEntry.csvHeaders)
 
         return [
             "deed-cards.csv": Data(cardsCSV.utf8),
@@ -57,14 +59,14 @@ struct DataExportService {
         return needsEscaping ? "\"\(escaped)\"" : escaped
     }
 
-    private static let doubleFormatter: NumberFormatter = {
+    private static func makeDoubleFormatter() -> NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.maximumFractionDigits = 6
         formatter.minimumFractionDigits = 0
         formatter.usesGroupingSeparator = false
         return formatter
-    }()
+    }
 }
 
 private extension DataExportService {
@@ -86,7 +88,11 @@ private extension DataExportService {
 
         private let formatter: NumberFormatter
 
-        init(card: DeedCard, formatter: NumberFormatter = DataExportService.doubleFormatter) {
+        init(card: DeedCard) {
+            self.init(card: card, formatter: NumberFormatter())
+        }
+
+        init(card: DeedCard, formatter: NumberFormatter) {
             id = card.id
             name = card.name
             emoji = card.emoji
@@ -168,7 +174,11 @@ private extension DataExportService {
 
         private let formatter: NumberFormatter
 
-        init(entry: DeedEntry, formatter: NumberFormatter = DataExportService.doubleFormatter) {
+        init(entry: DeedEntry) {
+            self.init(entry: entry, formatter: NumberFormatter())
+        }
+
+        init(entry: DeedEntry, formatter: NumberFormatter) {
             id = entry.id
             deedId = entry.deedId
             timestamp = entry.timestamp
