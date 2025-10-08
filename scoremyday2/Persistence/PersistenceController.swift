@@ -26,9 +26,8 @@ final class PersistenceController {
 
         do {
             try ensureAppPrefsExists()
-            try InitialDataSeeder(context: container.viewContext).runIfNeeded()
         } catch {
-            assertionFailure("Failed to seed persistent store: \(error)")
+            assertionFailure("Failed to prepare persistent store: \(error)")
         }
     }
 

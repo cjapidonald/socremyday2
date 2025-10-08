@@ -15,7 +15,6 @@ struct DataMaintenanceService {
 
     func resetAllData() throws {
         try clearExistingData()
-        _ = try InitialDataSeeder(context: context).seedDefaultDeedCards()
     }
 
     private func clearExistingData() throws {
