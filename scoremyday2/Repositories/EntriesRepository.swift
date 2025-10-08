@@ -13,6 +13,7 @@ struct LogEntryResult {
     let wasCapped: Bool
 }
 
+@MainActor
 final class EntriesRepository {
     private let context: NSManagedObjectContext
 
