@@ -1,3 +1,6 @@
 # Generated app icons
 scoremyday2/Resources/Assets.xcassets/AppIcon.appiconset/*.png
 scoremyday2/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json
+
+# Ignore build artifacts
+Build/
