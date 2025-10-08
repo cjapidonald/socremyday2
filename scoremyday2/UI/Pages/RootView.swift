@@ -31,11 +31,6 @@ struct RootView: View {
                     .tag(RootTab.settings)
             }
         }
-        .glassBackground(
-            cornerRadius: 0,
-            tint: accentColor,
-            warpStrength: 2
-        )
         .accentColor(accentColor)
     }
 

@@ -80,7 +80,10 @@ struct StatsPage: View {
         }
         .padding(24)
         .frame(maxWidth: .infinity)
-        .glassBackground(cornerRadius: 20, tint: Color.accentColor, warpStrength: 2.5)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(Color(.secondarySystemBackground))
+        )
     }
 
     private var mainNetScoreSection: some View {
@@ -328,7 +331,10 @@ struct StatsPage: View {
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
-            .glassBackground(cornerRadius: 16, tint: Color.accentColor, warpStrength: 2.5)
+            .background(
+                RoundedRectangle(cornerRadius: 16, style: .continuous)
+                    .fill(Color(.secondarySystemBackground))
+            )
         }
     }
 
@@ -459,7 +465,10 @@ private struct ContributionChartView: View {
         }
         .padding()
         .frame(maxWidth: .infinity)
-        .glassBackground(cornerRadius: 16, tint: Color.accentColor, warpStrength: 2.5)
+        .background(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .fill(Color(.secondarySystemBackground))
+        )
     }
 }
 
