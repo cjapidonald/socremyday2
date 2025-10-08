@@ -25,10 +25,14 @@ final class SoundManager {
         engine.attach(player)
         engine.connect(player, to: engine.mainMixerNode, format: nil)
 
+        let format = engine.mainMixerNode.outputFormat(forBus: 0)
+
         // Synthesize short pleasant chime and subtle low click
-        let sr: Double = 44_100
+        let sr: Double = format.sampleRate > 0 ? format.sampleRate : 44_100
+        let channels = max(format.channelCount, AVAudioChannelCount(1))
         positiveBuffer = ToneSynth.makeChord(
             sampleRate: sr,
+            channels: channels,
             duration: 0.25,
             partials: [
                 .init(freq: 880,  gain: 0.9),   // A5
@@ -40,6 +44,7 @@ final class SoundManager {
 
         negativeBuffer = ToneSynth.makeSweep(
             sampleRate: sr,
+            channels: channels,
             duration: 0.18,
             startFreq: 380,
             endFreq: 240,
@@ -100,17 +105,24 @@ struct ToneSynth {
 
     static func makeChord(
         sampleRate sr: Double,
+        channels: AVAudioChannelCount,
         duration: Double,
         partials: [Partial],
         attack: Double,
         release: Double,
         curve: ToneEnvCurve
     ) -> AVAudioPCMBuffer? {
+        guard sr > 0 else { return nil }
+
+        let channelCount = Int(channels)
+        guard channelCount > 0 else { return nil }
+
         let nFrames = AVAudioFrameCount(duration * sr)
-        let format = AVAudioFormat(standardFormatWithSampleRate: sr, channels: 1)!
+        let format = AVAudioFormat(standardFormatWithSampleRate: sr, channels: channels)!
         guard let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: nFrames) else { return nil }
         buf.frameLength = nFrames
-        guard let ptr = buf.floatChannelData?.pointee else { return nil }
+        guard let basePtr = buf.floatChannelData else { return nil }
+        let channelPtrs = UnsafeBufferPointer(start: basePtr, count: channelCount)
 
         for i in 0..<Int(nFrames) {
             let t = Double(i) / sr
@@ -119,13 +131,17 @@ struct ToneSynth {
                 x += p.gain * sin(2.0 * .pi * p.freq * t)
             }
             let env = envelope(t: t, dur: duration, a: attack, r: release, curve: curve)
-            ptr[i] = Float(x * env * 0.4) // master gain
+            let sample = Float(x * env * 0.4) // master gain
+            for ch in 0..<channelCount {
+                channelPtrs[ch][i] = sample
+            }
         }
         return buf
     }
 
     static func makeSweep(
         sampleRate sr: Double,
+        channels: AVAudioChannelCount,
         duration: Double,
         startFreq: Double,
         endFreq: Double,
@@ -134,11 +150,17 @@ struct ToneSynth {
         release: Double,
         curve: ToneEnvCurve
     ) -> AVAudioPCMBuffer? {
+        guard sr > 0 else { return nil }
+
+        let channelCount = Int(channels)
+        guard channelCount > 0 else { return nil }
+
         let nFrames = AVAudioFrameCount(duration * sr)
-        let format = AVAudioFormat(standardFormatWithSampleRate: sr, channels: 1)!
+        let format = AVAudioFormat(standardFormatWithSampleRate: sr, channels: channels)!
         guard let buf = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: nFrames) else { return nil }
         buf.frameLength = nFrames
-        guard let ptr = buf.floatChannelData?.pointee else { return nil }
+        guard let basePtr = buf.floatChannelData else { return nil }
+        let channelPtrs = UnsafeBufferPointer(start: basePtr, count: channelCount)
 
         for i in 0..<Int(nFrames) {
             let t = Double(i) / sr
@@ -146,7 +168,10 @@ struct ToneSynth {
             let f = startFreq * pow(endFreq / startFreq, t / duration)
             let phase = 2.0 * .pi * f * t
             let env = envelope(t: t, dur: duration, a: attack, r: release, curve: curve)
-            ptr[i] = Float(sin(phase) * env * gain * 0.35)
+            let sample = Float(sin(phase) * env * gain * 0.35)
+            for ch in 0..<channelCount {
+                channelPtrs[ch][i] = sample
+            }
         }
         return buf
     }
