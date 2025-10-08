@@ -206,16 +206,6 @@
     "swift-dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/HapticsManager.swiftdeps",
     "swiftmodule" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/HapticsManager~partial.swiftmodule"
   },
-  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/InitialDataSeeder.swift" : {
-    "const-values" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/InitialDataSeeder.swiftconstvalues",
-    "dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/InitialDataSeeder.d",
-    "diagnostics" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/InitialDataSeeder.dia",
-    "index-unit-output-path" : "/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/InitialDataSeeder.o",
-    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/InitialDataSeeder.bc",
-    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/InitialDataSeeder.o",
-    "swift-dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/InitialDataSeeder.swiftdeps",
-    "swiftmodule" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/InitialDataSeeder~partial.swiftmodule"
-  },
   "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/SoundManager.swift" : {
     "const-values" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/SoundManager.swiftconstvalues",
     "dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/SoundManager.d",

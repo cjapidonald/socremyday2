@@ -338,6 +338,7 @@ SWIFT_CLASS_NAMED("DeedCardMO")
 @property (nonatomic) BOOL showOnStats;
 @property (nonatomic, copy) NSDate * _Nonnull createdAt;
 @property (nonatomic) BOOL isArchived;
+@property (nonatomic) int32_t sortOrder;
 @property (nonatomic, copy) NSSet<DeedEntryMO *> * _Nonnull entries;
 - (nonnull instancetype)initWithEntity:(NSEntityDescription * _Nonnull)entity insertIntoManagedObjectContext:(NSManagedObjectContext * _Nullable)context OBJC_DESIGNATED_INITIALIZER;
 @end

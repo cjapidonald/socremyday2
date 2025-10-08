@@ -7,7 +7,7 @@
         "key": "Stats",
         "location": {
           "startingColumn": 26,
-          "startingLine": 17
+          "startingLine": 33
         }
       },
       {
@@ -15,7 +15,7 @@
         "key": "Range",
         "location": {
           "startingColumn": 32,
-          "startingLine": 27
+          "startingLine": 43
         }
       },
       {
@@ -23,7 +23,7 @@
         "key": "No stats yet",
         "location": {
           "startingColumn": 18,
-          "startingLine": 61
+          "startingLine": 77
         }
       },
       {
@@ -31,7 +31,7 @@
         "key": "Log your first deed to unlock insights and charts.",
         "location": {
           "startingColumn": 18,
-          "startingLine": 65
+          "startingLine": 81
         }
       },
       {
@@ -39,7 +39,7 @@
         "key": "Log your first deed",
         "location": {
           "startingColumn": 22,
-          "startingLine": 73
+          "startingLine": 89
         }
       },
       {
@@ -47,7 +47,7 @@
         "key": "Main Net Score",
         "location": {
           "startingColumn": 18,
-          "startingLine": 91
+          "startingLine": 107
         }
       },
       {
@@ -55,7 +55,7 @@
         "key": "No score activity yet. Start logging deeds to see insights.",
         "location": {
           "startingColumn": 22,
-          "startingLine": 96
+          "startingLine": 112
         }
       },
       {
@@ -63,7 +63,7 @@
         "key": "Day",
         "location": {
           "startingColumn": 39,
-          "startingLine": 104
+          "startingLine": 120
         }
       },
       {
@@ -71,7 +71,7 @@
         "key": "Net Score",
         "location": {
           "startingColumn": 39,
-          "startingLine": 105
+          "startingLine": 121
         }
       },
       {
@@ -79,7 +79,7 @@
         "key": "Day",
         "location": {
           "startingColumn": 39,
-          "startingLine": 110
+          "startingLine": 126
         }
       },
       {
@@ -87,7 +87,7 @@
         "key": "Net Score",
         "location": {
           "startingColumn": 39,
-          "startingLine": 111
+          "startingLine": 127
         }
       },
       {
@@ -95,7 +95,7 @@
         "key": "Today",
         "location": {
           "startingColumn": 43,
-          "startingLine": 118
+          "startingLine": 134
         }
       },
       {
@@ -103,7 +103,31 @@
         "key": "Today Value",
         "location": {
           "startingColumn": 43,
-          "startingLine": 119
+          "startingLine": 135
+        }
+      },
+      {
+        "comment": "",
+        "key": "Today",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 140
+        }
+      },
+      {
+        "comment": "",
+        "key": "Today",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 161
+        }
+      },
+      {
+        "comment": "",
+        "key": "Today Value",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 162
         }
       },
       {
@@ -111,7 +135,7 @@
         "key": "TODAY",
         "location": {
           "startingColumn": 42,
-          "startingLine": 125
+          "startingLine": 143
         }
       },
       {
@@ -119,7 +143,7 @@
         "key": "Per-Card Trend",
         "location": {
           "startingColumn": 18,
-          "startingLine": 150
+          "startingLine": 182
         }
       },
       {
@@ -127,7 +151,7 @@
         "key": "Log some deeds to unlock per-card insights.",
         "location": {
           "startingColumn": 22,
-          "startingLine": 155
+          "startingLine": 187
         }
       },
       {
@@ -135,7 +159,7 @@
         "key": "No activity for %@ in this range.",
         "location": {
           "startingColumn": 26,
-          "startingLine": 261
+          "startingLine": 293
         }
       },
       {
@@ -143,7 +167,7 @@
         "key": "No top cards match \"%@\".",
         "location": {
           "startingColumn": 34,
-          "startingLine": 168
+          "startingLine": 200
         }
       },
       {
@@ -151,7 +175,7 @@
         "key": "No cards found.",
         "location": {
           "startingColumn": 38,
-          "startingLine": 207
+          "startingLine": 239
         }
       },
       {
@@ -159,7 +183,7 @@
         "key": "Day",
         "location": {
           "startingColumn": 43,
-          "startingLine": 269
+          "startingLine": 301
         }
       },
       {
@@ -167,7 +191,7 @@
         "key": "Points",
         "location": {
           "startingColumn": 43,
-          "startingLine": 270
+          "startingLine": 302
         }
       },
       {
@@ -175,7 +199,7 @@
         "key": "Day",
         "location": {
           "startingColumn": 43,
-          "startingLine": 276
+          "startingLine": 308
         }
       },
       {
@@ -183,7 +207,7 @@
         "key": "Points",
         "location": {
           "startingColumn": 43,
-          "startingLine": 277
+          "startingLine": 309
         }
       },
       {
@@ -191,7 +215,7 @@
         "key": "Search deeds",
         "location": {
           "startingColumn": 23,
-          "startingLine": 298
+          "startingLine": 330
         }
       },
       {
@@ -199,7 +223,7 @@
         "key": "Insights",
         "location": {
           "startingColumn": 18,
-          "startingLine": 313
+          "startingLine": 345
         }
       },
       {
@@ -207,7 +231,7 @@
         "key": "Keep logging to see month-over-month momentum.",
         "location": {
           "startingColumn": 27,
-          "startingLine": 322
+          "startingLine": 354
         }
       },
       {
@@ -215,7 +239,7 @@
         "key": "Contribution Breakdown",
         "location": {
           "startingColumn": 18,
-          "startingLine": 343
+          "startingLine": 375
         }
       },
       {
@@ -223,7 +247,7 @@
         "key": "No contributions in this range yet.",
         "location": {
           "startingColumn": 22,
-          "startingLine": 383
+          "startingLine": 415
         }
       },
       {
@@ -231,7 +255,7 @@
         "key": "Value",
         "location": {
           "startingColumn": 39,
-          "startingLine": 389
+          "startingLine": 421
         }
       },
       {
@@ -239,7 +263,7 @@
         "key": "Label",
         "location": {
           "startingColumn": 49,
-          "startingLine": 393
+          "startingLine": 425
         }
       },
       {
@@ -247,7 +271,7 @@
         "key": "%@ • %@",
         "location": {
           "startingColumn": 42,
-          "startingLine": 439
+          "startingLine": 471
         }
       },
       {
@@ -255,7 +279,7 @@
         "key": "%@ • %@",
         "location": {
           "startingColumn": 38,
-          "startingLine": 457
+          "startingLine": 489
         }
       }
     ]

@@ -3,14 +3,19 @@ import Combine
 import CoreData
 import SwiftUI
 
-private struct HighlightedTodaySymbol: MarkSymbol {
-    func makeBody(configuration: Configuration) -> some View {
-        Circle()
-            .fill(Color.white)
-            .overlay(
-                Circle()
-                    .stroke(Color.black, lineWidth: 2)
-            )
+private struct HighlightedTodaySymbol: ChartSymbolShape {
+    var perceptualUnitRect: CGRect
+
+    // Define a circular symbol shape. The fill/stroke colors will be provided by the mark modifiers.
+    func path(in rect: CGRect) -> Path {
+        let diameter = min(rect.width, rect.height)
+        let circleRect = CGRect(
+            x: rect.midX - diameter / 2,
+            y: rect.midY - diameter / 2,
+            width: diameter,
+            height: diameter
+        )
+        return Path(ellipseIn: circleRect)
     }
 }
 
@@ -130,8 +135,10 @@ struct StatsPage: View {
                                 y: .value("Today Value", todayPoint.value)
                             )
                             .symbolSize(110)
-                            .symbol(HighlightedTodaySymbol())
-                            .annotation(position: .top) {
+                            .symbol(Circle())
+                            .foregroundStyle(.white)
+                            .accessibilityLabel("Today")
+                            .annotation(position: .top, alignment: .center) {
                                 VStack(spacing: 4) {
                                     Text("TODAY")
                                         .font(.caption)
@@ -149,6 +156,15 @@ struct StatsPage: View {
                                         .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
                                 )
                             }
+
+                            PointMark(
+                                x: .value("Today", todayPoint.date),
+                                y: .value("Today Value", todayPoint.value)
+                            )
+                            .symbolSize(130)
+                            .symbol(Circle())
+                            .foregroundStyle(Color.black.opacity(0.85))
+                            .opacity(0.8)
                         }
                     }
                     .id(viewModel.selectedRange.rawValue)
@@ -1115,4 +1131,3 @@ enum StatsMath {
     StatsPage()
         .environmentObject(AppEnvironment())
 }
-
