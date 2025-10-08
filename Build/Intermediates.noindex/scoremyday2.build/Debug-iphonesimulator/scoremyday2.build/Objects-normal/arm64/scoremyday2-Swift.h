@@ -316,7 +316,6 @@ SWIFT_CLASS_NAMED("AppPrefsMO")
 @property (nonatomic) BOOL hapticsOn;
 @property (nonatomic) BOOL soundsOn;
 @property (nonatomic, copy) NSString * _Nullable themeAccent;
-@property (nonatomic) BOOL showSuggestions;
 - (nonnull instancetype)initWithEntity:(NSEntityDescription * _Nonnull)entity insertIntoManagedObjectContext:(NSManagedObjectContext * _Nullable)context OBJC_DESIGNATED_INITIALIZER;
 @end
 

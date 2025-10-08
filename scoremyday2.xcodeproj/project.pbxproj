@@ -28,7 +28,7 @@
 		39F5DF71227A4AFE9E8E7B3D /* AppDayRangeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDayRangeTests.swift; sourceTree = "<group>"; };
 		49AC91792E948B0500777C6A /* scoremyday2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = scoremyday2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D1E2F3A4B5C6D7E8F901234 /* PositiveBooleanDailyCapTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveBooleanDailyCapTests.swift; sourceTree = "<group>"; };
-            A7B64E0A5E394A669C6E7F2B /* DataMaintenanceServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMaintenanceServiceTests.swift; sourceTree = "<group>"; };
+		A7B64E0A5E394A669C6E7F2B /* DataMaintenanceServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataMaintenanceServiceTests.swift; sourceTree = "<group>"; };
 		F7972FDA75924E0CB688140B /* EntriesRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntriesRepositoryTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -94,7 +94,7 @@
 			children = (
 				39F5DF71227A4AFE9E8E7B3D /* AppDayRangeTests.swift */,
 				F7972FDA75924E0CB688140B /* EntriesRepositoryTests.swift */,
-                            A7B64E0A5E394A669C6E7F2B /* DataMaintenanceServiceTests.swift */,
+				A7B64E0A5E394A669C6E7F2B /* DataMaintenanceServiceTests.swift */,
 				5D1E2F3A4B5C6D7E8F901234 /* PositiveBooleanDailyCapTests.swift */,
 			);
 			path = scoremyday2Tests;
@@ -241,6 +241,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = scoremyday2/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -275,6 +276,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = scoremyday2/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

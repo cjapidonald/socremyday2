@@ -4,26 +4,10 @@
     "Localizable": [
       {
         "comment": "",
-        "key": "Suggestions",
-        "location": {
-          "startingColumn": 18,
-          "startingLine": 135
-        }
-      },
-      {
-        "comment": "",
-        "key": "Log %@",
-        "location": {
-          "startingColumn": 41,
-          "startingLine": 160
-        }
-      },
-      {
-        "comment": "",
         "key": "TODAY",
         "location": {
           "startingColumn": 22,
-          "startingLine": 172
+          "startingLine": 132
         }
       },
       {
@@ -31,7 +15,7 @@
         "key": "resets at %@",
         "location": {
           "startingColumn": 22,
-          "startingLine": 181
+          "startingLine": 141
         }
       },
       {
@@ -39,7 +23,7 @@
         "key": "Dismiss daily cap hint",
         "location": {
           "startingColumn": 33,
-          "startingLine": 417
+          "startingLine": 371
         }
       },
       {
@@ -47,7 +31,7 @@
         "key": "Quick Add",
         "location": {
           "startingColumn": 23,
-          "startingLine": 567
+          "startingLine": 530
         }
       },
       {
@@ -55,7 +39,7 @@
         "key": "Edit",
         "location": {
           "startingColumn": 23,
-          "startingLine": 573
+          "startingLine": 536
         }
       },
       {
@@ -63,7 +47,7 @@
         "key": "Unarchive",
         "location": {
           "startingColumn": 45,
-          "startingLine": 580
+          "startingLine": 543
         }
       },
       {
@@ -71,7 +55,7 @@
         "key": "Archive",
         "location": {
           "startingColumn": 59,
-          "startingLine": 580
+          "startingLine": 543
         }
       },
       {
@@ -79,15 +63,15 @@
         "key": "Show on Stats Page",
         "location": {
           "startingColumn": 23,
-          "startingLine": 592
+          "startingLine": 555
         }
       },
       {
         "comment": "",
         "key": "New",
         "location": {
-          "startingColumn": 18,
-          "startingLine": 605
+          "startingColumn": 22,
+          "startingLine": 569
         }
       },
       {
@@ -95,7 +79,7 @@
         "key": "Amount",
         "location": {
           "startingColumn": 30,
-          "startingLine": 649
+          "startingLine": 621
         }
       },
       {
@@ -103,7 +87,7 @@
         "key": "Note",
         "location": {
           "startingColumn": 30,
-          "startingLine": 680
+          "startingLine": 652
         }
       },
       {
@@ -111,7 +95,7 @@
         "key": "Points",
         "location": {
           "startingColumn": 30,
-          "startingLine": 686
+          "startingLine": 658
         }
       },
       {
@@ -119,7 +103,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 28,
-          "startingLine": 638
+          "startingLine": 610
         }
       },
       {
@@ -127,6 +111,22 @@
         "key": "Save",
         "location": {
           "startingColumn": 28,
+          "startingLine": 613
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld %@",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 637
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld min",
+        "location": {
+          "startingColumn": 26,
           "startingLine": 641
         }
       },
@@ -135,23 +135,7 @@
         "key": "%lld %@",
         "location": {
           "startingColumn": 26,
-          "startingLine": 665
-        }
-      },
-      {
-        "comment": "",
-        "key": "%lld min",
-        "location": {
-          "startingColumn": 26,
-          "startingLine": 669
-        }
-      },
-      {
-        "comment": "",
-        "key": "%lld %@",
-        "location": {
-          "startingColumn": 26,
-          "startingLine": 673
+          "startingLine": 645
         }
       },
       {
@@ -159,7 +143,7 @@
         "key": "Optional note",
         "location": {
           "startingColumn": 23,
-          "startingLine": 681
+          "startingLine": 653
         }
       },
       {
@@ -167,7 +151,7 @@
         "key": "%lld %@",
         "location": {
           "startingColumn": 18,
-          "startingLine": 741
+          "startingLine": 713
         }
       },
       {
@@ -175,7 +159,7 @@
         "key": "Rating",
         "location": {
           "startingColumn": 22,
-          "startingLine": 737
+          "startingLine": 709
         }
       },
       {
@@ -183,7 +167,7 @@
         "key": "How did it feel?",
         "location": {
           "startingColumn": 22,
-          "startingLine": 758
+          "startingLine": 730
         }
       },
       {
@@ -191,7 +175,7 @@
         "key": "Rating",
         "location": {
           "startingColumn": 24,
-          "startingLine": 761
+          "startingLine": 733
         }
       },
       {
@@ -199,7 +183,7 @@
         "key": "%lld",
         "location": {
           "startingColumn": 30,
-          "startingLine": 763
+          "startingLine": 735
         }
       },
       {
@@ -207,7 +191,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 28,
-          "startingLine": 774
+          "startingLine": 746
         }
       },
       {
@@ -215,7 +199,7 @@
         "key": "Save",
         "location": {
           "startingColumn": 28,
-          "startingLine": 777
+          "startingLine": 749
         }
       }
     ]

@@ -47,7 +47,7 @@
         "key": "Main Net Score",
         "location": {
           "startingColumn": 18,
-          "startingLine": 88
+          "startingLine": 91
         }
       },
       {
@@ -55,7 +55,7 @@
         "key": "No score activity yet. Start logging deeds to see insights.",
         "location": {
           "startingColumn": 22,
-          "startingLine": 93
+          "startingLine": 96
         }
       },
       {
@@ -63,7 +63,7 @@
         "key": "Day",
         "location": {
           "startingColumn": 39,
-          "startingLine": 101
+          "startingLine": 104
         }
       },
       {
@@ -71,7 +71,7 @@
         "key": "Net Score",
         "location": {
           "startingColumn": 39,
-          "startingLine": 102
+          "startingLine": 105
         }
       },
       {
@@ -79,7 +79,7 @@
         "key": "Day",
         "location": {
           "startingColumn": 39,
-          "startingLine": 107
+          "startingLine": 110
         }
       },
       {
@@ -87,7 +87,7 @@
         "key": "Net Score",
         "location": {
           "startingColumn": 39,
-          "startingLine": 108
+          "startingLine": 111
         }
       },
       {
@@ -95,7 +95,7 @@
         "key": "Today",
         "location": {
           "startingColumn": 43,
-          "startingLine": 115
+          "startingLine": 118
         }
       },
       {
@@ -103,7 +103,7 @@
         "key": "Today Value",
         "location": {
           "startingColumn": 43,
-          "startingLine": 116
+          "startingLine": 119
         }
       },
       {
@@ -111,7 +111,7 @@
         "key": "TODAY",
         "location": {
           "startingColumn": 42,
-          "startingLine": 122
+          "startingLine": 125
         }
       },
       {
@@ -119,7 +119,7 @@
         "key": "Per-Card Trend",
         "location": {
           "startingColumn": 18,
-          "startingLine": 146
+          "startingLine": 150
         }
       },
       {
@@ -127,7 +127,7 @@
         "key": "Log some deeds to unlock per-card insights.",
         "location": {
           "startingColumn": 22,
-          "startingLine": 151
+          "startingLine": 155
         }
       },
       {
@@ -135,7 +135,7 @@
         "key": "No activity for %@ in this range.",
         "location": {
           "startingColumn": 26,
-          "startingLine": 257
+          "startingLine": 261
         }
       },
       {
@@ -143,7 +143,7 @@
         "key": "No top cards match \"%@\".",
         "location": {
           "startingColumn": 34,
-          "startingLine": 164
+          "startingLine": 168
         }
       },
       {
@@ -151,7 +151,7 @@
         "key": "No cards found.",
         "location": {
           "startingColumn": 38,
-          "startingLine": 203
+          "startingLine": 207
         }
       },
       {
@@ -159,7 +159,7 @@
         "key": "Day",
         "location": {
           "startingColumn": 43,
-          "startingLine": 265
+          "startingLine": 269
         }
       },
       {
@@ -167,7 +167,7 @@
         "key": "Points",
         "location": {
           "startingColumn": 43,
-          "startingLine": 266
+          "startingLine": 270
         }
       },
       {
@@ -175,7 +175,7 @@
         "key": "Day",
         "location": {
           "startingColumn": 43,
-          "startingLine": 272
+          "startingLine": 276
         }
       },
       {
@@ -183,7 +183,7 @@
         "key": "Points",
         "location": {
           "startingColumn": 43,
-          "startingLine": 273
+          "startingLine": 277
         }
       },
       {
@@ -191,7 +191,7 @@
         "key": "Search deeds",
         "location": {
           "startingColumn": 23,
-          "startingLine": 293
+          "startingLine": 298
         }
       },
       {
@@ -199,7 +199,7 @@
         "key": "Insights",
         "location": {
           "startingColumn": 18,
-          "startingLine": 308
+          "startingLine": 313
         }
       },
       {
@@ -207,7 +207,7 @@
         "key": "Keep logging to see month-over-month momentum.",
         "location": {
           "startingColumn": 27,
-          "startingLine": 317
+          "startingLine": 322
         }
       },
       {
@@ -215,7 +215,7 @@
         "key": "Contribution Breakdown",
         "location": {
           "startingColumn": 18,
-          "startingLine": 335
+          "startingLine": 343
         }
       },
       {
@@ -223,7 +223,7 @@
         "key": "No contributions in this range yet.",
         "location": {
           "startingColumn": 22,
-          "startingLine": 375
+          "startingLine": 383
         }
       },
       {
@@ -231,7 +231,7 @@
         "key": "Value",
         "location": {
           "startingColumn": 39,
-          "startingLine": 381
+          "startingLine": 389
         }
       },
       {
@@ -239,7 +239,7 @@
         "key": "Label",
         "location": {
           "startingColumn": 49,
-          "startingLine": 385
+          "startingLine": 393
         }
       },
       {
@@ -247,7 +247,7 @@
         "key": "%@ • %@",
         "location": {
           "startingColumn": 42,
-          "startingLine": 431
+          "startingLine": 439
         }
       },
       {
@@ -255,7 +255,7 @@
         "key": "%@ • %@",
         "location": {
           "startingColumn": 38,
-          "startingLine": 449
+          "startingLine": 457
         }
       }
     ]
