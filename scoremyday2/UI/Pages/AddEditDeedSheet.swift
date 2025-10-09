@@ -107,7 +107,6 @@ struct AddEditDeedSheet: View {
                         Text("Negative").tag(Polarity.negative)
                     }
                     .pickerStyle(.segmented)
-                    .tint(polarity == .positive ? .red : .blue)
 
                     Picker("Unit Type", selection: $unitType) {
                         ForEach(UnitType.allCases, id: \.self) { type in
