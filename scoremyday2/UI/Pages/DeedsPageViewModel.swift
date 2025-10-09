@@ -246,12 +246,49 @@ final class DeedsPageViewModel: ObservableObject {
         }
         updatedCards.insert(movingCard, at: destinationIndex)
 
-        let baseOrder = cards.map { $0.card.sortOrder }.min() ?? 0
-        for index in updatedCards.indices {
-            updatedCards[index].card.sortOrder = baseOrder + index
-        }
+        applySortOrder(to: &updatedCards)
 
         cards = updatedCards
+    }
+
+    func moveCard(id: UUID, to destinationIndex: Int) {
+        guard let sourceIndex = cards.firstIndex(where: { $0.id == id }) else { return }
+
+        let clampedDestination = max(0, min(destinationIndex, cards.count - 1))
+        if sourceIndex == clampedDestination { return }
+
+        var updatedCards = cards
+        let movingCard = updatedCards.remove(at: sourceIndex)
+        let adjustedDestination = max(0, min(clampedDestination, updatedCards.count))
+        updatedCards.insert(movingCard, at: adjustedDestination)
+
+        applySortOrder(to: &updatedCards)
+
+        cards = updatedCards
+    }
+
+    func reorderCards(by orderedIDs: [UUID]) {
+        guard orderedIDs.count == cards.count else { return }
+
+        let lookup = Dictionary(uniqueKeysWithValues: cards.map { ($0.id, $0) })
+        var updatedCards: [CardState] = []
+        updatedCards.reserveCapacity(cards.count)
+
+        for id in orderedIDs {
+            guard let card = lookup[id] else { return }
+            updatedCards.append(card)
+        }
+
+        applySortOrder(to: &updatedCards)
+
+        cards = updatedCards
+    }
+
+    private func applySortOrder(to cards: inout [CardState]) {
+        let baseOrder = self.cards.map { $0.card.sortOrder }.min() ?? 0
+        for index in cards.indices {
+            cards[index].card.sortOrder = baseOrder + index
+        }
     }
 
     func persistCardOrder() {

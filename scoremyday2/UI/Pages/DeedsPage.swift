@@ -21,6 +21,7 @@ struct DeedsPage: View {
     @State private var dragTranslation: CGSize = .zero
     @State private var dragStartCenter: CGPoint?
     @State private var lastDragTargetID: UUID?
+    @State private var moveCardState: MoveCardSheetState?
 
     private let capHintStore = DailyCapHintStore()
 
@@ -119,6 +120,16 @@ struct DeedsPage: View {
             .presentationDetents([.large])
             .presentationDragIndicator(.visible)
         }
+        .sheet(item: $moveCardState, onDismiss: { moveCardState = nil }) { state in
+            MoveCardSheet(
+                cards: viewModel.cards,
+                focusCardID: state.cardID,
+                onSave: { orderedIDs in
+                    viewModel.reorderCards(by: orderedIDs)
+                    viewModel.persistCardOrder()
+                }
+            )
+        }
         .modifier(MotionTransparencyEnv(
             disableParticles: { value in
                 particlesDisabled = value
@@ -184,6 +195,7 @@ struct DeedsPage: View {
                         )
                     },
                     onEdit: { deedEditorState = DeedEditorState(card: card.card) },
+                    onMove: { moveCardState = MoveCardSheetState(cardID: card.id) },
                     onToggleArchive: { viewModel.toggleArchive(for: card.id) },
                     onSetShowOnStats: { value in viewModel.setShowOnStats(value, for: card.id) }
                 )
@@ -557,11 +569,86 @@ private struct DeedEditorState: Identifiable {
     let card: DeedCard?
 }
 
+private struct MoveCardSheetState: Identifiable {
+    let id = UUID()
+    let cardID: UUID
+}
+
+private struct MoveCardSheet: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var orderedCards: [DeedsPageViewModel.CardState]
+
+    let focusCardID: UUID
+    let onSave: ([UUID]) -> Void
+
+    init(cards: [DeedsPageViewModel.CardState], focusCardID: UUID, onSave: @escaping ([UUID]) -> Void) {
+        _orderedCards = State(initialValue: cards)
+        self.focusCardID = focusCardID
+        self.onSave = onSave
+    }
+
+    var body: some View {
+        NavigationStack {
+            List {
+                Section {
+                    Text("Drag the handles to arrange your cards. \(focusCardName) is highlighted so you can place it exactly where you want it.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                        .accessibilityHidden(true)
+                }
+
+                Section {
+                    ForEach(orderedCards) { card in
+                        HStack {
+                            Text(card.card.name)
+                                .font(.body)
+                            Spacer()
+                            if card.id == focusCardID {
+                                Image(systemName: "hand.point.up.left.fill")
+                                    .foregroundStyle(.accentColor)
+                                    .accessibilityLabel("Selected card")
+                            }
+                        }
+                        .padding(.vertical, 8)
+                        .accessibilityLabel(Text(card.id == focusCardID ? "\(card.card.name), current card" : card.card.name))
+                        .listRowBackground(card.id == focusCardID ? Color.accentColor.opacity(0.12) : Color(.secondarySystemGroupedBackground))
+                    }
+                    .onMove { indices, newOffset in
+                        orderedCards.move(fromOffsets: indices, toOffset: newOffset)
+                    }
+                }
+            }
+            .listStyle(.insetGrouped)
+            .environment(\.editMode, .constant(.active))
+            .navigationTitle("Move Card")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") {
+                        onSave(orderedCards.map(\.id))
+                        dismiss()
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
+        .presentationDragIndicator(.visible)
+    }
+
+    private var focusCardName: String {
+        orderedCards.first(where: { $0.id == focusCardID })?.card.name ?? "this card"
+    }
+}
+
 private struct DeedCardTile: View {
     let state: DeedsPageViewModel.CardState
     let onTap: () -> Void
     let onQuickAdd: () -> Void
     let onEdit: () -> Void
+    let onMove: () -> Void
     let onToggleArchive: () -> Void
     let onSetShowOnStats: (Bool) -> Void
 
@@ -609,6 +696,12 @@ private struct DeedCardTile: View {
                 onEdit()
             } label: {
                 Label("Edit", systemImage: "pencil")
+            }
+
+            Button {
+                onMove()
+            } label: {
+                Label("Move Card", systemImage: "arrow.up.arrow.down")
             }
 
             Button {
