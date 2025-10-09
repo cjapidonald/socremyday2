@@ -318,6 +318,7 @@ SWIFT_CLASS_NAMED("AppPrefsMO")
 @property (nonatomic) BOOL hapticsOn;
 @property (nonatomic) BOOL soundsOn;
 @property (nonatomic, copy) NSString * _Nullable themeAccent;
+@property (nonatomic, copy) NSString * _Nonnull themeStyleRaw;
 - (nonnull instancetype)initWithEntity:(NSEntityDescription * _Nonnull)entity insertIntoManagedObjectContext:(NSManagedObjectContext * _Nullable)context OBJC_DESIGNATED_INITIALIZER;
 @end
 
@@ -362,6 +363,7 @@ SWIFT_CLASS("_TtC11scoremyday221ParticleOverlayUIView")
 @interface ParticleOverlayUIView : UIView
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly) CGSize intrinsicContentSize;
 - (void)layoutSubviews;
 - (void)didMoveToWindow;
 @end

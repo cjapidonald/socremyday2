@@ -3,7 +3,18 @@
 <plist version="1.0">
 <dict>
 	<key>colors</key>
-	<array/>
+	<array>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Resources/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACColorNameAccentColor</string>
+			<key>relativePath</key>
+			<string>./AccentColor.colorset</string>
+			<key>swiftSymbol</key>
+			<string>accent</string>
+		</dict>
+	</array>
 	<key>images</key>
 	<array/>
 	<key>symbols</key>

@@ -4,9 +4,21 @@
 <dict>
 	<key>files</key>
 	<dict>
+		<key>AppIcon60x60@2x.png</key>
+		<data>
+		EkqIksEGVArC62H/jUSJKwQ//pE=
+		</data>
+		<key>AppIcon76x76@2x~ipad.png</key>
+		<data>
+		IV0AhtbJOX2rywjjay2sKvEqW5c=
+		</data>
+		<key>Assets.car</key>
+		<data>
+		txYeid29Wx4m8Qh/l8PelkRuz90=
+		</data>
 		<key>Info.plist</key>
 		<data>
-		9gVDPAi/XS/7ZYpEQfKBlykbCJA=
+		IktzNLS+66cqiVQ4aev3sWLL+GU=
 		</data>
 		<key>PkgInfo</key>
 		<data>
@@ -26,11 +38,32 @@
 		</data>
 		<key>scoremyday2.debug.dylib</key>
 		<data>
-		z2/lV03MUih4WRHlKDbrcEeLmqU=
+		iJu4iCD+mkRqe4K5R4sMc8zcgS0=
 		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
+		<key>AppIcon60x60@2x.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			I6+xtyvWP/qW2vQzVHPSFzr75UNxpffga7hSE9wi8Dc=
+			</data>
+		</dict>
+		<key>AppIcon76x76@2x~ipad.png</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			DUNu15dHQjS/rInGaoW3oRYpWFcaLPGdCGMGiYJRlV8=
+			</data>
+		</dict>
+		<key>Assets.car</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			dh4Fp6LEIl2jq/VsT70ysLOXXMmOhn6/xSuMoQhB5rg=
+			</data>
+		</dict>
 		<key>ReleaseNotes_v0.1.0_TestFlight.md</key>
 		<dict>
 			<key>hash2</key>
@@ -56,7 +89,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			h0NPinHSHOmMdQe9gFtG4hy0SuDugUp5inT3cG1nCQk=
+			dWw7GegXFSiT/dYzNi3mkmoobl7wGiOVafbtwnHm6PY=
 			</data>
 		</dict>
 	</dict>

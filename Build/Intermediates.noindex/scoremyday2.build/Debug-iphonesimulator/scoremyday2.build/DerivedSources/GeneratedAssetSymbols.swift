@@ -24,6 +24,9 @@ private let resourceBundle = Foundation.Bundle(for: ResourceBundleClass.self)
 @available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
 extension DeveloperToolsSupport.ColorResource {
 
+    /// The "AccentColor" asset catalog color resource.
+    static let accent = DeveloperToolsSupport.ColorResource(name: "AccentColor", bundle: resourceBundle)
+
 }
 
 // MARK: - Image Symbols -
@@ -40,6 +43,15 @@ extension DeveloperToolsSupport.ImageResource {
 @available(macCatalyst, unavailable)
 extension AppKit.NSColor {
 
+    /// The "AccentColor" asset catalog color.
+    static var accent: AppKit.NSColor {
+#if !targetEnvironment(macCatalyst)
+        .init(resource: .accent)
+#else
+        .init()
+#endif
+    }
+
 }
 #endif
 
@@ -48,6 +60,15 @@ extension AppKit.NSColor {
 @available(watchOS, unavailable)
 extension UIKit.UIColor {
 
+    /// The "AccentColor" asset catalog color.
+    static var accent: UIKit.UIColor {
+#if !os(watchOS)
+        .init(resource: .accent)
+#else
+        .init()
+#endif
+    }
+
 }
 #endif
 
@@ -55,10 +76,16 @@ extension UIKit.UIColor {
 @available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
 extension SwiftUI.Color {
 
+    /// The "AccentColor" asset catalog color.
+    static var accent: SwiftUI.Color { .init(.accent) }
+
 }
 
 @available(iOS 17.0, macOS 14.0, tvOS 17.0, watchOS 10.0, *)
 extension SwiftUI.ShapeStyle where Self == SwiftUI.Color {
+
+    /// The "AccentColor" asset catalog color.
+    static var accent: SwiftUI.Color { .init(.accent) }
 
 }
 #endif
@@ -106,6 +133,26 @@ extension DeveloperToolsSupport.ColorResource {
     }
 
 }
+
+#if canImport(AppKit)
+@available(macOS 14.0, *)
+@available(macCatalyst, unavailable)
+extension AppKit.NSColor {
+
+    private convenience init?(thinnableResource: DeveloperToolsSupport.ColorResource?) {
+#if !targetEnvironment(macCatalyst)
+        if let resource = thinnableResource {
+            self.init(resource: resource)
+        } else {
+            return nil
+        }
+#else
+        return nil
+#endif
+    }
+
+}
+#endif
 
 #if canImport(UIKit)
 @available(iOS 17.0, tvOS 17.0, *)

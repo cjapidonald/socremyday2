@@ -59,7 +59,12 @@ final class DeedsRepository {
             } else {
                 let object = DeedCardMO(context: context)
                 if updatedCard.sortOrder < 0 {
-                    let next = try maxSortOrder() + 1
+                    // Inline fetch of max sortOrder to avoid cross-actor call
+                    let request = DeedCardMO.fetchRequest()
+                    request.sortDescriptors = [NSSortDescriptor(key: #keyPath(DeedCardMO.sortOrder), ascending: false)]
+                    request.fetchLimit = 1
+                    let result = try context.fetch(request)
+                    let next = (result.first?.sortOrder ?? -1) + 1
                     updatedCard.sortOrder = Int(next)
                 }
                 object.update(from: updatedCard)
@@ -90,16 +95,6 @@ final class DeedsRepository {
             if context.hasChanges {
                 try context.save()
             }
-        }
-    }
-
-    private func maxSortOrder() throws -> Int32 {
-        try context.performAndReturn {
-            let request = DeedCardMO.fetchRequest()
-            request.sortDescriptors = [NSSortDescriptor(key: #keyPath(DeedCardMO.sortOrder), ascending: false)]
-            request.fetchLimit = 1
-            let result = try context.fetch(request)
-            return result.first?.sortOrder ?? -1
         }
     }
 }

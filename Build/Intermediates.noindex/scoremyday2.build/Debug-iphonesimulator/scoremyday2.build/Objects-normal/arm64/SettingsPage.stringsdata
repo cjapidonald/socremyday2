@@ -7,7 +7,7 @@
         "key": "Settings",
         "location": {
           "startingColumn": 30,
-          "startingLine": 32
+          "startingLine": 33
         }
       },
       {
@@ -15,7 +15,7 @@
         "key": "Something went wrong",
         "location": {
           "startingColumn": 20,
-          "startingLine": 42
+          "startingLine": 43
         }
       },
       {
@@ -23,7 +23,7 @@
         "key": "Reset All Data?",
         "location": {
           "startingColumn": 17,
-          "startingLine": 55
+          "startingLine": 56
         }
       },
       {
@@ -31,7 +31,7 @@
         "key": "Account",
         "location": {
           "startingColumn": 17,
-          "startingLine": 91
+          "startingLine": 92
         }
       },
       {
@@ -39,7 +39,7 @@
         "key": "Preferences",
         "location": {
           "startingColumn": 17,
-          "startingLine": 123
+          "startingLine": 124
         }
       },
       {
@@ -47,7 +47,7 @@
         "key": "Data",
         "location": {
           "startingColumn": 17,
-          "startingLine": 148
+          "startingLine": 162
         }
       },
       {
@@ -55,7 +55,7 @@
         "key": "Share",
         "location": {
           "startingColumn": 17,
-          "startingLine": 191
+          "startingLine": 205
         }
       },
       {
@@ -63,7 +63,7 @@
         "key": "About",
         "location": {
           "startingColumn": 17,
-          "startingLine": 203
+          "startingLine": 217
         }
       },
       {
@@ -71,7 +71,7 @@
         "key": "OK",
         "location": {
           "startingColumn": 24,
-          "startingLine": 50
+          "startingLine": 51
         }
       },
       {
@@ -79,7 +79,7 @@
         "key": "Reset All Data",
         "location": {
           "startingColumn": 24,
-          "startingLine": 59
+          "startingLine": 60
         }
       },
       {
@@ -87,7 +87,7 @@
         "key": "This deletes all deeds and entries. Preferences remain unchanged. This action cannot be undone.",
         "location": {
           "startingColumn": 22,
-          "startingLine": 63
+          "startingLine": 64
         }
       },
       {
@@ -95,7 +95,7 @@
         "key": "Sign Out",
         "location": {
           "startingColumn": 24,
-          "startingLine": 102
+          "startingLine": 103
         }
       },
       {
@@ -103,7 +103,7 @@
         "key": "Sync coming soon.",
         "location": {
           "startingColumn": 26,
-          "startingLine": 96
+          "startingLine": 97
         }
       },
       {
@@ -111,7 +111,7 @@
         "key": "Day Cutoff",
         "location": {
           "startingColumn": 17,
-          "startingLine": 125
+          "startingLine": 126
         }
       },
       {
@@ -119,7 +119,7 @@
         "key": "Haptics",
         "location": {
           "startingColumn": 20,
-          "startingLine": 135
+          "startingLine": 136
         }
       },
       {
@@ -127,7 +127,23 @@
         "key": "Sounds",
         "location": {
           "startingColumn": 20,
-          "startingLine": 136
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "Appearance",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 140
+        }
+      },
+      {
+        "comment": "",
+        "key": "Theme",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 142
         }
       },
       {
@@ -135,7 +151,7 @@
         "key": "Accent Color",
         "location": {
           "startingColumn": 22,
-          "startingLine": 139
+          "startingLine": 153
         }
       },
       {
@@ -143,7 +159,7 @@
         "key": "Export JSON",
         "location": {
           "startingColumn": 27,
-          "startingLine": 153
+          "startingLine": 167
         }
       },
       {
@@ -151,7 +167,7 @@
         "key": "Export CSV",
         "location": {
           "startingColumn": 27,
-          "startingLine": 166
+          "startingLine": 180
         }
       },
       {
@@ -159,7 +175,7 @@
         "key": "Reset All Data",
         "location": {
           "startingColumn": 27,
-          "startingLine": 179
+          "startingLine": 193
         }
       },
       {
@@ -167,7 +183,7 @@
         "key": "ScoreMyDay",
         "location": {
           "startingColumn": 31,
-          "startingLine": 194
+          "startingLine": 208
         }
       },
       {
@@ -175,7 +191,7 @@
         "key": "I’ve been tracking my deeds with ScoreMyDay. Check it out!",
         "location": {
           "startingColumn": 31,
-          "startingLine": 195
+          "startingLine": 209
         }
       },
       {
@@ -183,7 +199,7 @@
         "key": "Share ScoreMyDay",
         "location": {
           "startingColumn": 23,
-          "startingLine": 197
+          "startingLine": 211
         }
       },
       {
@@ -191,7 +207,7 @@
         "key": "Version",
         "location": {
           "startingColumn": 22,
-          "startingLine": 205
+          "startingLine": 219
         }
       }
     ]

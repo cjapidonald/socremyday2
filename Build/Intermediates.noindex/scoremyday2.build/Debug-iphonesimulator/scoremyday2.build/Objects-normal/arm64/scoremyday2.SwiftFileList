@@ -1,6 +1,7 @@
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Analytics/AnalyticsEngine.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Data/AppDataBootstrapper.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Models/AppSettings.swift
+/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Models/AppTheme.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Models/DeedModels.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Persistence/ManagedObjects.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Persistence/Mappings.swift
@@ -19,6 +20,7 @@
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/SoundManager.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/Color+AppAccent.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/Color+Hex.swift
+/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/Color+Theme.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/DeedIconView.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/GlassBackground.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/LiquidBackgroundView.swift
@@ -34,6 +36,7 @@
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Utilities/FloatingDeltaQueue.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Utilities/FolderExportDocument.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Utilities/Accessibility.swift
+/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Utilities/AppConfiguration.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Utilities/AppDayRange.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Utilities/DynamicTypeHelpers.swift
 /Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Utilities/MotionTransparency.swift

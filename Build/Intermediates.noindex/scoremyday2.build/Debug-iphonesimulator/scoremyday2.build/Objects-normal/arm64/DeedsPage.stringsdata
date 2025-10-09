@@ -4,18 +4,18 @@
     "Localizable": [
       {
         "comment": "",
-        "key": "TODAY",
+        "key": "LAST 7 DAYS",
         "location": {
           "startingColumn": 22,
-          "startingLine": 137
+          "startingLine": 151
         }
       },
       {
         "comment": "",
-        "key": "resets at %@",
+        "key": "checkpoint at %@",
         "location": {
           "startingColumn": 22,
-          "startingLine": 146
+          "startingLine": 160
         }
       },
       {
@@ -23,7 +23,63 @@
         "key": "Dismiss daily cap hint",
         "location": {
           "startingColumn": 33,
-          "startingLine": 454
+          "startingLine": 467
+        }
+      },
+      {
+        "comment": "",
+        "key": "Move Card",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 601
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 605
+        }
+      },
+      {
+        "comment": "",
+        "key": "Done",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 608
+        }
+      },
+      {
+        "comment": "",
+        "key": "Drag the handles to arrange your cards. %@ is highlighted so you can place it exactly where you want it.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 621
+        }
+      },
+      {
+        "comment": "",
+        "key": "Selected card",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 647
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ points",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 698
+        }
+      },
+      {
+        "comment": "",
+        "key": "Private card",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 729
         }
       },
       {
@@ -31,7 +87,7 @@
         "key": "Quick Add",
         "location": {
           "startingColumn": 23,
-          "startingLine": 613
+          "startingLine": 737
         }
       },
       {
@@ -39,7 +95,15 @@
         "key": "Edit",
         "location": {
           "startingColumn": 23,
-          "startingLine": 619
+          "startingLine": 743
+        }
+      },
+      {
+        "comment": "",
+        "key": "Move Card",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 749
         }
       },
       {
@@ -47,7 +111,7 @@
         "key": "Unarchive",
         "location": {
           "startingColumn": 45,
-          "startingLine": 626
+          "startingLine": 756
         }
       },
       {
@@ -55,7 +119,7 @@
         "key": "Archive",
         "location": {
           "startingColumn": 59,
-          "startingLine": 626
+          "startingLine": 756
         }
       },
       {
@@ -63,7 +127,7 @@
         "key": "Show on Stats Page",
         "location": {
           "startingColumn": 23,
-          "startingLine": 638
+          "startingLine": 768
         }
       },
       {
@@ -71,7 +135,7 @@
         "key": "New",
         "location": {
           "startingColumn": 22,
-          "startingLine": 652
+          "startingLine": 806
         }
       },
       {
@@ -79,7 +143,7 @@
         "key": "Amount",
         "location": {
           "startingColumn": 30,
-          "startingLine": 704
+          "startingLine": 858
         }
       },
       {
@@ -87,7 +151,7 @@
         "key": "Note",
         "location": {
           "startingColumn": 30,
-          "startingLine": 735
+          "startingLine": 882
         }
       },
       {
@@ -95,7 +159,7 @@
         "key": "Points",
         "location": {
           "startingColumn": 30,
-          "startingLine": 741
+          "startingLine": 888
         }
       },
       {
@@ -103,7 +167,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 28,
-          "startingLine": 693
+          "startingLine": 847
         }
       },
       {
@@ -111,7 +175,7 @@
         "key": "Save",
         "location": {
           "startingColumn": 28,
-          "startingLine": 696
+          "startingLine": 850
         }
       },
       {
@@ -119,7 +183,7 @@
         "key": "%lld %@",
         "location": {
           "startingColumn": 26,
-          "startingLine": 720
+          "startingLine": 867
         }
       },
       {
@@ -127,7 +191,7 @@
         "key": "%lld min",
         "location": {
           "startingColumn": 26,
-          "startingLine": 724
+          "startingLine": 871
         }
       },
       {
@@ -135,7 +199,7 @@
         "key": "%lld %@",
         "location": {
           "startingColumn": 26,
-          "startingLine": 728
+          "startingLine": 875
         }
       },
       {
@@ -143,7 +207,7 @@
         "key": "Optional note",
         "location": {
           "startingColumn": 23,
-          "startingLine": 736
+          "startingLine": 883
         }
       },
       {
@@ -151,7 +215,7 @@
         "key": "%lld %@",
         "location": {
           "startingColumn": 18,
-          "startingLine": 796
+          "startingLine": 943
         }
       },
       {
@@ -159,7 +223,7 @@
         "key": "Rating",
         "location": {
           "startingColumn": 22,
-          "startingLine": 792
+          "startingLine": 939
         }
       },
       {
@@ -167,7 +231,7 @@
         "key": "How did it feel?",
         "location": {
           "startingColumn": 22,
-          "startingLine": 813
+          "startingLine": 960
         }
       },
       {
@@ -175,7 +239,7 @@
         "key": "Rating",
         "location": {
           "startingColumn": 24,
-          "startingLine": 816
+          "startingLine": 963
         }
       },
       {
@@ -183,7 +247,7 @@
         "key": "%lld",
         "location": {
           "startingColumn": 30,
-          "startingLine": 818
+          "startingLine": 965
         }
       },
       {
@@ -191,7 +255,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 28,
-          "startingLine": 829
+          "startingLine": 976
         }
       },
       {
@@ -199,7 +263,7 @@
         "key": "Save",
         "location": {
           "startingColumn": 28,
-          "startingLine": 832
+          "startingLine": 979
         }
       }
     ]

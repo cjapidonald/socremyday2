@@ -7,7 +7,7 @@
         "key": "Edit Deed",
         "location": {
           "startingColumn": 42,
-          "startingLine": 161
+          "startingLine": 137
         }
       },
       {
@@ -15,7 +15,7 @@
         "key": "New Deed",
         "location": {
           "startingColumn": 56,
-          "startingLine": 161
+          "startingLine": 137
         }
       },
       {
@@ -23,7 +23,7 @@
         "key": "Details",
         "location": {
           "startingColumn": 25,
-          "startingLine": 73
+          "startingLine": 65
         }
       },
       {
@@ -31,7 +31,7 @@
         "key": "Category",
         "location": {
           "startingColumn": 25,
-          "startingLine": 83
+          "startingLine": 73
         }
       },
       {
@@ -39,7 +39,7 @@
         "key": "Configuration",
         "location": {
           "startingColumn": 25,
-          "startingLine": 111
+          "startingLine": 101
         }
       },
       {
@@ -47,7 +47,7 @@
         "key": "Visibility",
         "location": {
           "startingColumn": 25,
-          "startingLine": 156
+          "startingLine": 132
         }
       },
       {
@@ -55,7 +55,7 @@
         "key": "Preview",
         "location": {
           "startingColumn": 17,
-          "startingLine": 182
+          "startingLine": 157
         }
       },
       {
@@ -63,7 +63,7 @@
         "key": "Name",
         "location": {
           "startingColumn": 31,
-          "startingLine": 74
+          "startingLine": 66
         }
       },
       {
@@ -71,15 +71,7 @@
         "key": "Color",
         "location": {
           "startingColumn": 33,
-          "startingLine": 80
-        }
-      },
-      {
-        "comment": "",
-        "key": "Emoji",
-        "location": {
-          "startingColumn": 19,
-          "startingLine": 236
+          "startingLine": 70
         }
       },
       {
@@ -87,7 +79,7 @@
         "key": "Category",
         "location": {
           "startingColumn": 31,
-          "startingLine": 84
+          "startingLine": 74
         }
       },
       {
@@ -95,7 +87,7 @@
         "key": "Polarity",
         "location": {
           "startingColumn": 28,
-          "startingLine": 112
+          "startingLine": 102
         }
       },
       {
@@ -103,23 +95,15 @@
         "key": "Unit Type",
         "location": {
           "startingColumn": 28,
-          "startingLine": 118
+          "startingLine": 108
         }
       },
       {
         "comment": "",
         "key": "Unit Label",
         "location": {
-          "startingColumn": 40,
-          "startingLine": 126
-        }
-      },
-      {
-        "comment": "",
-        "key": "Unit Label",
-        "location": {
-          "startingColumn": 35,
-          "startingLine": 131
+          "startingColumn": 31,
+          "startingLine": 115
         }
       },
       {
@@ -127,23 +111,15 @@
         "key": "Points per Unit",
         "location": {
           "startingColumn": 31,
-          "startingLine": 136
-        }
-      },
-      {
-        "comment": "",
-        "key": "Daily Cap",
-        "location": {
-          "startingColumn": 40,
-          "startingLine": 146
+          "startingLine": 119
         }
       },
       {
         "comment": "",
         "key": "Daily Cap (optional)",
         "location": {
-          "startingColumn": 35,
-          "startingLine": 151
+          "startingColumn": 31,
+          "startingLine": 128
         }
       },
       {
@@ -151,7 +127,7 @@
         "key": "Positive",
         "location": {
           "startingColumn": 30,
-          "startingLine": 113
+          "startingLine": 103
         }
       },
       {
@@ -159,15 +135,7 @@
         "key": "Negative",
         "location": {
           "startingColumn": 30,
-          "startingLine": 114
-        }
-      },
-      {
-        "comment": "",
-        "key": "1 completion per day",
-        "location": {
-          "startingColumn": 34,
-          "startingLine": 147
+          "startingLine": 104
         }
       },
       {
@@ -175,7 +143,7 @@
         "key": "Show on Stats Page",
         "location": {
           "startingColumn": 28,
-          "startingLine": 157
+          "startingLine": 133
         }
       },
       {
@@ -183,7 +151,7 @@
         "key": "Private",
         "location": {
           "startingColumn": 28,
-          "startingLine": 158
+          "startingLine": 134
         }
       },
       {
@@ -191,7 +159,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 28,
-          "startingLine": 164
+          "startingLine": 140
         }
       },
       {
@@ -199,15 +167,7 @@
         "key": "Save",
         "location": {
           "startingColumn": 28,
-          "startingLine": 167
-        }
-      },
-      {
-        "comment": "",
-        "key": "Daily cap: 1 completion per day",
-        "location": {
-          "startingColumn": 26,
-          "startingLine": 212
+          "startingLine": 143
         }
       },
       {
@@ -215,7 +175,7 @@
         "key": "Daily cap: %@",
         "location": {
           "startingColumn": 26,
-          "startingLine": 216
+          "startingLine": 185
         }
       }
     ]
