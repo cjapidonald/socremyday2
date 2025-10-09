@@ -680,7 +680,7 @@ private struct DeedCardTile: View {
                 }
                 .padding(16)
             }
-            .frame(height: 120)
+            .frame(maxWidth: .infinity, minHeight: 120, maxHeight: 120, alignment: .topLeading)
             .background(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .fill(state.accentColor)
