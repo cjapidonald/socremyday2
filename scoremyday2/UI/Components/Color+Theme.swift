@@ -11,7 +11,7 @@ extension Color {
     static let themeChargeBlue = Color(hex: "#00A5EF", fallback: .blue)
 
     /// Standard background color for dark, high-contrast surfaces.
-    static let themeBackground = Color.black
+    static let themeBackground = Color(hex: "#001F3F", fallback: .blue)
 
     /// Primary foreground color when overlaying on the dark background.
     static let themePrimaryText = Color.white
