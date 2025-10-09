@@ -19,13 +19,15 @@ final class PersistenceController {
         guard let description = container.persistentStoreDescriptions.first else {
             fatalError("###\(#function): Failed to retrieve a persistent store description.")
         }
-        description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
-            containerIdentifier: "iCloud.com.example.deedstracker"
-        )
+        if let containerIdentifier = AppConfiguration.cloudKitContainerIdentifier {
+            description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
+                containerIdentifier: containerIdentifier
+            )
+        }
 
         container.loadPersistentStores { _, error in
-            if let error = error {
-                assertionFailure("Unresolved Core Data error: \(error.localizedDescription)")
+            if let error = error as NSError? {
+                assertionFailure("Unresolved Core Data error: \(error), userInfo: \(error.userInfo)")
             }
         }
         container.viewContext.automaticallyMergesChangesFromParent = true
