@@ -4,17 +4,24 @@ import Foundation
 final class PersistenceController {
     static let shared = PersistenceController()
 
-    let container: NSPersistentContainer
+    let container: NSPersistentCloudKitContainer
 
     var viewContext: NSManagedObjectContext { container.viewContext }
 
     init(inMemory: Bool = false) {
         let model = Self.buildModel()
-        container = NSPersistentContainer(name: "ScoreMyDay", managedObjectModel: model)
+        container = NSPersistentCloudKitContainer(name: "ScoreMyDay", managedObjectModel: model)
 
         if inMemory {
             container.persistentStoreDescriptions.first?.url = URL(fileURLWithPath: "/dev/null")
         }
+
+        guard let description = container.persistentStoreDescriptions.first else {
+            fatalError("###\(#function): Failed to retrieve a persistent store description.")
+        }
+        description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
+            containerIdentifier: "iCloud.com.example.deedstracker"
+        )
 
         container.loadPersistentStores { _, error in
             if let error = error {
