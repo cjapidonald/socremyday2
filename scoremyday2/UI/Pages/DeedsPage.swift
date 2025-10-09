@@ -697,57 +697,14 @@ private struct DeedCardTile: View {
         }
         .buttonStyle(.plain)
         .overlay(alignment: .topTrailing) {
-            HStack(spacing: 6) {
-                if state.card.isPrivate {
-                    Image(systemName: "eye.slash.fill")
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(state.accentColor.opacity(0.7))
-                        .padding(10)
-                        .accessibilityLabel("Private card")
-                }
-
-                Menu {
-                    Button { onQuickAdd() } label: {
-                        Label("Quick Add", systemImage: "bolt.badge.clock")
-                    }
-
-                    Button { onEdit() } label: {
-                        Label("Edit", systemImage: "pencil")
-                    }
-
-                    Button { onMove() } label: {
-                        Label("Move Card", systemImage: "arrow.up.arrow.down")
-                    }
-
-                    Button { onToggleArchive() } label: {
-                        Label(
-                            state.card.isArchived ? "Unarchive" : "Archive",
-                            systemImage: state.card.isArchived ? "tray.and.arrow.up" : "archivebox"
-                        )
-                    }
-
-                    Button {
-                        onSetShowOnStats(!state.card.showOnStats)
-                    } label: {
-                        Label(
-                            state.card.showOnStats ? "Hide from Stats Page" : "Show on Stats Page",
-                            systemImage: "chart.bar.xaxis"
-                        )
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(state.accentColor)
-                        .padding(10)
-                        .background(
-                            Circle()
-                                .fill(state.accentColor.opacity(0.15))
-                        )
-                        .accessibilityLabel("More actions")
-                }
-                .menuStyle(.borderlessButton)
+            if state.card.isPrivate {
+                Image(systemName: "eye.slash.fill")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(state.accentColor.opacity(0.7))
+                    .padding(10)
+                    .accessibilityLabel("Private card")
+                    .padding(6)
             }
-            .padding(6)
         }
         .contextMenu {
             Button {
