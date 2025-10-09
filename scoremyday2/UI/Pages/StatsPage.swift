@@ -116,6 +116,8 @@ struct StatsPage: View {
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
             } else {
+                let chartColor = Color.themeMotionGreen
+
                 StatsChartContainer(points: viewModel.dailyNetSeries) {
                     Chart(viewModel.dailyNetSeries) { point in
                         LineMark(
@@ -123,13 +125,14 @@ struct StatsPage: View {
                             y: .value("Net Score", point.value)
                         )
                         .interpolationMethod(.catmullRom)
+                        .foregroundStyle(chartColor)
 
                         AreaMark(
                             x: .value("Day", point.date),
                             y: .value("Net Score", point.value)
                         )
                         .interpolationMethod(.catmullRom)
-                        .foregroundStyle(Color.accentColor.gradient.opacity(0.25))
+                        .foregroundStyle(chartColor.gradient.opacity(0.25))
 
                         if point.date == viewModel.todayPoint?.date, let todayPoint = viewModel.todayPoint {
                             PointMark(
@@ -155,7 +158,7 @@ struct StatsPage: View {
                                 .padding(.vertical, 10)
                                 .background(
                                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                        .fill(Color.accentColor)
+                                        .fill(chartColor)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 8, style: .continuous)
                                                 .stroke(theme.primaryTextColor.opacity(0.6), lineWidth: 1)
