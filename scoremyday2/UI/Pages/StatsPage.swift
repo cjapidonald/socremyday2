@@ -143,17 +143,22 @@ struct StatsPage: View {
                                     Text("TODAY")
                                         .font(.caption)
                                         .fontWeight(.semibold)
-                                        .foregroundStyle(.primary)
+                                        .foregroundStyle(Color.white)
                                     Text(todayPoint.formattedValue)
                                         .font(.headline)
                                         .fontWeight(.semibold)
-                                        .foregroundStyle(.primary)
+                                        .foregroundStyle(Color.white)
                                 }
-                                .padding(8)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 10)
                                 .background(
                                     RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                        .fill(Color.white)
-                                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+                                        .fill(Color.accentColor)
+                                        .overlay(
+                                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                                .stroke(Color.white.opacity(0.6), lineWidth: 1)
+                                        )
+                                        .shadow(color: Color.black.opacity(0.18), radius: 6, x: 0, y: 3)
                                 )
                             }
 
