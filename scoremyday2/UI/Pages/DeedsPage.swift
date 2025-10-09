@@ -640,7 +640,7 @@ private struct MoveCardSheet: View {
             Spacer()
             if card.id == focusCardID {
                 Image(systemName: "hand.point.up.left.fill")
-                    .foregroundStyle(.accentColor)
+                    .foregroundStyle(Color.accentColor)
                     .accessibilityLabel("Selected card")
             }
         }
