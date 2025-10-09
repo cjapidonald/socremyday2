@@ -135,18 +135,22 @@ final class PersistenceController {
 
     private func ensureAppPrefsExists() throws {
         let context = viewContext
-        let request = AppPrefsMO.fetchRequest()
-        request.fetchLimit = 1
-        let count = try context.count(for: request)
-        if count == 0 {
-            let prefs = AppPrefsMO(context: context)
-            prefs.id = UUID()
-            prefs.dayCutoffHour = 4
-            prefs.hapticsOn = true
-            prefs.soundsOn = true
-            prefs.themeAccent = nil
-            prefs.themeStyleRaw = AppTheme.dark.rawValue
-            try context.save()
+        try context.performAndReturn {
+            let request = AppPrefsMO.fetchRequest()
+            request.fetchLimit = 1
+            let count = try context.count(for: request)
+            if count == 0 {
+                let prefs = AppPrefsMO(context: context)
+                prefs.id = UUID()
+                prefs.dayCutoffHour = 4
+                prefs.hapticsOn = true
+                prefs.soundsOn = true
+                prefs.themeAccent = nil
+                prefs.themeStyleRaw = AppTheme.dark.rawValue
+                if context.hasChanges {
+                    try context.save()
+                }
+            }
         }
     }
 
