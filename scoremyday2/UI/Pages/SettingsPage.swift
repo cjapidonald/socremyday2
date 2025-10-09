@@ -376,7 +376,9 @@ private struct AccentColorOption: Identifiable {
     }
 
     static let allOptions: [AccentColorOption] = [
-        AccentColorOption(id: "system", name: "System", hex: nil),
+        AccentColorOption(id: "system", name: "Motion Green (Default)", hex: nil),
+        AccentColorOption(id: "pulse", name: "Pulse Purple", hex: "#DB00FF"),
+        AccentColorOption(id: "charge", name: "Charge Blue", hex: "#00A5EF"),
         AccentColorOption(id: "sunrise", name: "Sunrise", hex: "#FF9F0A"),
         AccentColorOption(id: "ocean", name: "Ocean", hex: "#0A84FF"),
         AccentColorOption(id: "forest", name: "Forest", hex: "#34C759"),
