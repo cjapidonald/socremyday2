@@ -55,6 +55,8 @@ struct DeedsPage: View {
                         }
 
                         ParticleOverlayView(events: particleBursts)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .allowsHitTesting(false)
                     }
                 }
                 .onPreferenceChange(CardFramePreferenceKey.self) { anchors in

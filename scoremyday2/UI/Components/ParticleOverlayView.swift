@@ -49,6 +49,10 @@ final class ParticleOverlayUIView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override var intrinsicContentSize: CGSize {
+        CGSize(width: UIView.noIntrinsicMetric, height: UIView.noIntrinsicMetric)
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
         layer.frame = bounds
