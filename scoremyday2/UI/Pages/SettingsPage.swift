@@ -17,6 +17,7 @@ struct SettingsPage: View {
     @State private var isPresentingCSVExporter = false
     @State private var isPreparingJSONExport = false
     @State private var isPreparingCSVExport = false
+    @State private var isNormalizingDayCutoff = false
 
     private let shareURL = URL(string: "https://apps.apple.com/app/id0000000000")!
 
@@ -128,8 +129,8 @@ struct SettingsPage: View {
             )
             .datePickerStyle(.wheel)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .onChange(of: dayCutoffSelection) { _, newValue in
-                updateDayCutoff(with: newValue)
+            .onChange(of: dayCutoffSelection) { previous, newValue in
+                handleDayCutoffSelectionChange(previous: previous, newValue: newValue)
             }
 
             Toggle("Haptics", isOn: $prefs.hapticsOn)
@@ -258,6 +259,21 @@ struct SettingsPage: View {
         accountStore.update(identifier: identifier, email: email)
     }
 
+    private func handleDayCutoffSelectionChange(previous: Date, newValue: Date) {
+        if isNormalizingDayCutoff {
+            isNormalizingDayCutoff = false
+            return
+        }
+
+        playDayCutoffTick(previous: previous, newValue: newValue)
+        updateDayCutoff(with: newValue)
+    }
+
+    private func playDayCutoffTick(previous: Date, newValue: Date) {
+        guard previous != newValue else { return }
+        SoundManager.shared.positive()
+    }
+
     private func updateDayCutoff(with date: Date) {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone.current
@@ -268,6 +284,7 @@ struct SettingsPage: View {
 
         if calendar.component(.minute, from: date) != 0 || calendar.component(.second, from: date) != 0 {
             if let normalized = calendar.date(bySettingHour: hour, minute: 0, second: 0, of: date) {
+                isNormalizingDayCutoff = true
                 dayCutoffSelection = normalized
             }
         }
