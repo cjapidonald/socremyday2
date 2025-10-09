@@ -95,18 +95,21 @@ struct AppPrefs: Identifiable, Equatable {
     var hapticsOn: Bool
     var soundsOn: Bool
     var accentColorHex: String?
+    var theme: AppTheme
 
     init(
         id: UUID = UUID(),
         dayCutoffHour: Int = 4,
         hapticsOn: Bool = true,
         soundsOn: Bool = true,
-        accentColorHex: String? = nil
+        accentColorHex: String? = nil,
+        theme: AppTheme = .dark
     ) {
         self.id = id
         self.dayCutoffHour = dayCutoffHour
         self.hapticsOn = hapticsOn
         self.soundsOn = soundsOn
         self.accentColorHex = accentColorHex
+        self.theme = theme
     }
 }

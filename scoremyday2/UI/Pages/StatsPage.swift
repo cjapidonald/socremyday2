@@ -24,6 +24,8 @@ struct StatsPage: View {
     @StateObject private var viewModel = StatsPageViewModel()
     @State private var deedSearchText: String = ""
 
+    private var theme: AppTheme { appEnvironment.settings.theme }
+
     var body: some View {
         ZStack {
             LiquidBackgroundView()
@@ -136,18 +138,18 @@ struct StatsPage: View {
                             )
                             .symbolSize(110)
                             .symbol(Circle())
-                            .foregroundStyle(.white)
+                            .foregroundStyle(theme.primaryTextColor)
                             .accessibilityLabel("Today")
                             .annotation(position: .top, alignment: .center) {
                                 VStack(spacing: 4) {
                                     Text("TODAY")
                                         .font(.caption)
                                         .fontWeight(.semibold)
-                                        .foregroundStyle(Color.white)
+                                        .foregroundStyle(theme.primaryTextColor)
                                     Text(todayPoint.formattedValue)
                                         .font(.headline)
                                         .fontWeight(.semibold)
-                                        .foregroundStyle(Color.white)
+                                        .foregroundStyle(theme.primaryTextColor)
                                 }
                                 .padding(.horizontal, 12)
                                 .padding(.vertical, 10)
@@ -156,9 +158,9 @@ struct StatsPage: View {
                                         .fill(Color.accentColor)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 8, style: .continuous)
-                                                .stroke(Color.white.opacity(0.6), lineWidth: 1)
+                                                .stroke(theme.primaryTextColor.opacity(0.6), lineWidth: 1)
                                         )
-                                        .shadow(color: Color.black.opacity(0.18), radius: 6, x: 0, y: 3)
+                                        .shadow(color: Color.black.opacity(theme == .dark ? 0.18 : 0.12), radius: 6, x: 0, y: 3)
                                 )
                             }
 
@@ -168,7 +170,7 @@ struct StatsPage: View {
                             )
                             .symbolSize(130)
                             .symbol(Circle())
-                            .foregroundStyle(Color.black.opacity(0.85))
+                            .foregroundStyle(theme.invertedTextColor.opacity(0.85))
                             .opacity(0.8)
                         }
                     }

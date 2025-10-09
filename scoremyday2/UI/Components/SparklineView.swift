@@ -2,8 +2,8 @@ import SwiftUI
 
 struct SparklineView: View {
     var values: [Double]
-    var lineColor: Color = Color.white.opacity(0.9)
-    var fillColor: Color = Color.white.opacity(0.2)
+    var lineColor: Color = Color.primary.opacity(0.9)
+    var fillColor: Color = Color.primary.opacity(0.2)
 
     private var normalized: [Double] {
         guard let max = values.max(), let min = values.min(), max != min else {

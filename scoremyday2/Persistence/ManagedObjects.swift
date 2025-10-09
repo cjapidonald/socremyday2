@@ -50,6 +50,7 @@ final class AppPrefsMO: NSManagedObject {
     @NSManaged var hapticsOn: Bool
     @NSManaged var soundsOn: Bool
     @NSManaged var themeAccent: String?
+    @NSManaged var themeStyleRaw: String
 }
 
 extension AppPrefsMO {
