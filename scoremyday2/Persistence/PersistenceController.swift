@@ -56,20 +56,20 @@ final class PersistenceController {
         appPrefs.managedObjectClassName = NSStringFromClass(AppPrefsMO.self)
 
         deedCard.properties = [
-            attribute(name: "id", type: .UUIDAttributeType),
-            attribute(name: "name", type: .stringAttributeType),
-            attribute(name: "emoji", type: .stringAttributeType),
-            attribute(name: "colorHex", type: .stringAttributeType),
-            attribute(name: "category", type: .stringAttributeType),
-            attribute(name: "polarityRaw", type: .integer16AttributeType),
-            attribute(name: "unitTypeRaw", type: .integer16AttributeType),
-            attribute(name: "unitLabel", type: .stringAttributeType),
+            attribute(name: "id", type: .UUIDAttributeType, defaultValue: UUID()),
+            attribute(name: "name", type: .stringAttributeType, defaultValue: ""),
+            attribute(name: "emoji", type: .stringAttributeType, defaultValue: ""),
+            attribute(name: "colorHex", type: .stringAttributeType, defaultValue: ""),
+            attribute(name: "category", type: .stringAttributeType, defaultValue: ""),
+            attribute(name: "polarityRaw", type: .integer16AttributeType, defaultValue: 0),
+            attribute(name: "unitTypeRaw", type: .integer16AttributeType, defaultValue: 0),
+            attribute(name: "unitLabel", type: .stringAttributeType, defaultValue: ""),
             attribute(name: "pointsPerUnit", type: .doubleAttributeType),
-            attribute(name: "dailyCap", type: .doubleAttributeType, optional: true, allowsExternalBinaryData: false),
-            attribute(name: "isPrivate", type: .booleanAttributeType),
+            attribute(name: "dailyCap", type: .doubleAttributeType, optional: true),
+            attribute(name: "isPrivate", type: .booleanAttributeType, defaultValue: false),
             attribute(name: "showOnStats", type: .booleanAttributeType, defaultValue: true),
-            attribute(name: "createdAt", type: .dateAttributeType),
-            attribute(name: "isArchived", type: .booleanAttributeType),
+            attribute(name: "createdAt", type: .dateAttributeType, defaultValue: Date()),
+            attribute(name: "isArchived", type: .booleanAttributeType, defaultValue: false),
             attribute(name: "sortOrder", type: .integer32AttributeType, defaultValue: -1)
         ]
 
@@ -83,12 +83,12 @@ final class PersistenceController {
         ]
 
         appPrefs.properties = [
-            attribute(name: "id", type: .UUIDAttributeType),
-            attribute(name: "dayCutoffHour", type: .integer16AttributeType),
-            attribute(name: "hapticsOn", type: .booleanAttributeType),
-            attribute(name: "soundsOn", type: .booleanAttributeType),
+            attribute(name: "id", type: .UUIDAttributeType, defaultValue: UUID()),
+            attribute(name: "dayCutoffHour", type: .integer16AttributeType, defaultValue: 4),
+            attribute(name: "hapticsOn", type: .booleanAttributeType, defaultValue: true),
+            attribute(name: "soundsOn", type: .booleanAttributeType, defaultValue: true),
             attribute(name: "themeAccent", type: .stringAttributeType, optional: true),
-            attribute(name: "themeStyleRaw", type: .stringAttributeType, defaultValue: AppTheme.dark.rawValue)
+            attribute(name: "themeStyleRaw", type: .stringAttributeType, defaultValue: "dark")
         ]
 
         let cardToEntries = NSRelationshipDescription()
