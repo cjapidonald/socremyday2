@@ -187,46 +187,40 @@ struct AddEditDeedSheet: View {
                         .foregroundStyle(.secondary)
                 }
 
-                HStack(alignment: .top) {
-                    DeedIconView(value: previewModel.emoji, fontSize: 36)
-                    Spacer()
-                    if previewModel.isPrivate {
-                        Image(systemName: "eye.slash.fill")
-                            .font(.system(size: 14, weight: .bold))
-                            .foregroundStyle(.secondary)
-                    }
+                if previewModel.isPrivate {
+                    Image(systemName: "eye.slash.fill")
+                        .font(.system(size: 14, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.7))
+                        .frame(maxWidth: .infinity, alignment: .topTrailing)
                 }
 
                 Text(previewModel.name.isEmpty ? "Deed Name" : previewModel.name)
                     .font(.headline)
+                    .foregroundStyle(.white)
 
                 Text(previewModel.unitLabel.isEmpty ? Self.placeholderLabel(for: previewModel.unitType) : previewModel.unitLabel)
                     .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.white.opacity(0.7))
 
                 Text(pointsSummary)
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(previewModel.polarity == .positive ? Color.green : Color.red)
+                    .foregroundStyle(.white)
 
                 if previewModel.unitType == .boolean && previewModel.polarity == .positive {
                     Text("Daily cap: 1 completion per day")
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.7))
                 } else if let cap = previewModel.dailyCap {
                     Text("Daily cap: \(Self.format(cap))")
                         .font(.caption2)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.7))
                 }
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(.ultraThinMaterial)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(color.opacity(0.6), lineWidth: 1.5)
+                    .fill(color)
             )
         }
     }

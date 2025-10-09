@@ -571,23 +571,21 @@ private struct DeedCardTile: View {
         Button(action: onTap) {
             ZStack(alignment: .topLeading) {
                 VStack(alignment: .leading, spacing: 10) {
-                    DeedIconView(value: state.card.emoji, tint: state.accentColor)
-
                     Text(state.card.name)
                         .font(.headline)
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(.white)
                         .lineLimit(1)
 
                     Text(state.card.unitLabel)
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.7))
                 }
                 .padding(16)
 
                 if state.card.isPrivate {
                     Image(systemName: "eye.slash.fill")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.white.opacity(0.7))
                         .padding(10)
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
                 }
@@ -595,11 +593,7 @@ private struct DeedCardTile: View {
             .frame(height: 120)
             .background(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(Color(.secondarySystemBackground))
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(state.accentColor.opacity(0.25), lineWidth: 1)
+                    .fill(state.accentColor)
             )
             .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .accessibilityElement(children: .ignore)
