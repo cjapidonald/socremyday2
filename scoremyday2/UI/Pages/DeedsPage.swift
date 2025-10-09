@@ -117,6 +117,7 @@ struct DeedsPage: View {
                 categorySuggestions: viewModel.categorySuggestions,
                 onSave: { card in
                     viewModel.upsert(card: card)
+                    appEnvironment.notifyDataDidChange()
                 }
             )
             .presentationDetents([.large])
