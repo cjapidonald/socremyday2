@@ -213,7 +213,6 @@ struct StatsPage: View {
                                             viewModel.selectedDeedId = card.id
                                         } label: {
                                             HStack(spacing: 6) {
-                                                Text(card.emoji)
                                                 Text(card.name)
                                                     .lineLimit(1)
                                             }
@@ -252,7 +251,6 @@ struct StatsPage: View {
                                             deedSearchText = ""
                                         } label: {
                                             HStack(spacing: 12) {
-                                                Text(result.emoji)
                                                 VStack(alignment: .leading, spacing: 2) {
                                                     Text(result.name)
                                                         .font(.subheadline)
@@ -428,10 +426,6 @@ private struct ContributionChartView: View {
                     )
                     .cornerRadius(4)
                     .foregroundStyle(by: .value("Label", slice.legendLabel))
-                    .annotation(position: .overlay) {
-                        Text(slice.emoji)
-                            .font(.caption)
-                    }
                     .opacity(slice.deedId == nil || slice.deedId == selectedDeedId || selectedDeedId == nil ? 1 : 0.35)
                 }
                 .chartOverlay { proxy in
@@ -468,7 +462,6 @@ private struct ContributionChartView: View {
                                 onSelectSlice(slice)
                             } label: {
                                 HStack {
-                                    Text(slice.emoji)
                                     Text(slice.legendLabel)
                                         .fontWeight(.semibold)
                                     Spacer()
@@ -486,7 +479,6 @@ private struct ContributionChartView: View {
                             .buttonStyle(.plain)
                         } else {
                             HStack {
-                                Text(slice.emoji)
                                 Text(slice.legendLabel)
                                     .fontWeight(.semibold)
                                 Spacer()
