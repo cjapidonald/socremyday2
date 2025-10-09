@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RootView: View {
     @EnvironmentObject private var appEnvironment: AppEnvironment
+    private let tabOrder: [RootTab] = [.deeds, .stats, .settings]
 
     var body: some View {
         ZStack {
@@ -30,6 +31,12 @@ struct RootView: View {
                     }
                     .tag(RootTab.settings)
             }
+            .gesture(
+                DragGesture()
+                    .onEnded { value in
+                        handleSwipe(value)
+                    }
+            )
         }
         .accentColor(accentColor)
         .preferredColorScheme(.dark)
@@ -41,6 +48,26 @@ struct RootView: View {
         } else {
             return .accentColor
         }
+    }
+
+    private func handleSwipe(_ value: DragGesture.Value) {
+        let horizontalTranslation = value.translation.width
+        let threshold: CGFloat = 50
+
+        if horizontalTranslation < -threshold {
+            moveToAdjacentTab(direction: 1)
+        } else if horizontalTranslation > threshold {
+            moveToAdjacentTab(direction: -1)
+        }
+    }
+
+    private func moveToAdjacentTab(direction: Int) {
+        guard let currentIndex = tabOrder.firstIndex(of: appEnvironment.selectedTab) else { return }
+
+        let targetIndex = currentIndex + direction
+        guard tabOrder.indices.contains(targetIndex) else { return }
+
+        appEnvironment.selectedTab = tabOrder[targetIndex]
     }
 }
 
