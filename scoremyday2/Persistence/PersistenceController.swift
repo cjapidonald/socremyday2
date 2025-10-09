@@ -23,10 +23,22 @@ final class PersistenceController {
             containerIdentifier: "iCloud.com.example.deedstracker"
         )
 
-        container.loadPersistentStores { _, error in
-            if let error = error {
-                assertionFailure("Unresolved Core Data error: \(error.localizedDescription)")
+        var loadError = Self.loadPersistentStoresSynchronously(for: container)
+
+        if
+            let nsError = loadError as NSError?,
+            Self.shouldFallbackToLocalStore(for: nsError)
+        {
+            #if DEBUG
+            print("⚠️ CloudKit store unavailable (\(nsError)). Falling back to local store.")
+            #endif
+            container.persistentStoreDescriptions.forEach { $0.cloudKitContainerOptions = nil }
+            loadError = Self.loadPersistentStoresSynchronously(for: container)
+            if let fallbackError = loadError {
+                assertionFailure("Unresolved Core Data error after CloudKit fallback: \(fallbackError.localizedDescription)")
             }
+        } else if let loadError {
+            assertionFailure("Unresolved Core Data error: \(loadError.localizedDescription)")
         }
         container.viewContext.automaticallyMergesChangesFromParent = true
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
@@ -154,4 +166,22 @@ final class PersistenceController {
         }
     }
 
+}
+
+private extension PersistenceController {
+
+    static func loadPersistentStoresSynchronously(for container: NSPersistentContainer) -> Error? {
+        let semaphore = DispatchSemaphore(value: 0)
+        var loadError: Error?
+        container.loadPersistentStores { _, error in
+            loadError = error
+            semaphore.signal()
+        }
+        semaphore.wait()
+        return loadError
+    }
+
+    static func shouldFallbackToLocalStore(for error: NSError) -> Bool {
+        error.domain == NSCocoaErrorDomain && error.code == 134_060
+    }
 }
