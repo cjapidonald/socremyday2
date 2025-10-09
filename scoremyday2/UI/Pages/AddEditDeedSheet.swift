@@ -18,7 +18,6 @@ struct AddEditDeedSheet: View {
     @State private var dailyCapText: String
     @State private var isPrivate: Bool
     @State private var showOnStats: Bool
-    @State private var showingSymbolPicker = false
 
     private let isEditing: Bool
 
@@ -33,7 +32,7 @@ struct AddEditDeedSheet: View {
         let defaults = Self.defaults(for: defaultUnitType)
 
         _name = State(initialValue: initialCard?.name ?? "")
-        _emoji = State(initialValue: initialCard?.emoji ?? "✨")
+        _emoji = State(initialValue: initialCard?.emoji ?? "")
         _color = State(initialValue: Color(hex: initialCard?.colorHex ?? "#FF9F0A", fallback: .accentColor))
         _category = State(initialValue: initialCard?.category ?? "")
         _polarity = State(initialValue: defaultPolarity)
@@ -67,8 +66,6 @@ struct AddEditDeedSheet: View {
                     TextField("Name", text: $name)
                         .textInputAutocapitalization(.words)
                         .disableAutocorrection(true)
-
-                    emojiRow
 
                     ColorPicker("Color", selection: $color, supportsOpacity: false)
                 }
@@ -199,13 +196,6 @@ struct AddEditDeedSheet: View {
         }
     }
 
-    private var emojiRow: some View {
-        // The picker button has been removed. Users can still type emojis.
-        TextField("Emoji", text: $emoji)
-            .disableAutocorrection(true)
-            .textInputAutocapitalization(.never)
-    }
-
     private var previewModel: DeedCard {
         let hex = color.toHex(includeAlpha: false) ?? initialCard?.colorHex ?? "#FF9F0A"
         return DeedCard(
@@ -274,12 +264,10 @@ struct AddEditDeedSheet: View {
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedCategory = category.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedLabel = unitLabel.trimmingCharacters(in: .whitespacesAndNewlines)
-        let selectedEmoji = emoji.trimmingCharacters(in: .whitespacesAndNewlines)
-
         let card = DeedCard(
             id: initialCard?.id ?? UUID(),
             name: trimmedName,
-            emoji: selectedEmoji.isEmpty ? "✨" : selectedEmoji,
+            emoji: emoji.trimmingCharacters(in: .whitespacesAndNewlines),
             colorHex: colorHex,
             category: trimmedCategory,
             polarity: polarity,
