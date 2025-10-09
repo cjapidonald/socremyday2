@@ -154,7 +154,7 @@ struct DeedsPage: View {
                     .font(.system(size: 34, weight: .bold, design: .rounded))
                     .foregroundStyle(.primary)
 
-                Text("daily reset at \(formattedCutoffHour())")
+                Text("checkpoint at \(formattedCutoffHour())")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
