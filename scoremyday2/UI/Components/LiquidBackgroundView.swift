@@ -1,8 +1,11 @@
 import SwiftUI
 
 struct LiquidBackgroundView: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
-        Color.black
+        let base = colorScheme == .dark ? Color.black : Color.white
+        base
             .ignoresSafeArea()
     }
 }

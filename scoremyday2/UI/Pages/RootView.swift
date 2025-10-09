@@ -39,7 +39,7 @@ struct RootView: View {
             )
         }
         .accentColor(accentColor)
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(appEnvironment.settings.theme.preferredColorScheme)
     }
 
     private var accentColor: Color {

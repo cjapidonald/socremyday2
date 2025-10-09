@@ -19,6 +19,7 @@ final class AppEnvironment: ObservableObject {
         updated.hapticsEnabled = prefsStore.hapticsOn
         updated.soundsEnabled = prefsStore.soundsOn
         updated.accentColorHex = prefsStore.accentColorHex
+        updated.theme = prefsStore.theme
         settings = updated
 
         prefsStore.$hapticsOn
@@ -61,6 +62,17 @@ final class AppEnvironment: ObservableObject {
                 guard self.settings.accentColorHex != value else { return }
                 var current = self.settings
                 current.accentColorHex = value
+                self.settings = current
+            }
+            .store(in: &cancellables)
+
+        prefsStore.$theme
+            .removeDuplicates()
+            .sink { [weak self] value in
+                guard let self else { return }
+                guard self.settings.theme != value else { return }
+                var current = self.settings
+                current.theme = value
                 self.settings = current
             }
             .store(in: &cancellables)

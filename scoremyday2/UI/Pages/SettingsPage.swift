@@ -137,6 +137,19 @@ struct SettingsPage: View {
             Toggle("Sounds", isOn: $prefs.soundsOn)
 
             VStack(alignment: .leading, spacing: 8) {
+                Text("Appearance")
+                    .font(.subheadline.weight(.semibold))
+                Picker("Theme", selection: $prefs.theme) {
+                    ForEach(AppTheme.allCases) { theme in
+                        Text(theme.displayName)
+                            .tag(theme)
+                    }
+                }
+                .pickerStyle(.segmented)
+            }
+            .padding(.top, 4)
+
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Accent Color")
                     .font(.subheadline.weight(.semibold))
                 accentPalette
@@ -213,6 +226,7 @@ struct SettingsPage: View {
 
     private var accentPalette: some View {
         let columns = [GridItem(.adaptive(minimum: 48, maximum: 64), spacing: 12)]
+        let theme = appEnvironment.settings.theme
         return LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
             ForEach(AccentColorOption.allOptions) { option in
                 Button {
@@ -228,14 +242,14 @@ struct SettingsPage: View {
                         .overlay {
                             if option.isSystem {
                                 Image(systemName: "sparkles")
-                                    .foregroundStyle(.white.opacity(0.9))
+                                    .foregroundStyle(theme.primaryTextColor.opacity(0.9))
                             }
                         }
                         .overlay(alignment: .bottomTrailing) {
                             if option.isSelected(with: prefs.accentColorHex) {
                                 Image(systemName: "checkmark.circle.fill")
                                     .font(.system(size: 18, weight: .bold))
-                                    .foregroundStyle(Color.white)
+                                    .foregroundStyle(theme.primaryTextColor)
                                     .shadow(radius: 1)
                                     .offset(x: -2, y: -2)
                             }
@@ -324,7 +338,8 @@ struct SettingsPage: View {
             dayCutoffHour: prefs.dayCutoffHour,
             hapticsOn: prefs.hapticsOn,
             soundsOn: prefs.soundsOn,
-            accentColorHex: prefs.accentColorHex
+            accentColorHex: prefs.accentColorHex,
+            theme: prefs.theme
         )
         isResettingData = true
 
@@ -344,6 +359,9 @@ struct SettingsPage: View {
                     }
                     if prefs.accentColorHex != storedPrefs.accentColorHex {
                         prefs.accentColorHex = storedPrefs.accentColorHex
+                    }
+                    if prefs.theme != storedPrefs.theme {
+                        prefs.theme = storedPrefs.theme
                     }
                     dayCutoffSelection = SettingsPage.makeDate(forHour: storedPrefs.dayCutoffHour)
                     isResettingData = false
