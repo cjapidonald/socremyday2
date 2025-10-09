@@ -669,15 +669,40 @@ private struct DeedCardTile: View {
     var body: some View {
         Button(action: onTap) {
             ZStack(alignment: .topLeading) {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text(state.card.name)
-                        .font(.headline)
-                        .foregroundStyle(state.accentColor)
-                        .lineLimit(1)
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack(alignment: .center, spacing: 10) {
+                        if let emoji = leadingEmoji {
+                            Text(emoji)
+                                .font(.system(size: 30))
+                                .frame(width: 36, height: 36)
+                                .accessibilityHidden(true)
+                        }
+
+                        Text(state.card.name)
+                            .font(.headline)
+                            .foregroundStyle(state.accentColor)
+                            .lineLimit(1)
+
+                        Spacer(minLength: 8)
+
+                        if let pointsText = pointsText {
+                            Text(pointsText)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(state.accentColor)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 4)
+                                .background(
+                                    Capsule(style: .circular)
+                                        .fill(state.accentColor.opacity(0.12))
+                                )
+                                .accessibilityLabel("\(pointsText) points")
+                        }
+                    }
 
                     Text(state.card.unitLabel)
                         .font(.caption)
                         .foregroundStyle(state.accentColor.opacity(0.7))
+                        .lineLimit(1)
                 }
                 .padding(16)
             }
@@ -690,7 +715,6 @@ private struct DeedCardTile: View {
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .stroke(state.accentColor.opacity(0.35), lineWidth: 1.5)
             )
-            .shadow(color: state.accentColor.opacity(0.25), radius: 12, x: 0, y: 8)
             .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(state.card.accessibilityLabel(lastAmount: state.lastAmount, unit: state.card.unitLabel))
@@ -745,6 +769,30 @@ private struct DeedCardTile: View {
             }
         }
     }
+
+    private var leadingEmoji: String? {
+        let trimmed = state.card.emoji.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
+
+    private var pointsText: String? {
+        guard state.card.unitType == .count else { return nil }
+        let points = state.card.pointsPerUnit
+        guard points != 0 else { return nil }
+
+        let absolute = abs(points)
+        let formatted = Self.pointsFormatter.string(from: NSNumber(value: absolute)) ?? String(format: "%.1f", absolute)
+        let prefix = points > 0 ? "+" : points < 0 ? "-" : ""
+        return "\(prefix)\(formatted)"
+    }
+
+    private static let pointsFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 1
+        formatter.minimumFractionDigits = 0
+        return formatter
+    }()
 }
 
 private struct AddCardTile: View {
