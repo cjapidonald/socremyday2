@@ -56,13 +56,6 @@ struct AddEditDeedSheet: View {
         _isPrivate = State(initialValue: initialCard?.isPrivate ?? false)
         _showOnStats = State(initialValue: initialCard?.showOnStats ?? true)
 
-        if defaultUnitType == .boolean {
-            if defaultPolarity == .positive {
-                _dailyCapText = State(initialValue: Self.format(1))
-            } else if initialCard?.dailyCap == nil {
-                _dailyCapText = State(initialValue: "")
-            }
-        }
     }
 
     var body: some View {
@@ -122,16 +115,9 @@ struct AddEditDeedSheet: View {
                     }
                     .pickerStyle(.segmented)
 
-                    if unitType == .boolean {
-                        LabeledContent("Unit Label") {
-                            Text(unitLabel.isEmpty ? Self.placeholderLabel(for: unitType) : unitLabel)
-                                .foregroundStyle(.secondary)
-                        }
-                    } else {
-                        TextField("Unit Label", text: $unitLabel)
-                            .textInputAutocapitalization(.never)
-                            .disableAutocorrection(true)
-                    }
+                    TextField("Unit Label", text: $unitLabel)
+                        .textInputAutocapitalization(.never)
+                        .disableAutocorrection(true)
 
                     TextField("Points per Unit", text: $pointsPerUnitText)
                         .keyboardType(.decimalPad)
@@ -142,15 +128,8 @@ struct AddEditDeedSheet: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    if unitType == .boolean && polarity == .positive {
-                        LabeledContent("Daily Cap") {
-                            Text("1 completion per day")
-                                .foregroundStyle(.secondary)
-                        }
-                    } else {
-                        TextField("Daily Cap (optional)", text: $dailyCapText)
-                            .keyboardType(.decimalPad)
-                    }
+                    TextField("Daily Cap (optional)", text: $dailyCapText)
+                        .keyboardType(.decimalPad)
                 }
 
                 Section("Visibility") {
@@ -174,7 +153,6 @@ struct AddEditDeedSheet: View {
         }
         .onChange(of: polarity) { _, newValue in
             syncPointsWithPolarity()
-            enforceBooleanDailyCapIfNeeded(force: unitType == .boolean && newValue == .negative)
         }
     }
 
@@ -206,11 +184,7 @@ struct AddEditDeedSheet: View {
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.white)
 
-                if previewModel.unitType == .boolean && previewModel.polarity == .positive {
-                    Text("Daily cap: 1 completion per day")
-                        .font(.caption2)
-                        .foregroundStyle(.white.opacity(0.7))
-                } else if let cap = previewModel.dailyCap {
+                if let cap = previewModel.dailyCap {
                     Text("Daily cap: \(Self.format(cap))")
                         .font(.caption2)
                         .foregroundStyle(.white.opacity(0.7))
@@ -281,9 +255,6 @@ struct AddEditDeedSheet: View {
     }
 
     private var dailyCapValue: Double? {
-        if unitType == .boolean && polarity == .positive {
-            return 1
-        }
         let trimmed = dailyCapText.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
         let sanitized = trimmed.replacingOccurrences(of: ",", with: ".")
@@ -337,7 +308,6 @@ struct AddEditDeedSheet: View {
         } else {
             dailyCapText = ""
         }
-        enforceBooleanDailyCapIfNeeded(force: true)
     }
 
     private func syncPointsWithPolarity() {
@@ -347,21 +317,8 @@ struct AddEditDeedSheet: View {
         pointsPerUnitText = Self.format(signed)
     }
 
-    private func enforceBooleanDailyCapIfNeeded(force: Bool = false) {
-        guard unitType == .boolean else { return }
-        if polarity == .positive {
-            if force || abs((dailyCapValue ?? 0) - 1) > 0.0001 {
-                dailyCapText = Self.format(1)
-            }
-        } else if force {
-            dailyCapText = ""
-        }
-    }
-
     private func formatAmount(_ amount: Double) -> String {
         switch unitType {
-        case .boolean:
-            return unitLabel.isEmpty ? "1 completion" : "1 \(unitLabel)"
         case .count, .rating:
             return "\(Int(amount)) \(unitLabel.isEmpty ? Self.placeholderLabel(for: unitType) : unitLabel)"
         case .duration:
@@ -383,7 +340,6 @@ struct AddEditDeedSheet: View {
         case .count: return "count"
         case .duration: return "min"
         case .quantity: return "units"
-        case .boolean: return "completion"
         case .rating: return "stars"
         }
     }
@@ -393,7 +349,6 @@ struct AddEditDeedSheet: View {
         case .count: return "Count"
         case .duration: return "Duration"
         case .quantity: return "Quantity"
-        case .boolean: return "Boolean"
         case .rating: return "Rating"
         }
     }
@@ -406,8 +361,6 @@ struct AddEditDeedSheet: View {
             return ("min", 1.5, 60, 30)
         case .quantity:
             return ("units", 0.5, nil, 250)
-        case .boolean:
-            return ("did it", 15, 1, 1)
         case .rating:
             return ("stars", 2, 5, 4)
         }

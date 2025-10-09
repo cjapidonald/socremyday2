@@ -146,7 +146,7 @@ final class DeedsPageViewModel: ObservableObject {
     func defaultAmount(for card: CardState) -> Double {
         if let lastAmount = card.lastAmount { return lastAmount }
         switch card.card.unitType {
-        case .count, .boolean, .rating:
+        case .count, .rating:
             return 1
         case .duration:
             return 5

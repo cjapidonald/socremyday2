@@ -399,8 +399,6 @@ struct DeedsPage: View {
             case .rating:
                 let clamped = max(1, min(5, Int(amount.rounded())))
                 return Double(clamped)
-            case .boolean:
-                return amount > 0.5 ? 1 : 0
             default:
                 return amount
             }
@@ -697,13 +695,6 @@ private struct QuickAddSheet: View {
     private var amountSection: some View {
         Section(header: Text("Amount")) {
             switch localState.card.card.unitType {
-            case .boolean:
-                Toggle(isOn: Binding(
-                    get: { localState.amount > 0.5 },
-                    set: { localState.amount = $0 ? 1 : 0 }
-                )) {
-                    Text(localState.card.card.unitLabel.isEmpty ? "Completed" : localState.card.card.unitLabel)
-                }
             case .rating:
                 RatingSlider(rating: Binding(
                     get: { max(1, min(5, Int(localState.amount.rounded()))) },
