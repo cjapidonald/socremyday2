@@ -64,7 +64,7 @@ final class PersistenceController {
             attribute(name: "polarityRaw", type: .integer16AttributeType, defaultValue: 0),
             attribute(name: "unitTypeRaw", type: .integer16AttributeType, defaultValue: 0),
             attribute(name: "unitLabel", type: .stringAttributeType, defaultValue: ""),
-            attribute(name: "pointsPerUnit", type: .doubleAttributeType),
+            attribute(name: "pointsPerUnit", type: .doubleAttributeType, defaultValue: 0.0),
             attribute(name: "dailyCap", type: .doubleAttributeType, optional: true),
             attribute(name: "isPrivate", type: .booleanAttributeType, defaultValue: false),
             attribute(name: "showOnStats", type: .booleanAttributeType, defaultValue: true),
@@ -74,11 +74,11 @@ final class PersistenceController {
         ]
 
         deedEntry.properties = [
-            attribute(name: "id", type: .UUIDAttributeType),
-            attribute(name: "deedId", type: .UUIDAttributeType),
-            attribute(name: "timestamp", type: .dateAttributeType),
-            attribute(name: "amount", type: .doubleAttributeType),
-            attribute(name: "computedPoints", type: .doubleAttributeType),
+            attribute(name: "id", type: .UUIDAttributeType, defaultValue: UUID()),
+            attribute(name: "deedId", type: .UUIDAttributeType, defaultValue: UUID()),
+            attribute(name: "timestamp", type: .dateAttributeType, defaultValue: Date()),
+            attribute(name: "amount", type: .doubleAttributeType, defaultValue: 0.0),
+            attribute(name: "computedPoints", type: .doubleAttributeType, defaultValue: 0.0),
             attribute(name: "note", type: .stringAttributeType, optional: true)
         ]
 
@@ -104,9 +104,9 @@ final class PersistenceController {
         entryToCard.name = "deed"
         entryToCard.destinationEntity = deedCard
         entryToCard.deleteRule = .nullifyDeleteRule
-        entryToCard.minCount = 1
+        entryToCard.minCount = 0
         entryToCard.maxCount = 1
-        entryToCard.isOptional = false
+        entryToCard.isOptional = true
         entryToCard.isOrdered = false
 
         cardToEntries.inverseRelationship = entryToCard
