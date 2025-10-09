@@ -145,16 +145,16 @@ struct DeedsPage: View {
     private var headerView: some View {
         HStack(alignment: .center, spacing: 16) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("TODAY")
+                Text("LAST 7 DAYS")
                     .font(.caption.weight(.semibold))
                     .textCase(.uppercase)
                     .foregroundStyle(.secondary)
 
-                Text(formattedPoints(viewModel.todayNetScore))
+                Text(formattedPoints(viewModel.weeklyNetScore))
                     .font(.system(size: 34, weight: .bold, design: .rounded))
                     .foregroundStyle(.primary)
 
-                Text("resets at \(formattedCutoffHour())")
+                Text("daily reset at \(formattedCutoffHour())")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
