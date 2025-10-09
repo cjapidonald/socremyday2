@@ -4,7 +4,6 @@ enum UnitType: Int16, CaseIterable, Codable {
     case count
     case duration
     case quantity
-    case boolean
     case rating
 }
 
