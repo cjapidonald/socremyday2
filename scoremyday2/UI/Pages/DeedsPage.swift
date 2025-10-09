@@ -671,20 +671,25 @@ private struct DeedCardTile: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Text(state.card.name)
                         .font(.headline)
-                        .foregroundStyle(.white)
+                        .foregroundStyle(state.accentColor)
                         .lineLimit(1)
 
                     Text(state.card.unitLabel)
                         .font(.caption)
-                        .foregroundStyle(.white.opacity(0.7))
+                        .foregroundStyle(state.accentColor.opacity(0.7))
                 }
                 .padding(16)
             }
             .frame(maxWidth: .infinity, minHeight: 120, maxHeight: 120, alignment: .topLeading)
             .background(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(state.accentColor)
+                    .fill(.ultraThinMaterial)
             )
+            .overlay(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .stroke(state.accentColor.opacity(0.35), lineWidth: 1.5)
+            )
+            .shadow(color: state.accentColor.opacity(0.25), radius: 12, x: 0, y: 8)
             .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(state.card.accessibilityLabel(lastAmount: state.lastAmount, unit: state.card.unitLabel))
@@ -695,7 +700,7 @@ private struct DeedCardTile: View {
                 if state.card.isPrivate {
                     Image(systemName: "eye.slash.fill")
                         .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.7))
+                        .foregroundStyle(state.accentColor.opacity(0.7))
                         .padding(10)
                         .accessibilityLabel("Private card")
                 }
@@ -731,11 +736,11 @@ private struct DeedCardTile: View {
                 } label: {
                     Image(systemName: "ellipsis")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(state.accentColor)
                         .padding(10)
                         .background(
                             Circle()
-                                .fill(Color.white.opacity(0.2))
+                                .fill(state.accentColor.opacity(0.15))
                         )
                         .accessibilityLabel("More actions")
                 }
