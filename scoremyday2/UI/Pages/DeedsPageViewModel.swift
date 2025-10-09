@@ -23,7 +23,7 @@ final class DeedsPageViewModel: ObservableObject {
     private let lastAmountStore = LastAmountStore()
 
     @Published var cards: [CardState] = []
-    @Published var todayNetScore: Double = 0
+    @Published var weeklyNetScore: Double = 0
     @Published var sparklineValues: [Double] = Array(repeating: 0, count: 7)
     @Published private(set) var cutoffHour: Int = 4
     @Published var pendingRatingCard: CardState?
@@ -91,8 +91,9 @@ final class DeedsPageViewModel: ObservableObject {
                 )
             }
 
-            todayNetScore = try computeTodayScore()
-            sparklineValues = try computeSparkline()
+            let sparkline = try computeSparkline()
+            sparklineValues = sparkline
+            weeklyNetScore = sparkline.reduce(0, +)
         } catch {
             assertionFailure("Failed to load deeds: \(error)")
         }
@@ -103,8 +104,9 @@ final class DeedsPageViewModel: ObservableObject {
         cutoffHour = hour
 
         do {
-            todayNetScore = try computeTodayScore()
-            sparklineValues = try computeSparkline()
+            let sparkline = try computeSparkline()
+            sparklineValues = sparkline
+            weeklyNetScore = sparkline.reduce(0, +)
         } catch {
             assertionFailure("Failed to recompute metrics: \(error)")
         }
@@ -117,12 +119,6 @@ final class DeedsPageViewModel: ObservableObject {
         } catch {
             assertionFailure("Failed to upsert deed: \(error)")
         }
-    }
-
-    private func computeTodayScore(reference date: Date = Date()) throws -> Double {
-        let range = appDayRange(for: date, cutoffHour: cutoffHour)
-        let entries = try entriesRepository.fetchEntries(in: range.start...range.end)
-        return entries.reduce(0) { $0 + $1.computedPoints }
     }
 
     private func computeSparkline(reference date: Date = Date()) throws -> [Double] {
@@ -193,14 +189,14 @@ final class DeedsPageViewModel: ObservableObject {
             cards[index].lastAmount = entry.amount
             lastAmountStore.setAmount(entry.amount, for: cardID)
             if isDate(entry.timestamp, inSameAppDayAs: Date()) {
-                todayNetScore += entry.computedPoints
                 if !sparklineValues.isEmpty {
                     sparklineValues[sparklineValues.count - 1] += entry.computedPoints
                 }
             } else {
-                todayNetScore = try computeTodayScore()
-                sparklineValues = try computeSparkline()
+                let sparkline = try computeSparkline()
+                sparklineValues = sparkline
             }
+            weeklyNetScore = sparklineValues.reduce(0, +)
             return result
         } catch {
             assertionFailure("Failed to log entry: \(error)")
