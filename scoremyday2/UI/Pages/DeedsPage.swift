@@ -590,33 +590,8 @@ private struct MoveCardSheet: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    Text("Drag the handles to arrange your cards. \(focusCardName) is highlighted so you can place it exactly where you want it.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                        .accessibilityHidden(true)
-                }
-
-                Section {
-                    ForEach(orderedCards) { card in
-                        HStack {
-                            Text(card.card.name)
-                                .font(.body)
-                            Spacer()
-                            if card.id == focusCardID {
-                                Image(systemName: "hand.point.up.left.fill")
-                                    .foregroundStyle(.accentColor)
-                                    .accessibilityLabel("Selected card")
-                            }
-                        }
-                        .padding(.vertical, 8)
-                        .accessibilityLabel(Text(card.id == focusCardID ? "\(card.card.name), current card" : card.card.name))
-                        .listRowBackground(card.id == focusCardID ? Color.accentColor.opacity(0.12) : Color(.secondarySystemGroupedBackground))
-                    }
-                    .onMove { indices, newOffset in
-                        orderedCards.move(fromOffsets: indices, toOffset: newOffset)
-                    }
-                }
+                instructionsSection
+                cardsSection
             }
             .listStyle(.insetGrouped)
             .environment(\.editMode, .constant(.active))
@@ -636,6 +611,42 @@ private struct MoveCardSheet: View {
         }
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
+    }
+
+    private var instructionsSection: some View {
+        Section {
+            Text("Drag the handles to arrange your cards. \(focusCardName) is highlighted so you can place it exactly where you want it.")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+        }
+    }
+
+    private var cardsSection: some View {
+        Section {
+            ForEach(orderedCards) { card in
+                cardRow(for: card)
+            }
+            .onMove { indices, newOffset in
+                orderedCards.move(fromOffsets: indices, toOffset: newOffset)
+            }
+        }
+    }
+
+    private func cardRow(for card: DeedsPageViewModel.CardState) -> some View {
+        HStack {
+            Text(card.card.name)
+                .font(.body)
+            Spacer()
+            if card.id == focusCardID {
+                Image(systemName: "hand.point.up.left.fill")
+                    .foregroundStyle(.accentColor)
+                    .accessibilityLabel("Selected card")
+            }
+        }
+        .padding(.vertical, 8)
+        .accessibilityLabel(Text(card.id == focusCardID ? "\(card.card.name), current card" : card.card.name))
+        .listRowBackground(card.id == focusCardID ? Color.accentColor.opacity(0.12) : Color(.secondarySystemGroupedBackground))
     }
 
     private var focusCardName: String {
