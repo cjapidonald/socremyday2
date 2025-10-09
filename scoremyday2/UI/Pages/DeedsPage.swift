@@ -677,14 +677,6 @@ private struct DeedCardTile: View {
                         .foregroundStyle(.white.opacity(0.7))
                 }
                 .padding(16)
-
-                if state.card.isPrivate {
-                    Image(systemName: "eye.slash.fill")
-                        .font(.system(size: 12, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.7))
-                        .padding(10)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                }
             }
             .frame(height: 120)
             .background(
@@ -696,6 +688,59 @@ private struct DeedCardTile: View {
             .accessibilityLabel(state.card.accessibilityLabel(lastAmount: state.lastAmount, unit: state.card.unitLabel))
         }
         .buttonStyle(.plain)
+        .overlay(alignment: .topTrailing) {
+            HStack(spacing: 6) {
+                if state.card.isPrivate {
+                    Image(systemName: "eye.slash.fill")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.7))
+                        .padding(10)
+                        .accessibilityLabel("Private card")
+                }
+
+                Menu {
+                    Button { onQuickAdd() } label: {
+                        Label("Quick Add", systemImage: "bolt.badge.clock")
+                    }
+
+                    Button { onEdit() } label: {
+                        Label("Edit", systemImage: "pencil")
+                    }
+
+                    Button { onMove() } label: {
+                        Label("Move Card", systemImage: "arrow.up.arrow.down")
+                    }
+
+                    Button { onToggleArchive() } label: {
+                        Label(
+                            state.card.isArchived ? "Unarchive" : "Archive",
+                            systemImage: state.card.isArchived ? "tray.and.arrow.up" : "archivebox"
+                        )
+                    }
+
+                    Button {
+                        onSetShowOnStats(!state.card.showOnStats)
+                    } label: {
+                        Label(
+                            state.card.showOnStats ? "Hide from Stats Page" : "Show on Stats Page",
+                            systemImage: "chart.bar.xaxis"
+                        )
+                    }
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .padding(10)
+                        .background(
+                            Circle()
+                                .fill(Color.white.opacity(0.2))
+                        )
+                        .accessibilityLabel("More actions")
+                }
+                .menuStyle(.borderlessButton)
+            }
+            .padding(6)
+        }
         .contextMenu {
             Button {
                 onQuickAdd()
