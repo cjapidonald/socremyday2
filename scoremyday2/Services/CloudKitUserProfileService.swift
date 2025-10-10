@@ -2,6 +2,11 @@ import CloudKit
 import Foundation
 
 struct CloudKitUserProfileService {
+    enum ServiceError: Swift.Error {
+        case accountUnavailable
+    }
+
+    private let container: CKContainer
     private let database: CKDatabase
 
     init?(containerIdentifier: String? = AppConfiguration.cloudKitContainerIdentifier) {
@@ -9,6 +14,7 @@ struct CloudKitUserProfileService {
             return nil
         }
         let container = CKContainer(identifier: identifier)
+        self.container = container
         database = container.privateCloudDatabase
     }
 
@@ -18,7 +24,11 @@ struct CloudKitUserProfileService {
         lastName: String?,
         email: String?
     ) async throws {
-        let recordID = CKRecord.ID(recordName: appleUserIdentifier)
+        guard try await container.accountStatus() == .available else {
+            throw ServiceError.accountUnavailable
+        }
+
+        let recordID = try await container.userRecordID()
         let record: CKRecord
         do {
             record = try await database.record(for: recordID)
@@ -30,16 +40,10 @@ struct CloudKitUserProfileService {
             }
         }
 
-        record["appleUserIdentifier"] = appleUserIdentifier as CKRecordValue
-        if let firstName {
-            record["firstName"] = firstName as CKRecordValue
-        }
-        if let lastName {
-            record["lastName"] = lastName as CKRecordValue
-        }
-        if let email {
-            record["email"] = email as CKRecordValue
-        }
+        record["appleUserIdentifier"] = appleUserIdentifier as NSString
+        record["firstName"] = firstName as NSString?
+        record["lastName"] = lastName as NSString?
+        record["email"] = email as NSString?
 
         _ = try await database.modifyRecords(saving: [record], deleting: [])
     }
