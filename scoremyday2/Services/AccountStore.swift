@@ -22,10 +22,10 @@ final class AccountStore: ObservableObject {
 
     init(
         userDefaults: UserDefaults = .standard,
-        userProfileService: CloudKitUserProfileService? = CloudKitUserProfileService()
+        userProfileService: CloudKitUserProfileService? = nil
     ) {
         defaults = userDefaults
-        self.userProfileService = userProfileService
+        self.userProfileService = userProfileService ?? CloudKitUserProfileService()
         if let identifier = defaults.string(forKey: identifierKey) {
             let email = defaults.string(forKey: emailKey)
             let name = defaults.string(forKey: nameKey)

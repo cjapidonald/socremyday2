@@ -25,7 +25,7 @@ final class DeedCardMO: NSManagedObject {
                 return uuid
             }
             let generated = UUID()
-            id = generated
+            idRaw = generated.uuidString
             return generated
         }
         set {
@@ -56,7 +56,7 @@ final class DeedEntryMO: NSManagedObject {
                 return uuid
             }
             let generated = UUID()
-            id = generated
+            idRaw = generated.uuidString
             return generated
         }
         set {
@@ -70,7 +70,7 @@ final class DeedEntryMO: NSManagedObject {
                 return uuid
             }
             let fallback = deed.id
-            deedId = fallback
+            deedIdRaw = fallback.uuidString
             return fallback
         }
         set {
@@ -100,7 +100,7 @@ final class AppPrefsMO: NSManagedObject {
                 return uuid
             }
             let generated = UUID()
-            id = generated
+            idRaw = generated.uuidString
             return generated
         }
         set {
