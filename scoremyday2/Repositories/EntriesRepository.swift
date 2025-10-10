@@ -70,7 +70,7 @@ final class EntriesRepository {
             let request = DeedEntryMO.fetchRequest()
             var predicates: [NSPredicate] = []
             if let id {
-                predicates.append(NSPredicate(format: "deedId == %@", id as CVarArg))
+                predicates.append(NSPredicate(format: "deedIdRaw == %@", id.uuidString))
             }
             if let range {
                 predicates.append(NSPredicate(format: "timestamp >= %@ AND timestamp <= %@", range.lowerBound as NSDate, range.upperBound as NSDate))
@@ -87,7 +87,7 @@ final class EntriesRepository {
     func deleteEntry(id: UUID) throws {
         try context.performAndWait {
             let request = DeedEntryMO.fetchRequest()
-            request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            request.predicate = NSPredicate(format: "idRaw == %@", id.uuidString)
             request.fetchLimit = 1
             guard let entry = try context.fetch(request).first else { return }
             context.delete(entry)

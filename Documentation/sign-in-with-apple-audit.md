@@ -32,6 +32,8 @@ integration and captures additional manual verification steps that should be per
   avoid generic authorization failures.
 - Handle each `ASAuthorizationError` case distinctly (e.g., `canceled` vs `failed`) to give users
   actionable feedback and to aid debugging.
+- The `AccountStore` pushes `UserProfile` updates to CloudKit after a successful sign in, so
+  network failures should surface a user-facing error message for retrying.
 
 Keep this checklist close when updating signing, provisioning profiles, or onboarding new team
 members to the Sign in with Apple flow.
