@@ -270,7 +270,12 @@ struct SettingsPage: View {
 
         let identifier = credential.user
         let email = credential.email ?? accountStore.account?.email
-        accountStore.update(identifier: identifier, email: email)
+        let fullNameFormatter = PersonNameComponentsFormatter()
+        let fullName = credential.fullName
+            .flatMap { fullNameFormatter.string(from: $0) }
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .flatMap { $0.isEmpty ? nil : $0 }
+        accountStore.update(identifier: identifier, email: email, name: fullName)
     }
 
     private func handleDayCutoffSelectionChange(previous: Date, newValue: Date) {
