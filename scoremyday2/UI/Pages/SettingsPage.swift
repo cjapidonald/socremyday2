@@ -268,14 +268,15 @@ struct SettingsPage: View {
             return
         }
 
-        let identifier = credential.user
-        let email = credential.email ?? accountStore.account?.email
-        let fullNameFormatter = PersonNameComponentsFormatter()
-        let fullName = credential.fullName
-            .flatMap { fullNameFormatter.string(from: $0) }
-            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .flatMap { $0.isEmpty ? nil : $0 }
-        accountStore.update(identifier: identifier, email: email, name: fullName)
+        Task {
+            do {
+                try await accountStore.handleSignIn(credential: credential)
+            } catch {
+                await MainActor.run {
+                    actionError = error.localizedDescription
+                }
+            }
+        }
     }
 
     private func handleDayCutoffSelectionChange(previous: Date, newValue: Date) {

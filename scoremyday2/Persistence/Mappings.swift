@@ -101,7 +101,7 @@ extension AppPrefsMO {
 extension NSManagedObjectContext {
     func fetchDeedCard(id: UUID) throws -> DeedCardMO? {
         let request = DeedCardMO.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+        request.predicate = NSPredicate(format: "idRaw == %@", id.uuidString)
         request.fetchLimit = 1
         let objects = try fetch(request)
         return objects.first

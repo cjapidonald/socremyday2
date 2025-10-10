@@ -1,51 +1,85 @@
 # CloudKit Record Types for ScoreMyDay
 
-All CloudKit schema work for ScoreMyDay should target the `iCloud.com.Donald.scoremyday2` container. The app uses Core Data with CloudKit mirroring, which produces one CloudKit record type for each entity in the managed object model. The tables below summarize the expected record types and fields so that they can be verified or recreated in the CloudKit Dashboard.
+All CloudKit schema work for ScoreMyDay should target the `iCloud.com.Donald.scoremyday2`
+container. The app continues to use Core Data with CloudKit mirroring, but the
+managed object model now maps 1:1 to the custom record types documented below so
+that field names match the production schema.
 
-## `CD_DeedCard`
-
-| Field | Type | Notes |
-| --- | --- | --- |
-| `CD_id` | UUID | Primary identifier |
-| `CD_name` | String | Name shown on the deed card |
-| `CD_emoji` | String | Emoji associated with the deed |
-| `CD_colorHex` | String | Hex value for the deed color |
-| `CD_category` | String | Category name |
-| `CD_polarityRaw` | Int64 | Stores the `Polarity` enum raw value |
-| `CD_unitTypeRaw` | Int64 | Stores the `UnitType` enum raw value |
-| `CD_unitLabel` | String | User-visible unit label |
-| `CD_pointsPerUnit` | Double | Points awarded per unit |
-| `CD_dailyCap` | Double (optional) | Maximum number of units counted per day |
-| `CD_isPrivate` | Int64 (Boolean) | Backed by a Boolean in Core Data |
-| `CD_showOnStats` | Int64 (Boolean) | Controls whether the deed appears in stats |
-| `CD_createdAt` | Timestamp | Creation date |
-| `CD_isArchived` | Int64 (Boolean) | Marks the deed as archived |
-| `CD_sortOrder` | Int64 | Ordering hint |
-| `CD_entries` | Reference list | Relationship to `CD_DeedEntry` records |
-
-## `CD_DeedEntry`
+## `AppPrefs`
 
 | Field | Type | Notes |
 | --- | --- | --- |
-| `CD_id` | UUID | Primary identifier |
-| `CD_deedId` | UUID | References the owning deed |
-| `CD_timestamp` | Timestamp | Time the entry was captured |
-| `CD_amount` | Double | Amount logged for the deed |
-| `CD_computedPoints` | Double | Calculated points for the entry |
-| `CD_note` | String (optional) | Optional note |
-| `CD_deed` | Reference | Back-reference to the parent `CD_DeedCard` |
+| `dayCutoffHour` | Int64 | Daily cutoff hour (0–23). |
+| `hapticsOn` | Int64 | Treated as a Boolean flag (`0` = false, `1` = true). |
+| `id` | String | Backed by a UUID stored as a string. |
+| `soundsOn` | Int64 | Treated as a Boolean flag (`0` = false, `1` = true). |
+| `themeAccent` | String (optional) | Accent color hex string. |
+| `themeStyleRaw` | String | Raw value of the selected `AppTheme`. |
 
-## `CD_AppPrefs`
+Only the creating user has read/write access.
+
+## `DeedCard`
 
 | Field | Type | Notes |
 | --- | --- | --- |
-| `CD_id` | UUID | Primary identifier |
-| `CD_dayCutoffHour` | Int64 | Daily cutoff hour |
-| `CD_hapticsOn` | Int64 (Boolean) | Whether haptics are enabled |
-| `CD_soundsOn` | Int64 (Boolean) | Whether sounds are enabled |
-| `CD_themeAccent` | String (optional) | Accent color hex string |
-| `CD_themeStyleRaw` | String | Stores the selected theme style |
+| `category` | String | Category name. |
+| `colorHex` | String | Hex value for the card tint. |
+| `createdAt` | Timestamp | Creation date. |
+| `dailyCap` | Double (optional) | Maximum counted amount per day. |
+| `emoji` | String | Emoji displayed on the card. |
+| `id` | String | Backed by a UUID stored as a string. |
+| `isArchived` | Int64 | Boolean flag (`0`/`1`). |
+| `isPrivate` | Int64 | Boolean flag (`0`/`1`). |
+| `name` | String | Display name for the card. |
+| `pointsPerUnit` | Double | Points awarded per unit. |
+| `polarityRaw` | Int64 | Raw value for `Polarity`. |
+| `showOnStats` | Int64 | Boolean flag (`0`/`1`). |
+| `sortOrder` | Int64 | Ordering hint. |
+| `unitLabel` | String | User-visible unit label. |
+| `unitTypeRaw` | Int64 | Raw value for `UnitType`. |
 
-> **Note:** CloudKit automatically adds system fields (e.g., `recordName`, `modificationDate`) that do not need to be manually managed.
+Each card maintains a to-many relationship with `DeedEntry` records through the
+`entries` reference list.
 
-Make sure that these record types exist in both the development and production environments of the `iCloud.com.Donald.scoremyday2` container before testing sync features.
+## `DeedEntry`
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `amount` | Double | Amount logged for the deed. |
+| `computedPoints` | Double | Calculated points for the entry. |
+| `deed` | Reference | References the owning `DeedCard` record. |
+| `deedId` | String | Local mirror of the owning deed's identifier for predicate filtering. |
+| `id` | String | Backed by a UUID stored as a string. |
+| `note` | String (optional) | Optional note entered by the user. |
+| `timestamp` | Timestamp | Time the entry was captured. |
+
+`deed` is the canonical relationship used for CloudKit queries; `deedId`
+remains available for lightweight Core Data predicates.
+
+## `Users`
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `roles` | List<Int64> | Reserved for future role-based access. |
+
+Only the record creator has read/write access.
+
+## `UserProfile`
+
+| Field | Type | Notes |
+| --- | --- | --- |
+| `appleUserIdentifier` | String | Stable identifier returned by Sign in with Apple. |
+| `email` | String (optional) | Last known email (if the user shared it). |
+| `firstName` | String (optional) | First name from the initial authorization. |
+| `lastName` | String (optional) | Last name from the initial authorization. |
+
+`UserProfile` records are created/updated automatically when the user signs in
+with Apple inside the Settings page. Only the user may read or write their
+profile.
+
+> **Note:** CloudKit automatically adds system fields (for example,
+> `recordName`, `modificationDate`) that do not need to be manually managed.
+
+Ensure these record types exist in both the development and production
+environments of the `iCloud.com.Donald.scoremyday2` container before testing
+sync features.
