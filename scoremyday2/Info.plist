@@ -6,7 +6,7 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
-	<key>CloudKitContainerIdentifier</key>
-	<string>iCloud.com.example.deedstracker</string>
+        <key>CloudKitContainerIdentifier</key>
+        <string>iCloud.com.Donald.scoremyday2</string>
 </dict>
 </plist>
