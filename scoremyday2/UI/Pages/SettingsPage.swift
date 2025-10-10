@@ -1,4 +1,5 @@
 import AuthenticationServices
+import CloudKit
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -104,17 +105,26 @@ struct SettingsPage: View {
                     accountStore.signOut()
                 }
             } else {
-                SignInWithAppleButton(.signIn) { request in
-                    request.requestedScopes = [.email, .fullName]
-                } onCompletion: { result in
-                    switch result {
-                    case .success(let authorization):
-                        handleAppleAuthorization(authorization)
-                    case .failure(let error):
-                        actionError = error.localizedDescription
+                AppleIDSignInButton(
+                    type: .signIn,
+                    style: .black,
+                    preflightCheck: ensureICloudAccountAvailable,
+                    prepareAppleRequest: { request in
+                        if accountStore.shouldRequestNameAndEmail() {
+                            request.requestedScopes = [.fullName, .email]
+                        } else {
+                            request.requestedScopes = []
+                        }
+                    },
+                    completion: { result in
+                        switch result {
+                        case .success(let authorization):
+                            handleAppleAuthorization(authorization)
+                        case .failure(let error):
+                            actionError = error.localizedDescription
+                        }
                     }
-                }
-                .signInWithAppleButtonStyle(.black)
+                )
                 .frame(maxWidth: .infinity, minHeight: 44, alignment: .center)
             }
         }
@@ -276,6 +286,23 @@ struct SettingsPage: View {
                     actionError = error.localizedDescription
                 }
             }
+        }
+    }
+
+    private enum SignInPreflightError: LocalizedError {
+        case iCloudUnavailable
+
+        var errorDescription: String? {
+            "Please sign into iCloud to continue."
+        }
+    }
+
+    @MainActor
+    private func ensureICloudAccountAvailable() async throws {
+        let status = try await CKContainer.default().accountStatus()
+        if status != .available {
+            actionError = "Please sign into iCloud to continue."
+            throw SignInPreflightError.iCloudUnavailable
         }
     }
 
