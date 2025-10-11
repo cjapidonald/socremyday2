@@ -302,6 +302,12 @@ struct SettingsPage: View {
             case .failed, .invalidResponse, .notHandled:
                 actionError = "Sign in with Apple could not be completed. Please try again."
                 return
+            case .credentialRevoked:
+                actionError = "Your Apple ID credentials have been revoked. Please sign in again."
+                return
+            case .appLaunchProhibited:
+                actionError = "Sign in with Apple could not launch the required app. Please try again later."
+                return
             case .unknown, .notInteractive:
                 actionError = "Sign in with Apple is unavailable right now. Please try again later."
                 return
