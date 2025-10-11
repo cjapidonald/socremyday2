@@ -30,4 +30,12 @@ final class HapticsManager {
         impact.prepare()
         impact.impactOccurred()
     }
+
+    /// Light tap feedback for simple interactions such as tapping a card
+    func cardTap() {
+        guard hapticsOn else { return }
+        let impact = UIImpactFeedbackGenerator(style: .soft)
+        impact.prepare()
+        impact.impactOccurred(intensity: 0.6)
+    }
 }
