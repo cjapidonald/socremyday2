@@ -145,7 +145,7 @@ struct SettingsPage: View {
                 handleDayCutoffSelectionChange(previous: previous, newValue: newValue)
             }
 
-            Toggle("Haptics", isOn: $prefs.hapticsOn)
+            Toggle("Haptics & Vibration", isOn: $prefs.hapticsOn)
             Toggle("Sounds", isOn: $prefs.soundsOn)
 
             VStack(alignment: .leading, spacing: 8) {

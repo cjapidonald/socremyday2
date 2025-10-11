@@ -604,6 +604,7 @@ private struct DeedCardTile: View {
             longPressTriggered = false
             return
         }
+        HapticsManager.shared.cardTap()
         onTap()
     }
 
