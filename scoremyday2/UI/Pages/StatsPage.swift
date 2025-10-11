@@ -542,17 +542,27 @@ private struct ContributionChartView: View {
     }
 
     private func color(for slice: ContributionSlice) -> Color {
-        colorScale[slice.legendLabel] ?? .accentColor
+        colorLookup[slice.legendLabel] ?? .accentColor
     }
 
-    private var colorScale: [String: Color] {
-        var mapping: [String: Color] = [:]
+    private var colorScale: KeyValuePairs<String, Color> {
+        KeyValuePairs(uniqueKeysWithValues: colorAssignments)
+    }
+
+    private var colorLookup: [String: Color] {
+        Dictionary(uniqueKeysWithValues: colorAssignments)
+    }
+
+    private var colorAssignments: [(String, Color)] {
+        var assignments: [(String, Color)] = []
+        var seenLabels: Set<String> = []
         for (index, slice) in slices.enumerated() {
-            if mapping[slice.legendLabel] == nil {
-                mapping[slice.legendLabel] = Self.palette[index % Self.palette.count]
-            }
+            guard !seenLabels.contains(slice.legendLabel) else { continue }
+            let color = Self.palette[index % Self.palette.count]
+            assignments.append((slice.legendLabel, color))
+            seenLabels.insert(slice.legendLabel)
         }
-        return mapping
+        return assignments
     }
 }
 
