@@ -1,6 +1,6 @@
 # CloudKit Record Types for ScoreMyDay
 
-All CloudKit schema work for ScoreMyDay should target the `iCloud.donald.matrix`
+All CloudKit schema work for ScoreMyDay should target the `iCloud.com.Donald.matrix`
 container. The app continues to use Core Data with CloudKit mirroring, but the
 managed object model now maps 1:1 to the custom record types documented below so
 that field names match the production schema.
@@ -81,5 +81,5 @@ profile.
 > `recordName`, `modificationDate`) that do not need to be manually managed.
 
 Ensure these record types exist in both the development and production
-environments of the `iCloud.donald.matrix` container before testing
+environments of the `iCloud.com.Donald.matrix` container before testing
 sync features.
