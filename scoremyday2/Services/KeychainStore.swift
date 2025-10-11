@@ -33,7 +33,7 @@ struct KeychainStore {
     }
 
     func removeValue(forKey key: String) throws {
-        var query = baseQuery(forKey: key)
+        let query = baseQuery(forKey: key)
         let status = SecItemDelete(query as CFDictionary)
         guard status == errSecSuccess || status == errSecItemNotFound else {
             throw KeychainError.unexpectedStatus(status)
