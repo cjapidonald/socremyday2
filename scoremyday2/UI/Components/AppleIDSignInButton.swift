@@ -78,7 +78,7 @@ struct AppleIDSignInButton: UIViewRepresentable {
                 .compactMap({ $0 as? UIWindowScene })
                 .flatMap({ $0.windows })
                 .first(where: { $0.isKeyWindow }) else {
-                return UIWindow()
+                return UIWindow(frame: .zero)
             }
             return window
         }

@@ -27,19 +27,19 @@ final class AccountStore: ObservableObject {
     init(
         userDefaults: UserDefaults = .standard,
         userService: CloudKitUserService? = nil,
-        keychain: KeychainStore = KeychainStore()
+        keychain: KeychainStore? = nil
     ) {
         defaults = userDefaults
         self.userService = userService ?? CloudKitUserService()
-        self.keychain = keychain
+        self.keychain = keychain ?? KeychainStore()
 
-        if let identifier = (try? keychain.string(forKey: identifierKey)) ?? defaults.string(forKey: identifierKey) {
+        if let identifier = (try? self.keychain.string(forKey: identifierKey)) ?? defaults.string(forKey: identifierKey) {
             let email = defaults.string(forKey: emailKey)
             let name = defaults.string(forKey: nameKey)
             account = Account(identifier: identifier, email: email, name: name)
         }
 
-        hasSeenAppleNameEmail = (try? keychain.bool(forKey: hasSeenNameEmailKey)) ?? false
+        hasSeenAppleNameEmail = (try? self.keychain.bool(forKey: hasSeenNameEmailKey)) ?? false
     }
 
     var displayName: String? {
