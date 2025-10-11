@@ -194,10 +194,7 @@ struct DeedsPage: View {
                 deedEditorState = DeedEditorState(card: nil)
             }
         }
-        .confirmationDialog(
-            "Card Actions",
-            item: $heldActionCard,
-            actions: { card in
+        .confirmationDialog("Card Actions", item: $heldActionCard) { card in
             Button("Move Card", role: .none) {
                 moveCardState = MoveCardSheetState(cardID: card.id)
             }
@@ -223,11 +220,9 @@ struct DeedsPage: View {
             }
 
             Button("Cancel", role: .cancel) { }
-        },
-            message: { card in
-                Text("Select an action for \(card.card.name)")
-            }
-        )
+        } message: { card in
+            Text("Select an action for \(card.card.name)")
+        }
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: viewModel.cards)
     }
 
