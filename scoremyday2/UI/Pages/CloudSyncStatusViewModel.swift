@@ -67,7 +67,7 @@ final class CloudSyncStatusViewModel: ObservableObject {
             guard let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey] as? NSPersistentCloudKitContainer.Event else {
                 return
             }
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
                 self?.handle(event: event)
             }
         }
@@ -79,7 +79,9 @@ final class CloudSyncStatusViewModel: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.refreshAccountStatus()
+            Task { @MainActor [weak self] in
+                self?.refreshAccountStatus()
+            }
         }
     }
 
