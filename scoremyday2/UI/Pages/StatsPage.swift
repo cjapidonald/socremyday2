@@ -414,15 +414,32 @@ private struct ContributionChartView: View {
     var selectedDeedId: UUID?
     var onSelectSlice: ((ContributionSlice) -> Void)?
 
+    private static let palette: [Color] = [
+        Color.themeMotionGreen,
+        Color.themePulsePurple,
+        Color.themeChargeBlue,
+        Color(hex: "#FF9F0A", fallback: .orange),
+        Color(hex: "#0A84FF", fallback: .blue),
+        Color(hex: "#34C759", fallback: .green),
+        Color(hex: "#AF52DE", fallback: .purple),
+        Color(hex: "#FF375F", fallback: .pink)
+    ]
+
+    private var cardBackground: Color { .black }
+    private var cardBorder: Color { Color.white.opacity(0.16) }
+    private var primaryTextColor: Color { .white }
+    private var secondaryTextColor: Color { Color.white.opacity(0.65) }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(title)
                 .font(.headline)
+                .foregroundStyle(primaryTextColor)
 
             if slices.isEmpty {
                 Text("No contributions in this range yet.")
                     .font(.callout)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(secondaryTextColor)
             } else {
                 Chart(slices) { slice in
                     SectorMark(
@@ -433,6 +450,7 @@ private struct ContributionChartView: View {
                     .foregroundStyle(by: .value("Label", slice.legendLabel))
                     .opacity(slice.deedId == nil || slice.deedId == selectedDeedId || selectedDeedId == nil ? 1 : 0.35)
                 }
+                .chartForegroundStyleScale(colorScale)
                 .chartOverlay { proxy in
                     GeometryReader { geometry in
                         if let plotFrame: Anchor<CGRect> = proxy.plotFrame {
@@ -462,37 +480,41 @@ private struct ContributionChartView: View {
 
                 VStack(alignment: .leading, spacing: 6) {
                     ForEach(slices) { slice in
+                        let sliceColor = color(for: slice)
                         if let deedId = slice.deedId, let onSelectSlice {
+                            let isSelected = deedId == selectedDeedId
                             Button {
                                 onSelectSlice(slice)
                             } label: {
-                                HStack {
+                                HStack(spacing: 12) {
+                                    Circle()
+                                        .fill(sliceColor)
+                                        .frame(width: 10, height: 10)
                                     Text(slice.legendLabel)
                                         .fontWeight(.semibold)
+                                        .foregroundStyle(isSelected ? Color.accentColor : primaryTextColor)
                                     Spacer()
                                     Text("\(slice.pointsString) • \(slice.percentageString)")
                                         .font(.caption)
-                                        .foregroundStyle(
-                                            deedId == selectedDeedId ? Color.accentColor : Color.secondary
-                                        )
+                                        .foregroundStyle(isSelected ? Color.accentColor : secondaryTextColor)
                                 }
                                 .font(.subheadline)
-                                .foregroundStyle(
-                                    deedId == selectedDeedId ? Color.accentColor : Color.primary
-                                )
                             }
                             .buttonStyle(.plain)
                         } else {
-                            HStack {
+                            HStack(spacing: 12) {
+                                Circle()
+                                    .fill(sliceColor)
+                                    .frame(width: 10, height: 10)
                                 Text(slice.legendLabel)
                                     .fontWeight(.semibold)
+                                    .foregroundStyle(primaryTextColor)
                                 Spacer()
                                 Text("\(slice.pointsString) • \(slice.percentageString)")
                                     .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(secondaryTextColor)
                             }
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
                         }
                     }
                 }
@@ -502,17 +524,35 @@ private struct ContributionChartView: View {
         .frame(maxWidth: .infinity)
         .background(
             RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color(.secondarySystemBackground))
+                .fill(cardBackground)
         )
         .overlay(
             GridPatternBackground(
                 horizontalDivisions: 4,
                 verticalDivisions: 4,
                 lineWidth: 0.5,
-                color: Color.primary.opacity(0.06)
+                color: Color.white.opacity(0.1)
             )
             .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         )
+        .overlay(
+            RoundedRectangle(cornerRadius: 16, style: .continuous)
+                .stroke(cardBorder, lineWidth: 1)
+        )
+    }
+
+    private func color(for slice: ContributionSlice) -> Color {
+        colorScale[slice.legendLabel] ?? .accentColor
+    }
+
+    private var colorScale: [String: Color] {
+        var mapping: [String: Color] = [:]
+        for (index, slice) in slices.enumerated() {
+            if mapping[slice.legendLabel] == nil {
+                mapping[slice.legendLabel] = Self.palette[index % Self.palette.count]
+            }
+        }
+        return mapping
     }
 }
 
