@@ -74,13 +74,20 @@ struct AppleIDSignInButton: UIViewRepresentable {
         }
 
         func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-            guard let window = UIApplication.shared.connectedScenes
-                .compactMap({ $0 as? UIWindowScene })
+            let windowScenes = UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+
+            if let window = windowScenes
                 .flatMap({ $0.windows })
-                .first(where: { $0.isKeyWindow }) else {
-                return UIWindow(frame: .zero)
+                .first(where: { $0.isKeyWindow }) {
+                return window
             }
-            return window
+
+            if #available(iOS 26.0, *), let windowScene = windowScenes.first {
+                return UIWindow(windowScene: windowScene)
+            }
+
+            return UIWindow(frame: .zero)
         }
     }
 }
