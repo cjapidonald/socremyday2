@@ -545,7 +545,7 @@ private struct DeedCardTile: View {
 
     var body: some View {
         Button(action: handleTap) {
-            ZStack(alignment: .topLeading) {
+            ZStack {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack(alignment: .center, spacing: 12) {
                         if let emoji = leadingEmoji {
@@ -563,10 +563,11 @@ private struct DeedCardTile: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 16)
             }
-            .frame(maxWidth: .infinity, minHeight: 120, maxHeight: 120, alignment: .topLeading)
+            .frame(maxWidth: .infinity, minHeight: 120, maxHeight: 120)
             .background(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
                     .fill(.ultraThinMaterial)
