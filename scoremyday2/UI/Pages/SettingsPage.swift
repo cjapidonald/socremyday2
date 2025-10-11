@@ -91,9 +91,13 @@ struct SettingsPage: View {
 
     private var accountSection: some View {
         Section("Account") {
-            if let displayName = accountStore.displayName {
+            if let account = accountStore.account {
+                let welcomeText = account.name.map { name in
+                    "Welcome \(name)"
+                } ?? "Welcome"
+
                 VStack(alignment: .leading, spacing: 6) {
-                    Label(displayName, systemImage: "applelogo")
+                    Label(welcomeText, systemImage: "applelogo")
                         .font(.headline)
                     Text("Sync coming soon.")
                         .font(.footnote)
@@ -105,6 +109,9 @@ struct SettingsPage: View {
                     accountStore.signOut()
                 }
             } else {
+                Label("Welcome", systemImage: "applelogo")
+                    .font(.headline)
+
                 AppleIDSignInButton(
                     type: .signIn,
                     style: .black,
