@@ -450,7 +450,7 @@ private struct ContributionChartView: View {
                     .foregroundStyle(by: .value("Label", slice.legendLabel))
                     .opacity(slice.deedId == nil || slice.deedId == selectedDeedId || selectedDeedId == nil ? 1 : 0.35)
                 }
-                .chartForegroundStyleScale(colorScale)
+                .chartForegroundStyleScale(domain: colorScaleDomain, range: colorScaleRange)
                 .chartOverlay { proxy in
                     GeometryReader { geometry in
                         if let plotFrame: Anchor<CGRect> = proxy.plotFrame {
@@ -545,12 +545,16 @@ private struct ContributionChartView: View {
         colorLookup[slice.legendLabel] ?? .accentColor
     }
 
-    private var colorScale: KeyValuePairs<String, Color> {
-        KeyValuePairs(uniqueKeysWithValues: colorAssignments)
-    }
-
     private var colorLookup: [String: Color] {
         Dictionary(uniqueKeysWithValues: colorAssignments)
+    }
+
+    private var colorScaleDomain: [String] {
+        colorAssignments.map { $0.0 }
+    }
+
+    private var colorScaleRange: [Color] {
+        colorAssignments.map { $0.1 }
     }
 
     private var colorAssignments: [(String, Color)] {
