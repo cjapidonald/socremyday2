@@ -58,8 +58,8 @@ struct CloudKitUserService {
                 desiredKeys: ["appleUserIdentifier", "email", "firstName", "lastName"],
                 resultsLimit: 1
             )
-            if let match = matchResults.first {
-                switch match.value {
+            if let (_, result) = matchResults.first {
+                switch result {
                 case .success(let existingRecord):
                     record = existingRecord
                 case .failure(let error):
@@ -100,7 +100,7 @@ struct CloudKitUserService {
                 metadata: [
                     "code": String(ckError.code.rawValue),
                     "reason": String(describing: ckError.code),
-                    "domain": ckError.domain
+                    "domain": CKError.errorDomain
                 ]
             ))
             return ServiceError.cloudKit(ckError)
