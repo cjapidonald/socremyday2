@@ -1,4 +1,5 @@
 import CloudKit
+import Combine
 import CoreData
 import Foundation
 
@@ -20,13 +21,14 @@ final class CloudSyncStatusViewModel: ObservableObject {
     private let relativeFormatter: RelativeDateTimeFormatter
     private let absoluteFormatter: DateFormatter
     private var eventObserver: NSObjectProtocol?
+    private var accountChangeObserver: NSObjectProtocol?
 
     private var accountStatus: CKAccountStatus?
     private var isSyncInProgress = false
     private var lastSuccessfulSync: Date?
     private var lastError: Error?
 
-    init(container: NSPersistentCloudKitContainer = PersistenceController.shared.container) {
+    init(container: NSPersistentCloudKitContainer) {
         self.container = container
         let relative = RelativeDateTimeFormatter()
         relative.unitsStyle = .full
@@ -39,12 +41,20 @@ final class CloudSyncStatusViewModel: ObservableObject {
         absoluteFormatter = formatter
 
         observeContainerEvents()
+        observeAccountChanges()
         refreshAccountStatus()
+    }
+
+    convenience init() {
+        self.init(container: PersistenceController.shared.container)
     }
 
     deinit {
         if let eventObserver {
             NotificationCenter.default.removeObserver(eventObserver)
+        }
+        if let accountChangeObserver {
+            NotificationCenter.default.removeObserver(accountChangeObserver)
         }
     }
 
@@ -57,19 +67,36 @@ final class CloudSyncStatusViewModel: ObservableObject {
             guard let event = notification.userInfo?[NSPersistentCloudKitContainer.eventNotificationUserInfoKey] as? NSPersistentCloudKitContainer.Event else {
                 return
             }
-            self?.handle(event: event)
+            Task { @MainActor in
+                self?.handle(event: event)
+            }
+        }
+    }
+
+    private func observeAccountChanges() {
+        accountChangeObserver = NotificationCenter.default.addObserver(
+            forName: Notification.Name.CKAccountChanged,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.refreshAccountStatus()
         }
     }
 
     private func refreshAccountStatus() {
-        container.accountStatus { [weak self] status, error in
-            guard let self else { return }
-            Task { @MainActor in
-                self.accountStatus = status
-                if let error {
-                    self.lastError = error
+        Task {
+            do {
+                let status = try await CloudKitEnv.container.accountStatus()
+                await MainActor.run {
+                    self.accountStatus = status
+                    self.updateDisplay()
                 }
-                self.updateDisplay()
+            } catch {
+                await MainActor.run {
+                    self.accountStatus = nil
+                    self.lastError = error
+                    self.updateDisplay()
+                }
             }
         }
     }
@@ -79,30 +106,18 @@ final class CloudSyncStatusViewModel: ObservableObject {
             isSyncInProgress = true
         } else {
             isSyncInProgress = false
-            switch event.result {
-            case .success?:
-                if let endDate = event.endDate {
-                    if let current = lastSuccessfulSync {
-                        lastSuccessfulSync = max(current, endDate)
-                    } else {
-                        lastSuccessfulSync = endDate
-                    }
+            if let error = event.error {
+                lastError = error
+            } else if let endDate = event.endDate {
+                if let current = lastSuccessfulSync {
+                    lastSuccessfulSync = max(current, endDate)
                 } else {
-                    lastSuccessfulSync = lastSuccessfulSync ?? Date()
+                    lastSuccessfulSync = endDate
                 }
                 lastError = nil
-            case .failure(let error)?:
-                lastError = error
-            case nil:
-                break
-            @unknown default:
-                break
-            }
-        }
-
-        if #available(iOS 15.0, macOS 12.0, watchOS 8.0, tvOS 15.0, *) {
-            if event.type == .accountChange {
-                refreshAccountStatus()
+            } else {
+                lastSuccessfulSync = lastSuccessfulSync ?? Date()
+                lastError = nil
             }
         }
 

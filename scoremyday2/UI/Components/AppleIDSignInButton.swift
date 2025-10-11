@@ -83,37 +83,21 @@ struct AppleIDSignInButton: UIViewRepresentable {
                 return keyWindow
             }
 
-            // On iOS 26+, construct a window using the windowScene initializer (avoids deprecated init(frame:))
-            if #available(iOS 26.0, *),
-               let activeScene = scenes.first(where: { $0.activationState == .foregroundActive }) ?? scenes.first {
+            // Attempt to locate any active scene to bind a window to
+            if let activeScene = scenes.first(where: { $0.activationState == .foregroundActive }) ?? scenes.first {
                 if let window = activeScene.windows.first {
                     return window
                 }
-                return UIWindow(windowScene: activeScene)
-            }
-
-            // Fallback for earlier OS versions and as a last resort construct a window tied to a scene when possible
-            if let window = scenes.flatMap({ $0.windows }).first {
-                return window
-            }
-
-            if let anyScene = scenes.first {
                 if #available(iOS 26.0, *) {
-                    // iOS 26+: avoid deprecated init(frame:), prefer a window bound to a scene
-                    return UIWindow(windowScene: anyScene)
+                    return UIWindow(windowScene: activeScene)
                 } else {
-                    // Earlier iOS versions: init(frame:) is the only option
                     return UIWindow(frame: .zero)
                 }
             }
 
-            // Absolute last resort; create a zero-frame window for platforms where scenes may be unavailable
-            if #available(iOS 26.0, *) {
-                // On iOS 26, avoid using the deprecated initializer; return an empty ASPresentationAnchor instead
-                return ASPresentationAnchor()
-            } else {
-                return UIWindow(frame: .zero)
-            }
+            // Absolute last resort; construct a zero-sized window. The frame-based initializer remains available on
+            // all current deployment targets and avoids using the deprecated parameterless initializer on iOS 26.
+            return UIWindow(frame: .zero)
         }
     }
 }
