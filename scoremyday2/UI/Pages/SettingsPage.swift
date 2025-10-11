@@ -296,17 +296,21 @@ struct SettingsPage: View {
         }
 
         if let authorizationError = error as? ASAuthorizationError {
+            if #available(iOS 15.0, *), authorizationError.code == .credentialRevoked {
+                actionError = "Your Apple ID credentials have been revoked. Please sign in again."
+                return
+            }
+
+            if #available(iOS 17.0, *), authorizationError.code == .appLaunchProhibited {
+                actionError = "Sign in with Apple could not launch the required app. Please try again later."
+                return
+            }
+
             switch authorizationError.code {
             case .canceled:
                 return
             case .failed, .invalidResponse, .notHandled:
                 actionError = "Sign in with Apple could not be completed. Please try again."
-                return
-            case .credentialRevoked:
-                actionError = "Your Apple ID credentials have been revoked. Please sign in again."
-                return
-            case .appLaunchProhibited:
-                actionError = "Sign in with Apple could not launch the required app. Please try again later."
                 return
             case .unknown, .notInteractive:
                 actionError = "Sign in with Apple is unavailable right now. Please try again later."
