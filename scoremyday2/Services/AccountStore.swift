@@ -10,7 +10,7 @@ final class AccountStore: ObservableObject {
         let name: String?
     }
 
-    static let shared = AccountStore()
+    @MainActor static let shared = AccountStore()
 
     @Published private(set) var account: Account?
 
@@ -117,9 +117,9 @@ final class AccountStore: ObservableObject {
         let lastName = credential.fullName?.familyName
         try await userService.upsertUserProfile(
             appleID: identifier,
+            email: email,
             firstName: firstName,
-            lastName: lastName,
-            email: email
+            lastName: lastName
         )
     }
 
