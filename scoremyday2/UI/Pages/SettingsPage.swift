@@ -348,7 +348,7 @@ struct SettingsPage: View {
 
     @MainActor
     private func ensureICloudAccountAvailable() async throws {
-        let status = try await CKContainer.default().accountStatus()
+        let status = try await CloudKitEnv.container.accountStatus()
         if status != .available {
             actionError = "Please sign into iCloud to continue."
             throw SignInPreflightError.iCloudUnavailable

@@ -35,13 +35,11 @@ struct CloudKitUserService {
     ) {
         if let container {
             self.container = container
-        } else if let identifier = AppConfiguration.cloudKitContainerIdentifier {
-            self.container = CKContainer(identifier: identifier)
+            self.database = container.publicCloudDatabase
         } else {
-            self.container = .default()
+            self.container = CloudKitEnv.container
+            self.database = CloudKitEnv.publicDatabase
         }
-
-        self.database = self.container.publicCloudDatabase
         self.analytics = analytics
     }
 
