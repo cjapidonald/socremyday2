@@ -205,8 +205,8 @@ struct DeedsPage: View {
             }
 
             Button("Cancel", role: .cancel) { }
-        } message: { card in
-            Text("Select an action for \(card.card.name)")
+        } message: {
+            Text("Select an action for \(heldActionCard?.card.name ?? "this card")")
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: viewModel.cards)
     }
