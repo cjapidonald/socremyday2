@@ -186,6 +186,16 @@
     "swift-dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/AppPrefsStore.swiftdeps",
     "swiftmodule" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/AppPrefsStore~partial.swiftmodule"
   },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/CloudKitEnv.swift" : {
+    "const-values" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudKitEnv.swiftconstvalues",
+    "dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudKitEnv.d",
+    "diagnostics" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudKitEnv.dia",
+    "index-unit-output-path" : "/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudKitEnv.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudKitEnv.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudKitEnv.o",
+    "swift-dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudKitEnv.swiftdeps",
+    "swiftmodule" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudKitEnv~partial.swiftmodule"
+  },
   "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/Services/CloudKitUserService.swift" : {
     "const-values" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudKitUserService.swiftconstvalues",
     "dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudKitUserService.d",
@@ -306,6 +316,16 @@
     "swift-dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/GlassBackground.swiftdeps",
     "swiftmodule" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/GlassBackground~partial.swiftmodule"
   },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/GridPatternBackground.swift" : {
+    "const-values" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/GridPatternBackground.swiftconstvalues",
+    "dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/GridPatternBackground.d",
+    "diagnostics" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/GridPatternBackground.dia",
+    "index-unit-output-path" : "/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/GridPatternBackground.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/GridPatternBackground.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/GridPatternBackground.o",
+    "swift-dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/GridPatternBackground.swiftdeps",
+    "swiftmodule" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/GridPatternBackground~partial.swiftmodule"
+  },
   "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Components/LiquidBackgroundView.swift" : {
     "const-values" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/LiquidBackgroundView.swiftconstvalues",
     "dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/LiquidBackgroundView.d",
@@ -355,6 +375,16 @@
     "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/AddEditDeedSheet.o",
     "swift-dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/AddEditDeedSheet.swiftdeps",
     "swiftmodule" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/AddEditDeedSheet~partial.swiftmodule"
+  },
+  "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Pages/CloudSyncStatusViewModel.swift" : {
+    "const-values" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudSyncStatusViewModel.swiftconstvalues",
+    "dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudSyncStatusViewModel.d",
+    "diagnostics" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudSyncStatusViewModel.dia",
+    "index-unit-output-path" : "/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudSyncStatusViewModel.o",
+    "llvm-bc" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudSyncStatusViewModel.bc",
+    "object" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudSyncStatusViewModel.o",
+    "swift-dependencies" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudSyncStatusViewModel.swiftdeps",
+    "swiftmodule" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudSyncStatusViewModel~partial.swiftmodule"
   },
   "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Pages/DeedsPage.swift" : {
     "const-values" : "/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/DeedsPage.swiftconstvalues",

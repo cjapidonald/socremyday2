@@ -14,6 +14,7 @@
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/AccountStore.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/AppEnvironment.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/AppPrefsStore.o
+/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudKitEnv.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudKitUserService.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/DataExportService.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/DataMaintenanceService.o
@@ -23,6 +24,7 @@
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/AppleIDSignInButton.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/Color+AppAccent.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/Color+Hex.o
+/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/GridPatternBackground.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/Color+Theme.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/DeedIconView.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/GlassBackground.o
@@ -31,6 +33,7 @@
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/SparklineView.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/StatsChartContainer.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/AddEditDeedSheet.o
+/Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/CloudSyncStatusViewModel.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/DeedsPage.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/DeedsPageViewModel.o
 /Users/donaldcjapi/Desktop/scoremyday2/Build/Intermediates.noindex/scoremyday2.build/Debug-iphonesimulator/scoremyday2.build/Objects-normal/arm64/RootView.o

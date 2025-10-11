@@ -39,7 +39,7 @@
         "key": "Preferences",
         "location": {
           "startingColumn": 17,
-          "startingLine": 141
+          "startingLine": 136
         }
       },
       {
@@ -47,7 +47,7 @@
         "key": "Data",
         "location": {
           "startingColumn": 17,
-          "startingLine": 179
+          "startingLine": 174
         }
       },
       {
@@ -55,7 +55,7 @@
         "key": "Share",
         "location": {
           "startingColumn": 17,
-          "startingLine": 222
+          "startingLine": 217
         }
       },
       {
@@ -63,7 +63,7 @@
         "key": "About",
         "location": {
           "startingColumn": 17,
-          "startingLine": 234
+          "startingLine": 229
         }
       },
       {
@@ -95,7 +95,7 @@
         "key": "Welcome",
         "location": {
           "startingColumn": 23,
-          "startingLine": 112
+          "startingLine": 107
         }
       },
       {
@@ -103,15 +103,7 @@
         "key": "Sign Out",
         "location": {
           "startingColumn": 24,
-          "startingLine": 108
-        }
-      },
-      {
-        "comment": "",
-        "key": "Sync coming soon.",
-        "location": {
-          "startingColumn": 26,
-          "startingLine": 102
+          "startingLine": 103
         }
       },
       {
@@ -119,15 +111,15 @@
         "key": "Day Cutoff",
         "location": {
           "startingColumn": 17,
-          "startingLine": 143
+          "startingLine": 138
         }
       },
       {
         "comment": "",
-        "key": "Haptics",
+        "key": "Haptics & Vibration",
         "location": {
           "startingColumn": 20,
-          "startingLine": 153
+          "startingLine": 148
         }
       },
       {
@@ -135,7 +127,7 @@
         "key": "Sounds",
         "location": {
           "startingColumn": 20,
-          "startingLine": 154
+          "startingLine": 149
         }
       },
       {
@@ -143,7 +135,7 @@
         "key": "Appearance",
         "location": {
           "startingColumn": 22,
-          "startingLine": 157
+          "startingLine": 152
         }
       },
       {
@@ -151,7 +143,7 @@
         "key": "Theme",
         "location": {
           "startingColumn": 24,
-          "startingLine": 159
+          "startingLine": 154
         }
       },
       {
@@ -159,7 +151,7 @@
         "key": "Accent Color",
         "location": {
           "startingColumn": 22,
-          "startingLine": 170
+          "startingLine": 165
         }
       },
       {
@@ -167,7 +159,7 @@
         "key": "Export JSON",
         "location": {
           "startingColumn": 27,
-          "startingLine": 184
+          "startingLine": 179
         }
       },
       {
@@ -175,7 +167,7 @@
         "key": "Export CSV",
         "location": {
           "startingColumn": 27,
-          "startingLine": 197
+          "startingLine": 192
         }
       },
       {
@@ -183,31 +175,31 @@
         "key": "Reset All Data",
         "location": {
           "startingColumn": 27,
-          "startingLine": 210
+          "startingLine": 205
         }
       },
       {
         "comment": "",
-        "key": "ScoreMyDay",
+        "key": "Forge",
         "location": {
           "startingColumn": 31,
-          "startingLine": 225
+          "startingLine": 220
         }
       },
       {
         "comment": "",
-        "key": "I’ve been tracking my deeds with ScoreMyDay. Check it out!",
+        "key": "I’ve been tracking my deeds with Forge. Check it out!",
         "location": {
           "startingColumn": 31,
-          "startingLine": 226
+          "startingLine": 221
         }
       },
       {
         "comment": "",
-        "key": "Share ScoreMyDay",
+        "key": "Share Forge",
         "location": {
           "startingColumn": 23,
-          "startingLine": 228
+          "startingLine": 223
         }
       },
       {
@@ -215,7 +207,7 @@
         "key": "Version",
         "location": {
           "startingColumn": 22,
-          "startingLine": 236
+          "startingLine": 231
         }
       }
     ]
