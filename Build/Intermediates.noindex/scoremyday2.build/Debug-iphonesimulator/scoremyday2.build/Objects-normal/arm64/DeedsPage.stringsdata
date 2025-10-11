@@ -143,7 +143,7 @@
         "key": "Private card",
         "location": {
           "startingColumn": 41,
-          "startingLine": 596
+          "startingLine": 597
         }
       },
       {
@@ -151,7 +151,7 @@
         "key": "New",
         "location": {
           "startingColumn": 22,
-          "startingLine": 626
+          "startingLine": 627
         }
       },
       {
@@ -159,7 +159,7 @@
         "key": "Amount",
         "location": {
           "startingColumn": 30,
-          "startingLine": 678
+          "startingLine": 679
         }
       },
       {
@@ -167,7 +167,7 @@
         "key": "Note",
         "location": {
           "startingColumn": 30,
-          "startingLine": 702
+          "startingLine": 703
         }
       },
       {
@@ -175,7 +175,7 @@
         "key": "Points",
         "location": {
           "startingColumn": 30,
-          "startingLine": 708
+          "startingLine": 709
         }
       },
       {
@@ -183,7 +183,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 28,
-          "startingLine": 667
+          "startingLine": 668
         }
       },
       {
@@ -191,7 +191,7 @@
         "key": "Save",
         "location": {
           "startingColumn": 28,
-          "startingLine": 670
+          "startingLine": 671
         }
       },
       {
@@ -199,7 +199,7 @@
         "key": "%lld %@",
         "location": {
           "startingColumn": 26,
-          "startingLine": 687
+          "startingLine": 688
         }
       },
       {
@@ -207,7 +207,7 @@
         "key": "%lld min",
         "location": {
           "startingColumn": 26,
-          "startingLine": 691
+          "startingLine": 692
         }
       },
       {
@@ -215,7 +215,7 @@
         "key": "%lld %@",
         "location": {
           "startingColumn": 26,
-          "startingLine": 695
+          "startingLine": 696
         }
       },
       {
@@ -223,7 +223,7 @@
         "key": "Optional note",
         "location": {
           "startingColumn": 23,
-          "startingLine": 703
+          "startingLine": 704
         }
       },
       {
@@ -231,7 +231,7 @@
         "key": "%lld %@",
         "location": {
           "startingColumn": 18,
-          "startingLine": 763
+          "startingLine": 764
         }
       },
       {
@@ -239,7 +239,7 @@
         "key": "Rating",
         "location": {
           "startingColumn": 22,
-          "startingLine": 759
+          "startingLine": 760
         }
       },
       {
@@ -247,7 +247,7 @@
         "key": "How did it feel?",
         "location": {
           "startingColumn": 22,
-          "startingLine": 780
+          "startingLine": 781
         }
       },
       {
@@ -255,7 +255,7 @@
         "key": "Rating",
         "location": {
           "startingColumn": 24,
-          "startingLine": 783
+          "startingLine": 784
         }
       },
       {
@@ -263,7 +263,7 @@
         "key": "%lld",
         "location": {
           "startingColumn": 30,
-          "startingLine": 785
+          "startingLine": 786
         }
       },
       {
@@ -271,7 +271,7 @@
         "key": "Cancel",
         "location": {
           "startingColumn": 28,
-          "startingLine": 796
+          "startingLine": 797
         }
       },
       {
@@ -279,7 +279,7 @@
         "key": "Save",
         "location": {
           "startingColumn": 28,
-          "startingLine": 799
+          "startingLine": 800
         }
       }
     ]

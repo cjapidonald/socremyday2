@@ -247,7 +247,7 @@
         "key": "No contributions in this range yet.",
         "location": {
           "startingColumn": 22,
-          "startingLine": 423
+          "startingLine": 440
         }
       },
       {
@@ -255,7 +255,7 @@
         "key": "Value",
         "location": {
           "startingColumn": 39,
-          "startingLine": 429
+          "startingLine": 446
         }
       },
       {
@@ -263,7 +263,7 @@
         "key": "Label",
         "location": {
           "startingColumn": 49,
-          "startingLine": 433
+          "startingLine": 450
         }
       },
       {
@@ -271,7 +271,7 @@
         "key": "%@ • %@",
         "location": {
           "startingColumn": 42,
-          "startingLine": 473
+          "startingLine": 497
         }
       },
       {
@@ -279,7 +279,7 @@
         "key": "%@ • %@",
         "location": {
           "startingColumn": 38,
-          "startingLine": 490
+          "startingLine": 513
         }
       }
     ]
