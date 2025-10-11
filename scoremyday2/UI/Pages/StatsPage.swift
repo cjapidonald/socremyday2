@@ -546,7 +546,7 @@ private struct ContributionChartView: View {
     }
 
     private var colorScale: KeyValuePairs<String, Color> {
-        KeyValuePairs(uniqueKeysWithValues: colorAssignments)
+        KeyValuePairs(colorAssignments)
     }
 
     private var colorLookup: [String: Color] {
