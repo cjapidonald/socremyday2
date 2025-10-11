@@ -9,8 +9,8 @@ struct MotionTransparencyEnv: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .onChange(of: reduceMotion) { _, value in disableParticles(value) }
-            .onChange(of: reduceTransparency) { _, value in setOpaqueBackgrounds(value) }
+            .onChange(of: reduceMotion, perform: disableParticles)
+            .onChange(of: reduceTransparency, perform: setOpaqueBackgrounds)
             .onAppear {
                 disableParticles(reduceMotion)
                 setOpaqueBackgrounds(reduceTransparency)
