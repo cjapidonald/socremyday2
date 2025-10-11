@@ -7,6 +7,6 @@
 		<string>remote-notification</string>
 	</array>
         <key>CloudKitContainerIdentifier</key>
-        <string>iCloud.donald.matrix</string>
+        <string>iCloud.com.Donald.matrix</string>
 </dict>
 </plist>
