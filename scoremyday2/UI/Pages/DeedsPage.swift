@@ -15,11 +15,8 @@ struct DeedsPage: View {
     @State private var scorePulsePhase: CGFloat = 0
     @State private var particlesDisabled = UIAccessibility.isReduceMotionEnabled
     @State private var opaqueBackgrounds = UIAccessibility.isReduceTransparencyEnabled
-    @State private var capHint: CapHintState?
     @State private var moveCardState: MoveCardSheetState?
     @State private var heldActionCard: DeedsPageViewModel.CardState?
-
-    private let capHintStore = DailyCapHintStore()
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -69,17 +66,7 @@ struct DeedsPage: View {
                 }
             }
 
-            if let hint = capHint {
-                CapHintBanner(message: hint.message) {
-                    dismissCapHint()
-                }
-                .padding(.horizontal, 20)
-                .padding(.top, 12)
-                .transition(.move(edge: .top).combined(with: .opacity))
-                .zIndex(1)
-            }
         }
-        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: capHint?.id)
         .onAppear { viewModel.onAppear() }
         .onChange(of: appEnvironment.settings.dayCutoffHour) { _, newValue in
             viewModel.updateCutoffHour(newValue)
@@ -92,7 +79,6 @@ struct DeedsPage: View {
                 if let result = viewModel.log(cardID: updated.card.id, amount: updated.amount, note: updated.note.isEmpty ? nil : updated.note) {
                     let entry = result.entry
                     handleFeedback(for: updated.card.card.polarity, points: entry.computedPoints, cardID: updated.card.id, startFrameOverride: cardFrames[updated.card.id])
-                    handleDailyCapHint(for: updated.card, result: result)
                 }
             }) {
                 quickAddState = nil
@@ -103,7 +89,6 @@ struct DeedsPage: View {
                 if let result = viewModel.confirmRatingSelection(rating) {
                     let entry = result.entry
                     handleFeedback(for: card.card.polarity, points: entry.computedPoints, cardID: card.id)
-                    handleDailyCapHint(for: card, result: result)
                 }
             }
         }
@@ -231,24 +216,6 @@ struct DeedsPage: View {
         if let result = viewModel.prepareTap(on: card) {
             let entry = result.entry
             handleFeedback(for: card.card.polarity, points: entry.computedPoints, cardID: card.id, startFrameOverride: startFrame)
-            handleDailyCapHint(for: card, result: result)
-        }
-    }
-
-    private func handleDailyCapHint(for card: DeedsPageViewModel.CardState, result: LogEntryResult) {
-        guard result.wasCapped else { return }
-        let entry = result.entry
-        guard capHintStore.shouldShowHint(for: card.id, on: entry.timestamp, cutoffHour: viewModel.cutoffHour) else { return }
-        capHintStore.markHintShown(for: card.id, on: entry.timestamp, cutoffHour: viewModel.cutoffHour)
-        let message = "Daily cap reached for \(card.card.name). Additional logs won't earn points today."
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            capHint = CapHintState(message: message)
-        }
-    }
-
-    private func dismissCapHint() {
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            capHint = nil
         }
     }
 
@@ -370,47 +337,7 @@ struct DeedsPage: View {
         let duration: TimeInterval
     }
 
-    struct CapHintState: Identifiable {
-        let id = UUID()
-        let message: String
-    }
-
 }
-
-private struct CapHintBanner: View {
-    let message: String
-    let onDismiss: () -> Void
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: "exclamationmark.triangle.fill")
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(Color.yellow)
-
-            Text(message)
-                .font(.subheadline)
-                .foregroundStyle(.primary)
-                .multilineTextAlignment(.leading)
-
-            Spacer(minLength: 12)
-
-            Button(action: onDismiss) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundStyle(.secondary)
-                    .padding(6)
-                    .background(Circle().fill(Color.secondary.opacity(0.15)))
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Dismiss daily cap hint")
-        }
-        .padding(.vertical, 12)
-        .padding(.horizontal, 16)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .shadow(color: Color.black.opacity(0.08), radius: 10, x: 0, y: 8)
-    }
-}
-
 private struct CardFramePreferenceKey: PreferenceKey {
     static var defaultValue: [UUID: Anchor<CGRect>] = [:]
 
@@ -606,7 +533,7 @@ private struct DeedCardTile: View {
         Button(action: handleTap) {
             ZStack(alignment: .topLeading) {
                 VStack(alignment: .leading, spacing: 12) {
-                    HStack(alignment: .top, spacing: 10) {
+                    HStack(alignment: .center, spacing: 12) {
                         if let emoji = leadingEmoji {
                             Text(emoji)
                                 .font(.system(size: 30))
@@ -617,36 +544,13 @@ private struct DeedCardTile: View {
                         Text(state.card.name)
                             .font(.headline)
                             .foregroundStyle(state.accentColor)
-                            .multilineTextAlignment(.leading)
-                            .lineLimit(3)
-                            .truncationMode(.tail)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .layoutPriority(1)
-
-                        Spacer(minLength: 8)
-
-                        if let pointsText = pointsText {
-                            Text(pointsText)
-                                .font(.subheadline.weight(.semibold))
-                                .foregroundStyle(state.accentColor)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 4)
-                                .background(
-                                    Capsule(style: .circular)
-                                        .fill(state.accentColor.opacity(0.12))
-                                )
-                                .accessibilityLabel("\(pointsText) points")
-                        }
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .frame(maxWidth: .infinity, alignment: .leading)
                     }
-
-                    Text(state.card.unitLabel)
-                        .font(.caption)
-                        .foregroundStyle(state.accentColor.opacity(0.7))
-                        .lineLimit(2)
-                        .truncationMode(.tail)
-                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(16)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 16)
             }
             .frame(maxWidth: .infinity, minHeight: 120, maxHeight: 120, alignment: .topLeading)
             .background(
@@ -694,24 +598,6 @@ private struct DeedCardTile: View {
         return trimmed.isEmpty ? nil : trimmed
     }
 
-    private var pointsText: String? {
-        guard state.card.unitType == .count else { return nil }
-        let points = state.card.pointsPerUnit
-        guard points != 0 else { return nil }
-
-        let absolute = abs(points)
-        let formatted = Self.pointsFormatter.string(from: NSNumber(value: absolute)) ?? String(format: "%.1f", absolute)
-        let prefix = points > 0 ? "+" : points < 0 ? "-" : ""
-        return "\(prefix)\(formatted)"
-    }
-
-    private static let pointsFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = 1
-        formatter.minimumFractionDigits = 0
-        return formatter
-    }()
 }
 
 private struct AddCardTile: View {
