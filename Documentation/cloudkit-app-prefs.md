@@ -9,7 +9,7 @@ You can add the field by using either the CloudKit Dashboard or the `cktool` com
 ### CloudKit Dashboard
 
 1. Open the [CloudKit Dashboard](https://icloud.developer.apple.com/dashboard/).
-2. Select the development environment for the ScoreMyDay container (`iCloud.com.Donald.scoremyday2`).
+2. Select the development environment for the ScoreMyDay container (`iCloud.donald.matrix`).
 3. Navigate to the **Data** tab and choose the `CD_AppPrefs` record type.
 4. Add a new field with the following configuration:
    - **Name:** `CD_themeAccent`
@@ -25,7 +25,7 @@ If you prefer to automate the change, you can use `cktool`:
 
 ```bash
 cktool record-type-field create \
-  --container iCloud.com.Donald.scoremyday2 \
+  --container iCloud.donald.matrix \
   --environment development \
   --record-type CD_AppPrefs \
   --name CD_themeAccent \
@@ -38,7 +38,7 @@ cktool record-type-field create \
 After the field is created, deploy the schema to the development environment:
 
 ```bash
-cktool schema deploy --container iCloud.com.Donald.scoremyday2 --environment development
+cktool schema deploy --container iCloud.donald.matrix --environment development
 ```
 
 ## Verifying the change
