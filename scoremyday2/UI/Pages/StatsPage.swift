@@ -504,6 +504,15 @@ private struct ContributionChartView: View {
             RoundedRectangle(cornerRadius: 16, style: .continuous)
                 .fill(Color(.secondarySystemBackground))
         )
+        .overlay(
+            GridPatternBackground(
+                horizontalDivisions: 4,
+                verticalDivisions: 4,
+                lineWidth: 0.5,
+                color: Color.primary.opacity(0.06)
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        )
     }
 }
 

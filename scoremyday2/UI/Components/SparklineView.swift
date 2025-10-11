@@ -2,8 +2,11 @@ import SwiftUI
 
 struct SparklineView: View {
     var values: [Double]
-    var lineColor: Color = Color.primary.opacity(0.9)
-    var fillColor: Color = Color.primary.opacity(0.2)
+    var lineColor: Color = Color.themeMotionGreen
+    var fillColor: Color = Color.themeMotionGreen.opacity(0.22)
+    var gridColor: Color = Color.primary.opacity(0.08)
+    var horizontalGridLines: Int = 3
+    var verticalGridLines: Int = 5
 
     private var normalized: [Double] {
         guard let max = values.max(), let min = values.min(), max != min else {
@@ -28,6 +31,13 @@ struct SparklineView: View {
             }
 
             ZStack {
+                GridPatternBackground(
+                    horizontalDivisions: horizontalGridLines,
+                    verticalDivisions: max(0, min(verticalGridLines, max(count - 1, 0))),
+                    lineWidth: 0.6,
+                    color: gridColor
+                )
+
                 if count >= 2 {
                     Path { path in
                         path.move(to: CGPoint(x: 0, y: height))

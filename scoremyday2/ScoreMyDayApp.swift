@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct ScoreMyDayApp: App {
+struct ForgeApp: App {
     @StateObject private var appEnvironment = AppEnvironment()
 
     init() {

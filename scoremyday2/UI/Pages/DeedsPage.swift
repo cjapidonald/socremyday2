@@ -16,12 +16,8 @@ struct DeedsPage: View {
     @State private var particlesDisabled = UIAccessibility.isReduceMotionEnabled
     @State private var opaqueBackgrounds = UIAccessibility.isReduceTransparencyEnabled
     @State private var capHint: CapHintState?
-    @State private var draggingCardID: UUID?
-    @State private var pendingDragCardID: UUID?
-    @State private var dragTranslation: CGSize = .zero
-    @State private var dragStartCenter: CGPoint?
-    @State private var lastDragTargetID: UUID?
     @State private var moveCardState: MoveCardSheetState?
+    @State private var heldActionCard: DeedsPageViewModel.CardState?
 
     private let capHintStore = DailyCapHintStore()
 
@@ -186,34 +182,10 @@ struct DeedsPage: View {
         let columns = Array(repeating: GridItem(.flexible(), spacing: 14, alignment: .top), count: 3)
         return LazyVGrid(columns: columns, spacing: 14) {
             ForEach(viewModel.cards) { card in
-                let isDragging = draggingCardID == card.id
                 DeedCardTile(
                     state: card,
                     onTap: { handleTap(on: card) },
-                    onQuickAdd: {
-                        quickAddState = QuickAddState(
-                            card: card,
-                            amount: viewModel.defaultAmount(for: card),
-                            note: ""
-                        )
-                    },
-                    onEdit: { deedEditorState = DeedEditorState(card: card.card) },
-                    onMove: { moveCardState = MoveCardSheetState(cardID: card.id) },
-                    onToggleArchive: { viewModel.toggleArchive(for: card.id) },
-                    onSetShowOnStats: { value in viewModel.setShowOnStats(value, for: card.id) }
-                )
-                .scaleEffect(isDragging ? 1.05 : 1)
-                .offset(isDragging ? dragTranslation : .zero)
-                .zIndex(isDragging ? 1 : 0)
-                .disabled(isDragging || pendingDragCardID == card.id)
-                .simultaneousGesture(
-                    LongPressGesture(minimumDuration: 0.25)
-                        .onEnded { _ in beginDrag(for: card) }
-                )
-                .highPriorityGesture(
-                    DragGesture()
-                        .onChanged { value in updateDrag(for: card.id, translation: value.translation) }
-                        .onEnded { value in finishDrag(for: card.id, translation: value.translation) }
+                    onLongPress: { heldActionCard = card }
                 )
                 .anchorPreference(key: CardFramePreferenceKey.self, value: .bounds) { [card.id: $0] }
             }
@@ -221,6 +193,33 @@ struct DeedsPage: View {
             AddCardTile {
                 deedEditorState = DeedEditorState(card: nil)
             }
+        }
+        .confirmationDialog("Card Actions", item: $heldActionCard) { card in
+            Button("Move Card", role: .none) {
+                moveCardState = MoveCardSheetState(cardID: card.id)
+            }
+
+            Button("Edit Card") {
+                deedEditorState = DeedEditorState(card: card.card)
+            }
+
+            Button("Quick Add") {
+                quickAddState = QuickAddState(
+                    card: card,
+                    amount: viewModel.defaultAmount(for: card),
+                    note: ""
+                )
+            }
+
+            Button(card.card.showOnStats ? "Hide from Stats" : "Show on Stats") {
+                viewModel.setShowOnStats(!card.card.showOnStats, for: card.id)
+            }
+
+            Button(card.card.isArchived ? "Unarchive" : "Archive", role: card.card.isArchived ? .none : .destructive) {
+                viewModel.toggleArchive(for: card.id)
+            }
+
+            Button("Cancel", role: .cancel) { }
         }
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: viewModel.cards)
     }
@@ -232,69 +231,6 @@ struct DeedsPage: View {
             handleFeedback(for: card.card.polarity, points: entry.computedPoints, cardID: card.id, startFrameOverride: startFrame)
             handleDailyCapHint(for: card, result: result)
         }
-    }
-
-    private func beginDrag(for card: DeedsPageViewModel.CardState) {
-        pendingDragCardID = card.id
-        dragTranslation = .zero
-        dragStartCenter = cardFrames[card.id].map(center(of:))
-        lastDragTargetID = nil
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-            if draggingCardID == nil, pendingDragCardID == card.id {
-                pendingDragCardID = nil
-                dragStartCenter = nil
-            }
-        }
-    }
-
-    private func updateDrag(for cardID: UUID, translation: CGSize) {
-        guard pendingDragCardID == cardID || draggingCardID == cardID else { return }
-        if draggingCardID == nil {
-            draggingCardID = cardID
-            pendingDragCardID = nil
-        }
-        guard draggingCardID == cardID else { return }
-        if dragStartCenter == nil {
-            dragStartCenter = cardFrames[cardID].map(center(of:))
-        }
-        dragTranslation = translation
-        handleDragMove(for: cardID, translation: translation)
-    }
-
-    private func finishDrag(for cardID: UUID, translation: CGSize) {
-        if draggingCardID == cardID {
-            dragTranslation = translation
-            viewModel.persistCardOrder()
-        }
-
-        pendingDragCardID = nil
-        draggingCardID = nil
-        dragStartCenter = nil
-        lastDragTargetID = nil
-
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            dragTranslation = .zero
-        }
-    }
-
-    private func handleDragMove(for cardID: UUID, translation: CGSize) {
-        guard let start = dragStartCenter else { return }
-        let position = CGPoint(x: start.x + translation.width, y: start.y + translation.height)
-        guard let target = cardFrames.first(where: { $0.key != cardID && $0.value.contains(position) }) else {
-            lastDragTargetID = nil
-            return
-        }
-        guard lastDragTargetID != target.key else { return }
-        lastDragTargetID = target.key
-
-        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
-            viewModel.moveCard(id: cardID, over: target.key)
-        }
-    }
-
-    private func center(of rect: CGRect) -> CGPoint {
-        CGPoint(x: rect.midX, y: rect.midY)
     }
 
     private func handleDailyCapHint(for card: DeedsPageViewModel.CardState, result: LogEntryResult) {
@@ -660,17 +596,15 @@ private struct MoveCardSheet: View {
 private struct DeedCardTile: View {
     let state: DeedsPageViewModel.CardState
     let onTap: () -> Void
-    let onQuickAdd: () -> Void
-    let onEdit: () -> Void
-    let onMove: () -> Void
-    let onToggleArchive: () -> Void
-    let onSetShowOnStats: (Bool) -> Void
+    let onLongPress: () -> Void
+
+    @State private var longPressTriggered = false
 
     var body: some View {
-        Button(action: onTap) {
+        Button(action: handleTap) {
             ZStack(alignment: .topLeading) {
                 VStack(alignment: .leading, spacing: 12) {
-                    HStack(alignment: .center, spacing: 10) {
+                    HStack(alignment: .top, spacing: 10) {
                         if let emoji = leadingEmoji {
                             Text(emoji)
                                 .font(.system(size: 30))
@@ -681,7 +615,11 @@ private struct DeedCardTile: View {
                         Text(state.card.name)
                             .font(.headline)
                             .foregroundStyle(state.accentColor)
-                            .lineLimit(1)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(3)
+                            .truncationMode(.clip)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .layoutPriority(1)
 
                         Spacer(minLength: 8)
 
@@ -702,7 +640,9 @@ private struct DeedCardTile: View {
                     Text(state.card.unitLabel)
                         .font(.caption)
                         .foregroundStyle(state.accentColor.opacity(0.7))
-                        .lineLimit(1)
+                        .lineLimit(2)
+                        .truncationMode(.clip)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(16)
             }
@@ -720,6 +660,13 @@ private struct DeedCardTile: View {
             .accessibilityLabel(state.card.accessibilityLabel(lastAmount: state.lastAmount, unit: state.card.unitLabel))
         }
         .buttonStyle(.plain)
+        .simultaneousGesture(
+            LongPressGesture(minimumDuration: 0.45)
+                .onEnded { _ in
+                    longPressTriggered = true
+                    onLongPress()
+                }
+        )
         .overlay(alignment: .topTrailing) {
             if state.card.isPrivate {
                 Image(systemName: "eye.slash.fill")
@@ -730,44 +677,14 @@ private struct DeedCardTile: View {
                     .padding(6)
             }
         }
-        .contextMenu {
-            Button {
-                onQuickAdd()
-            } label: {
-                Label("Quick Add", systemImage: "bolt.badge.clock")
-            }
+    }
 
-            Button {
-                onEdit()
-            } label: {
-                Label("Edit", systemImage: "pencil")
-            }
-
-            Button {
-                onMove()
-            } label: {
-                Label("Move Card", systemImage: "arrow.up.arrow.down")
-            }
-
-            Button {
-                onToggleArchive()
-            } label: {
-                Label(
-                    state.card.isArchived ? "Unarchive" : "Archive",
-                    systemImage: state.card.isArchived ? "tray.and.arrow.up" : "archivebox"
-                )
-            }
-
-            Toggle(isOn: Binding(
-                get: { state.card.showOnStats },
-                set: { newValue in
-                    guard newValue != state.card.showOnStats else { return }
-                    onSetShowOnStats(newValue)
-                }
-            )) {
-                Label("Show on Stats Page", systemImage: "chart.bar.xaxis")
-            }
+    private func handleTap() {
+        if longPressTriggered {
+            longPressTriggered = false
+            return
         }
+        onTap()
     }
 
     private var leadingEmoji: String? {
