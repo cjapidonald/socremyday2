@@ -20,6 +20,8 @@ struct SettingsPage: View {
     @State private var isPreparingCSVExport = false
     @State private var isNormalizingDayCutoff = false
 
+    @StateObject private var syncStatus = CloudSyncStatusViewModel()
+
     private let shareURL = URL(string: "https://apps.apple.com/app/id0000000000")!
 
     var body: some View {
@@ -99,9 +101,7 @@ struct SettingsPage: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Label(welcomeText, systemImage: "applelogo")
                         .font(.headline)
-                    Text("Sync coming soon.")
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
+                    SyncStatusSummaryView(displayState: syncStatus.displayState)
                 }
                 .padding(.vertical, 4)
 
@@ -473,6 +473,29 @@ struct SettingsPage: View {
         let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "–"
         let build = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "–"
         return "\(version) (\(build))"
+    }
+}
+
+private struct SyncStatusSummaryView: View {
+    let displayState: CloudSyncStatusViewModel.DisplayState
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(displayState.statusText)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            if let lastSuccessText = displayState.lastSuccessText {
+                Text(lastSuccessText)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
+            if let errorText = displayState.errorText {
+                Text(errorText)
+                    .font(.footnote)
+                    .foregroundStyle(.red)
+            }
+        }
+        .accessibilityElement(children: .combine)
     }
 }
 
