@@ -121,7 +121,7 @@ struct SettingsPage: View {
                         case .success(let authorization):
                             handleAppleAuthorization(authorization)
                         case .failure(let error):
-                            actionError = error.localizedDescription
+                            handleAppleAuthorizationFailure(error)
                         }
                     }
                 )
@@ -287,6 +287,36 @@ struct SettingsPage: View {
                 }
             }
         }
+    }
+
+    private func handleAppleAuthorizationFailure(_ error: Error) {
+        if let preflightError = error as? SignInPreflightError {
+            actionError = preflightError.localizedDescription
+            return
+        }
+
+        if let authorizationError = error as? ASAuthorizationError {
+            switch authorizationError.code {
+            case .canceled:
+                return
+            case .failed, .invalidResponse, .notHandled:
+                actionError = "Sign in with Apple could not be completed. Please try again."
+                return
+            case .unknown, .notInteractive:
+                actionError = "Sign in with Apple is unavailable right now. Please try again later."
+                return
+            @unknown default:
+                actionError = "Something went wrong while signing in with Apple. Please try again."
+                return
+            }
+        }
+
+        if let localized = (error as? LocalizedError)?.errorDescription, !localized.isEmpty {
+            actionError = localized
+            return
+        }
+
+        actionError = error.localizedDescription
     }
 
     private enum SignInPreflightError: LocalizedError {
