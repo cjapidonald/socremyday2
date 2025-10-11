@@ -13,11 +13,11 @@ struct CloudKitUserService {
             case .cloudKit(let error):
                 switch error.code {
                 case .permissionFailure:
-                    return "iCloud does not have permission to access ScoreMyDay data."
+                    return "iCloud does not have permission to access Forge data."
                 case .notAuthenticated:
                     return "Please sign into iCloud to continue."
                 case .unknownItem:
-                    return "We couldn’t find your ScoreMyDay profile. Please try again."
+                    return "We couldn’t find your Forge profile. Please try again."
                 default:
                     return error.localizedDescription
                 }

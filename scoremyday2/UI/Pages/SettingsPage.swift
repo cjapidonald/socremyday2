@@ -70,7 +70,7 @@ struct SettingsPage: View {
                 isPresented: $isPresentingJSONExporter,
                 document: jsonExportDocument,
                 contentType: .folder,
-                defaultFilename: "ScoreMyDay-JSON-Export"
+                defaultFilename: "Forge-JSON-Export"
             ) { result in
                 if case .failure(let error) = result {
                     actionError = error.localizedDescription
@@ -81,7 +81,7 @@ struct SettingsPage: View {
                 isPresented: $isPresentingCSVExporter,
                 document: csvExportDocument,
                 contentType: .folder,
-                defaultFilename: "ScoreMyDay-CSV-Export"
+                defaultFilename: "Forge-CSV-Export"
             ) { result in
                 if case .failure(let error) = result {
                     actionError = error.localizedDescription
@@ -222,10 +222,10 @@ struct SettingsPage: View {
         Section("Share") {
             ShareLink(
                 item: shareURL,
-                subject: Text("ScoreMyDay"),
-                message: Text("I’ve been tracking my deeds with ScoreMyDay. Check it out!")
+                subject: Text("Forge"),
+                message: Text("I’ve been tracking my deeds with Forge. Check it out!")
             ) {
-                Label("Share ScoreMyDay", systemImage: "square.and.arrow.up")
+                Label("Share Forge", systemImage: "square.and.arrow.up")
             }
         }
     }
