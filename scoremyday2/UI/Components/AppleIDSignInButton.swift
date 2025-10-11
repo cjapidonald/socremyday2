@@ -92,11 +92,28 @@ struct AppleIDSignInButton: UIViewRepresentable {
                 return UIWindow(windowScene: activeScene)
             }
 
-            // Fallback for earlier OS versions
+            // Fallback for earlier OS versions and as a last resort construct a window tied to a scene when possible
             if let window = scenes.flatMap({ $0.windows }).first {
                 return window
             }
-            return UIWindow(frame: .zero)
+
+            if let anyScene = scenes.first {
+                if #available(iOS 26.0, *) {
+                    // iOS 26+: avoid deprecated init(frame:), prefer a window bound to a scene
+                    return UIWindow(windowScene: anyScene)
+                } else {
+                    // Earlier iOS versions: init(frame:) is the only option
+                    return UIWindow(frame: .zero)
+                }
+            }
+
+            // Absolute last resort; create a zero-frame window for platforms where scenes may be unavailable
+            if #available(iOS 26.0, *) {
+                // On iOS 26, avoid using the deprecated initializer; return an empty ASPresentationAnchor instead
+                return ASPresentationAnchor()
+            } else {
+                return UIWindow(frame: .zero)
+            }
         }
     }
 }
