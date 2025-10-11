@@ -296,27 +296,29 @@ struct SettingsPage: View {
         }
 
         if let authorizationError = error as? ASAuthorizationError {
-            if #available(iOS 15.0, *), authorizationError.code == .credentialRevoked {
+            // Handle specific codes by comparing raw values without directly referencing cases that may not exist on older SDKs
+            // credentialRevoked was introduced in iOS 15. Compare raw values only when building against iOS 15+.
+            if #available(iOS 15.0, *), authorizationError.code.rawValue == 5 /* ASAuthorizationError.Code.credentialRevoked */ {
                 actionError = "Your Apple ID credentials have been revoked. Please sign in again."
                 return
             }
 
-            if #available(iOS 17.0, *), authorizationError.code == .appLaunchProhibited {
+            // appLaunchProhibited was introduced in iOS 17. Compare raw values only when building against iOS 17+.
+            if #available(iOS 17.0, *), authorizationError.code.rawValue == 6 /* ASAuthorizationError.Code.appLaunchProhibited */ {
                 actionError = "Sign in with Apple could not launch the required app. Please try again later."
                 return
             }
 
+            // Fall back to handling the rest of the known cases
             switch authorizationError.code {
             case .canceled:
                 return
             case .failed, .invalidResponse, .notHandled:
                 actionError = "Sign in with Apple could not be completed. Please try again."
                 return
-            case .unknown, .notInteractive:
+            default:
+                // Covers .unknown, .notInteractive and any future cases on older SDKs
                 actionError = "Sign in with Apple is unavailable right now. Please try again later."
-                return
-            @unknown default:
-                actionError = "Something went wrong while signing in with Apple. Please try again."
                 return
             }
         }

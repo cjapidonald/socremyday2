@@ -74,19 +74,20 @@ struct AppleIDSignInButton: UIViewRepresentable {
         }
 
         func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-            let windowScenes = UIApplication.shared.connectedScenes
-                .compactMap { $0 as? UIWindowScene }
-
-            if let window = windowScenes
+            // Prefer an existing key window if available
+            if let keyWindow = UIApplication.shared.connectedScenes
+                .compactMap({ $0 as? UIWindowScene })
                 .flatMap({ $0.windows })
                 .first(where: { $0.isKeyWindow }) {
-                return window
+                return keyWindow
             }
 
-            if #available(iOS 26.0, *), let windowScene = windowScenes.first {
+            // On iOS 26+, construct a window using the windowScene initializer (avoids deprecated init(frame:))
+            if #available(iOS 26.0, *), let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 return UIWindow(windowScene: windowScene)
             }
 
+            // Fallback for earlier OS versions
             return UIWindow(frame: .zero)
         }
     }

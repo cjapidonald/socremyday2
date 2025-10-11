@@ -307,13 +307,11 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 
 #if defined(__OBJC__)
 
-@class NSUUID;
 @class NSString;
 @class NSEntityDescription;
 @class NSManagedObjectContext;
 SWIFT_CLASS_NAMED("AppPrefsMO")
 @interface AppPrefsMO : NSManagedObject
-@property (nonatomic, copy) NSUUID * _Nonnull id;
 @property (nonatomic) int16_t dayCutoffHour;
 @property (nonatomic) BOOL hapticsOn;
 @property (nonatomic) BOOL soundsOn;
@@ -327,7 +325,6 @@ SWIFT_CLASS_NAMED("AppPrefsMO")
 @class DeedEntryMO;
 SWIFT_CLASS_NAMED("DeedCardMO")
 @interface DeedCardMO : NSManagedObject
-@property (nonatomic, copy) NSUUID * _Nonnull id;
 @property (nonatomic, copy) NSString * _Nonnull name;
 @property (nonatomic, copy) NSString * _Nonnull emoji;
 @property (nonatomic, copy) NSString * _Nonnull colorHex;
@@ -348,8 +345,6 @@ SWIFT_CLASS_NAMED("DeedCardMO")
 
 SWIFT_CLASS_NAMED("DeedEntryMO")
 @interface DeedEntryMO : NSManagedObject
-@property (nonatomic, copy) NSUUID * _Nonnull id;
-@property (nonatomic, copy) NSUUID * _Nonnull deedId;
 @property (nonatomic, copy) NSDate * _Nonnull timestamp;
 @property (nonatomic) double amount;
 @property (nonatomic) double computedPoints;
