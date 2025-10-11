@@ -165,6 +165,15 @@ struct DeedsPage: View {
 
     private var cardsGrid: some View {
         let columns = Array(repeating: GridItem(.flexible(), spacing: 14, alignment: .top), count: 3)
+        let isShowingCardActions = Binding(
+            get: { heldActionCard != nil },
+            set: { newValue in
+                if !newValue {
+                    heldActionCard = nil
+                }
+            }
+        )
+
         return LazyVGrid(columns: columns, spacing: 14) {
             ForEach(viewModel.cards) { card in
                 DeedCardTile(
@@ -179,35 +188,40 @@ struct DeedsPage: View {
                 deedEditorState = DeedEditorState(card: nil)
             }
         }
-        .confirmationDialog("Card Actions", item: $heldActionCard) { card in
-            Button("Move Card", role: .none) {
-                moveCardState = MoveCardSheetState(cardID: card.id)
-            }
+        .confirmationDialog("Card Actions", isPresented: isShowingCardActions) {
+            if let card = heldActionCard {
+                Button("Move Card", role: .none) {
+                    moveCardState = MoveCardSheetState(cardID: card.id)
+                }
 
-            Button("Edit Card") {
-                deedEditorState = DeedEditorState(card: card.card)
-            }
+                Button("Edit Card") {
+                    deedEditorState = DeedEditorState(card: card.card)
+                }
 
-            Button("Quick Add") {
-                quickAddState = QuickAddState(
-                    card: card,
-                    amount: viewModel.defaultAmount(for: card),
-                    note: ""
-                )
-            }
+                Button("Quick Add") {
+                    quickAddState = QuickAddState(
+                        card: card,
+                        amount: viewModel.defaultAmount(for: card),
+                        note: "",
+                    )
+                }
 
-            Button(card.card.showOnStats ? "Hide from Stats" : "Show on Stats") {
-                viewModel.setShowOnStats(!card.card.showOnStats, for: card.id)
-            }
+                Button(card.card.showOnStats ? "Hide from Stats" : "Show on Stats") {
+                    viewModel.setShowOnStats(!card.card.showOnStats, for: card.id)
+                }
 
-            Button(card.card.isArchived ? "Unarchive" : "Archive", role: card.card.isArchived ? .none : .destructive) {
-                viewModel.toggleArchive(for: card.id)
+                Button(card.card.isArchived ? "Unarchive" : "Archive", role: card.card.isArchived ? .none : .destructive) {
+                    viewModel.toggleArchive(for: card.id)
+                }
             }
 
             Button("Cancel", role: .cancel) { }
         } message: {
-            Text("Select an action for \(heldActionCard?.card.name ?? "this card")")
+            if let card = heldActionCard {
+                Text("Select an action for \(card.card.name)")
+            }
         }
+
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: viewModel.cards)
     }
 
