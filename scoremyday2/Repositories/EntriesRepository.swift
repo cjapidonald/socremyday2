@@ -28,24 +28,8 @@ final class EntriesRepository {
             }
 
             let rawPoints = request.amount * deed.pointsPerUnit
-            let computedPoints: Double
-            let wasCapped: Bool
-            if let capAmount = deed.dailyCap?.doubleValue,
-               capAmount >= 0,
-               rawPoints > 0,
-               deed.pointsPerUnit > 0
-            {
-                let dayRange = appDayRange(for: request.timestamp, cutoffHour: cutoffHour)
-                let existingPoints = try pointsAwarded(for: deed, within: dayRange, positiveOnly: true)
-                let existingAmount = existingPoints / deed.pointsPerUnit
-                let remainingAmount = max(0, capAmount - existingAmount)
-                let awardedAmount = max(0, min(request.amount, remainingAmount))
-                computedPoints = awardedAmount * deed.pointsPerUnit
-                wasCapped = awardedAmount < request.amount
-            } else {
-                computedPoints = rawPoints
-                wasCapped = false
-            }
+            let computedPoints = rawPoints
+            let wasCapped = false
 
             let entry = DeedEntryMO(context: context)
             entry.id = UUID()
@@ -97,24 +81,4 @@ final class EntriesRepository {
         }
     }
 
-    private func pointsAwarded(
-        for deed: DeedCardMO,
-        within range: (start: Date, end: Date),
-        positiveOnly: Bool
-    ) throws -> Double {
-        let request = DeedEntryMO.fetchRequest()
-        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
-            NSPredicate(format: "deed == %@", deed),
-            NSPredicate(format: "timestamp >= %@ AND timestamp < %@", range.start as NSDate, range.end as NSDate)
-        ])
-        let entries = try context.fetch(request)
-        return entries.reduce(0) { partialResult, entry in
-            let value = entry.computedPoints
-            if positiveOnly {
-                return partialResult + max(0, value)
-            } else {
-                return partialResult + value
-            }
-        }
-    }
 }
