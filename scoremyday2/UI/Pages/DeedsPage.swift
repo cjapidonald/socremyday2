@@ -194,7 +194,10 @@ struct DeedsPage: View {
                 deedEditorState = DeedEditorState(card: nil)
             }
         }
-        .confirmationDialog("Card Actions", item: $heldActionCard) { card in
+        .confirmationDialog(
+            "Card Actions",
+            item: $heldActionCard,
+            actions: { card in
             Button("Move Card", role: .none) {
                 moveCardState = MoveCardSheetState(cardID: card.id)
             }
@@ -220,7 +223,11 @@ struct DeedsPage: View {
             }
 
             Button("Cancel", role: .cancel) { }
-        }
+        },
+            message: { card in
+                Text("Select an action for \(card.card.name)")
+            }
+        )
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: viewModel.cards)
     }
 
@@ -617,7 +624,7 @@ private struct DeedCardTile: View {
                             .foregroundStyle(state.accentColor)
                             .multilineTextAlignment(.leading)
                             .lineLimit(3)
-                            .truncationMode(.clip)
+                            .truncationMode(.tail)
                             .fixedSize(horizontal: false, vertical: true)
                             .layoutPriority(1)
 
@@ -641,7 +648,7 @@ private struct DeedCardTile: View {
                         .font(.caption)
                         .foregroundStyle(state.accentColor.opacity(0.7))
                         .lineLimit(2)
-                        .truncationMode(.clip)
+                        .truncationMode(.tail)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(16)

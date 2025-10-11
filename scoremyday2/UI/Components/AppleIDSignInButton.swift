@@ -16,11 +16,13 @@ struct AppleIDSignInButton: UIViewRepresentable {
         let button = ASAuthorizationAppleIDButton(type: type, style: style)
         button.cornerRadius = cornerRadius
         button.addTarget(context.coordinator, action: #selector(Coordinator.didTapButton), for: .touchUpInside)
+        context.coordinator.updateAnchorSource(with: button)
         return button
     }
 
     func updateUIView(_ uiView: ASAuthorizationAppleIDButton, context: Context) {
         uiView.cornerRadius = cornerRadius
+        context.coordinator.updateAnchorSource(with: uiView)
     }
 
     func makeCoordinator() -> Coordinator {
@@ -30,9 +32,14 @@ struct AppleIDSignInButton: UIViewRepresentable {
     final class Coordinator: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
         private let parent: AppleIDSignInButton
         private var controller: ASAuthorizationController?
+        private weak var anchorButton: ASAuthorizationAppleIDButton?
 
         init(parent: AppleIDSignInButton) {
             self.parent = parent
+        }
+
+        func updateAnchorSource(with button: ASAuthorizationAppleIDButton) {
+            anchorButton = button
         }
 
         @objc
@@ -74,6 +81,10 @@ struct AppleIDSignInButton: UIViewRepresentable {
         }
 
         func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+            if let window = anchorButton?.window {
+                return window
+            }
+
             let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
 
             // Prefer an existing key window if available
@@ -95,9 +106,16 @@ struct AppleIDSignInButton: UIViewRepresentable {
                 }
             }
 
-            // Absolute last resort; construct a zero-sized window. The frame-based initializer remains available on
-            // all current deployment targets and avoids using the deprecated parameterless initializer on iOS 26.
-            return UIWindow(frame: .zero)
+            // As a final fallback, return any existing window we can create within the current deployment target.
+            if #available(iOS 26.0, *) {
+                assertionFailure("Unable to locate a UIWindowScene for Sign in with Apple presentation")
+                guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                    fatalError("A UIWindowScene is required to present the authorization controller.")
+                }
+                return UIWindow(windowScene: scene)
+            } else {
+                return UIWindow(frame: .zero)
+            }
         }
     }
 }
