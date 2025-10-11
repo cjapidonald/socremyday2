@@ -77,7 +77,12 @@ struct CloudKitUserService {
                 record["appleUserIdentifier"] = appleID as NSString
             }
         } catch {
-            throw mapError(error)
+            if let ckError = error as? CKError, ckError.isMissingProfileSchemaError {
+                record = CKRecord(recordType: "UserProfile")
+                record["appleUserIdentifier"] = appleID as NSString
+            } else {
+                throw mapError(error)
+            }
         }
 
         if record.object(forKey: "appleUserIdentifier") == nil {
@@ -113,5 +118,26 @@ struct CloudKitUserService {
             return ServiceError.cloudKit(ckError)
         }
         return error
+    }
+}
+
+private extension CKError {
+    /// Returns true when the error represents a missing user profile that should be recreated.
+    var isMissingProfileSchemaError: Bool {
+        if code == .unknownItem {
+            return true
+        }
+
+        if code == .partialFailure {
+            let unknownItemError = (userInfo[CKPartialErrorsByItemIDKey] as? [AnyHashable: Error])?
+                .values
+                .compactMap { $0 as? CKError }
+                .first { $0.code == .unknownItem }
+            if unknownItemError != nil {
+                return true
+            }
+        }
+
+        return false
     }
 }
