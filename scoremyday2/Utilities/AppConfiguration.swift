@@ -1,16 +1,16 @@
 import Foundation
 
 enum AppConfiguration {
+    private static let defaultCloudKitContainerIdentifier = "iCloud.com.Donald.matrix"
+
     static var cloudKitContainerIdentifier: String? {
-        guard let rawValue = Bundle.main.object(forInfoDictionaryKey: "CloudKitContainerIdentifier") as? String else {
-            return nil
+        if let rawValue = Bundle.main.object(forInfoDictionaryKey: "CloudKitContainerIdentifier") as? String {
+            let identifier = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !identifier.isEmpty {
+                return identifier
+            }
         }
 
-        let identifier = rawValue.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !identifier.isEmpty else {
-            return nil
-        }
-
-        return identifier
+        return defaultCloudKitContainerIdentifier
     }
 }
