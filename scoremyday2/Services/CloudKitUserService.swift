@@ -30,11 +30,18 @@ struct CloudKitUserService {
     private let analytics: AnalyticsProviding
 
     init(
-        container: CKContainer = .default(),
+        container: CKContainer? = nil,
         analytics: AnalyticsProviding = AnalyticsEngine.shared
     ) {
-        self.container = container
-        self.database = container.publicCloudDatabase
+        if let container {
+            self.container = container
+        } else if let identifier = AppConfiguration.cloudKitContainerIdentifier {
+            self.container = CKContainer(identifier: identifier)
+        } else {
+            self.container = .default()
+        }
+
+        self.database = self.container.publicCloudDatabase
         self.analytics = analytics
     }
 
