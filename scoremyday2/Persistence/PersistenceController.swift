@@ -19,11 +19,9 @@ final class PersistenceController {
         guard let description = container.persistentStoreDescriptions.first else {
             fatalError("###\(#function): Failed to retrieve a persistent store description.")
         }
-        if let containerIdentifier = AppConfiguration.cloudKitContainerIdentifier {
-            description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
-                containerIdentifier: containerIdentifier
-            )
-        }
+        description.cloudKitContainerOptions = NSPersistentCloudKitContainerOptions(
+            containerIdentifier: CloudKitEnv.containerID
+        )
 
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
