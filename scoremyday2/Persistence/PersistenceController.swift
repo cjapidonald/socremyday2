@@ -1,4 +1,5 @@
 import CoreData
+import Dispatch
 import Foundation
 
 final class PersistenceController {
@@ -23,11 +24,14 @@ final class PersistenceController {
             containerIdentifier: CloudKitEnv.containerID
         )
 
+        let loadSemaphore = DispatchSemaphore(value: 0)
         container.loadPersistentStores { _, error in
             if let error = error as NSError? {
                 assertionFailure("Unresolved Core Data error: \(error), userInfo: \(error.userInfo)")
             }
+            loadSemaphore.signal()
         }
+        loadSemaphore.wait()
         container.viewContext.automaticallyMergesChangesFromParent = true
         container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
 
