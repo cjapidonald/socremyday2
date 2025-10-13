@@ -5,17 +5,16 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"/.. && pwd)"
 BUILD_DIR="$ROOT_DIR/Build"
 DERIVED_DATA_DIR="$HOME/Library/Developer/Xcode/DerivedData"
 
-if [ ! -d "$BUILD_DIR" ]; then
+if [ -d "$BUILD_DIR" ]; then
+  find "$BUILD_DIR" -name "build.db" -delete
+  echo "Removed cached build databases under $BUILD_DIR"
+
+  # Remove any stale XCBuildData folders that can corrupt incremental builds
+  find "$BUILD_DIR" -name "XCBuildData" -type d -prune -exec rm -rf {} +
+  echo "Removed XCBuildData directories"
+else
   echo "No Build directory found at $BUILD_DIR"
-  exit 0
 fi
-
-find "$BUILD_DIR" -name "build.db" -delete
-echo "Removed cached build databases under $BUILD_DIR"
-
-# Remove any stale XCBuildData folders that can corrupt incremental builds
-find "$BUILD_DIR" -name "XCBuildData" -type d -prune -exec rm -rf {} +
-echo "Removed XCBuildData directories"
 
 if [ -d "$DERIVED_DATA_DIR" ]; then
   # Clear out derived data folders created for this project to avoid stale caches
