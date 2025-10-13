@@ -1,5 +1,5 @@
 {
-  "source": "/Users/donaldcjapi/Desktop/scoremyday2/scoremyday2/UI/Pages/SettingsPage.swift",
+  "source": "/Users/donaldcjapi/Desktop/Forge/socremyday2/scoremyday2/UI/Pages/SettingsPage.swift",
   "tables": {
     "Localizable": [
       {
@@ -7,7 +7,7 @@
         "key": "Settings",
         "location": {
           "startingColumn": 30,
-          "startingLine": 34
+          "startingLine": 36
         }
       },
       {
@@ -15,7 +15,7 @@
         "key": "Something went wrong",
         "location": {
           "startingColumn": 20,
-          "startingLine": 44
+          "startingLine": 46
         }
       },
       {
@@ -23,7 +23,15 @@
         "key": "Reset All Data?",
         "location": {
           "startingColumn": 17,
-          "startingLine": 57
+          "startingLine": 59
+        }
+      },
+      {
+        "comment": "",
+        "key": "Delete Account?",
+        "location": {
+          "startingColumn": 17,
+          "startingLine": 70
         }
       },
       {
@@ -31,7 +39,7 @@
         "key": "Account",
         "location": {
           "startingColumn": 17,
-          "startingLine": 93
+          "startingLine": 108
         }
       },
       {
@@ -39,7 +47,7 @@
         "key": "Preferences",
         "location": {
           "startingColumn": 17,
-          "startingLine": 136
+          "startingLine": 165
         }
       },
       {
@@ -47,7 +55,7 @@
         "key": "Data",
         "location": {
           "startingColumn": 17,
-          "startingLine": 174
+          "startingLine": 203
         }
       },
       {
@@ -55,7 +63,7 @@
         "key": "Share",
         "location": {
           "startingColumn": 17,
-          "startingLine": 217
+          "startingLine": 246
         }
       },
       {
@@ -63,7 +71,7 @@
         "key": "About",
         "location": {
           "startingColumn": 17,
-          "startingLine": 229
+          "startingLine": 258
         }
       },
       {
@@ -71,7 +79,7 @@
         "key": "OK",
         "location": {
           "startingColumn": 24,
-          "startingLine": 52
+          "startingLine": 54
         }
       },
       {
@@ -79,7 +87,7 @@
         "key": "Reset All Data",
         "location": {
           "startingColumn": 24,
-          "startingLine": 61
+          "startingLine": 63
         }
       },
       {
@@ -87,7 +95,23 @@
         "key": "This deletes all deeds and entries. Preferences remain unchanged. This action cannot be undone.",
         "location": {
           "startingColumn": 22,
-          "startingLine": 65
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "Delete Account",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "Deleting your account removes your profile and all synced data from iCloud. This action cannot be undone.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 80
         }
       },
       {
@@ -95,7 +119,7 @@
         "key": "Welcome",
         "location": {
           "startingColumn": 23,
-          "startingLine": 107
+          "startingLine": 136
         }
       },
       {
@@ -103,7 +127,15 @@
         "key": "Sign Out",
         "location": {
           "startingColumn": 24,
-          "startingLine": 103
+          "startingLine": 118
+        }
+      },
+      {
+        "comment": "",
+        "key": "Delete Account",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 127
         }
       },
       {
@@ -111,7 +143,7 @@
         "key": "Day Cutoff",
         "location": {
           "startingColumn": 17,
-          "startingLine": 138
+          "startingLine": 167
         }
       },
       {
@@ -119,7 +151,7 @@
         "key": "Haptics & Vibration",
         "location": {
           "startingColumn": 20,
-          "startingLine": 148
+          "startingLine": 177
         }
       },
       {
@@ -127,7 +159,7 @@
         "key": "Sounds",
         "location": {
           "startingColumn": 20,
-          "startingLine": 149
+          "startingLine": 178
         }
       },
       {
@@ -135,7 +167,7 @@
         "key": "Appearance",
         "location": {
           "startingColumn": 22,
-          "startingLine": 152
+          "startingLine": 181
         }
       },
       {
@@ -143,7 +175,7 @@
         "key": "Theme",
         "location": {
           "startingColumn": 24,
-          "startingLine": 154
+          "startingLine": 183
         }
       },
       {
@@ -151,7 +183,7 @@
         "key": "Accent Color",
         "location": {
           "startingColumn": 22,
-          "startingLine": 165
+          "startingLine": 194
         }
       },
       {
@@ -159,7 +191,7 @@
         "key": "Export JSON",
         "location": {
           "startingColumn": 27,
-          "startingLine": 179
+          "startingLine": 208
         }
       },
       {
@@ -167,7 +199,7 @@
         "key": "Export CSV",
         "location": {
           "startingColumn": 27,
-          "startingLine": 192
+          "startingLine": 221
         }
       },
       {
@@ -175,7 +207,7 @@
         "key": "Reset All Data",
         "location": {
           "startingColumn": 27,
-          "startingLine": 205
+          "startingLine": 234
         }
       },
       {
@@ -183,7 +215,7 @@
         "key": "Forge",
         "location": {
           "startingColumn": 31,
-          "startingLine": 220
+          "startingLine": 249
         }
       },
       {
@@ -191,7 +223,7 @@
         "key": "I’ve been tracking my deeds with Forge. Check it out!",
         "location": {
           "startingColumn": 31,
-          "startingLine": 221
+          "startingLine": 250
         }
       },
       {
@@ -199,7 +231,7 @@
         "key": "Share Forge",
         "location": {
           "startingColumn": 23,
-          "startingLine": 223
+          "startingLine": 252
         }
       },
       {
@@ -207,7 +239,7 @@
         "key": "Version",
         "location": {
           "startingColumn": 22,
-          "startingLine": 231
+          "startingLine": 260
         }
       }
     ]
