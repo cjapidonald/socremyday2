@@ -17,6 +17,7 @@ final class AccountStore: ObservableObject {
     private let defaults: UserDefaults
     private let userService: CloudKitUserService?
     private let keychain: KeychainStore
+    private let dataMaintenance: DataMaintenanceService
     private let identifierKey = "account.appleIdentifier"
     private let emailKey = "account.appleEmail"
     private let nameKey = "account.appleName"
@@ -27,11 +28,13 @@ final class AccountStore: ObservableObject {
     init(
         userDefaults: UserDefaults = .standard,
         userService: CloudKitUserService? = nil,
-        keychain: KeychainStore? = nil
+        keychain: KeychainStore? = nil,
+        dataMaintenance: DataMaintenanceService? = nil
     ) {
         defaults = userDefaults
         self.userService = userService ?? CloudKitUserService()
         self.keychain = keychain ?? KeychainStore()
+        self.dataMaintenance = dataMaintenance ?? DataMaintenanceService()
 
         if let identifier = (try? self.keychain.string(forKey: identifierKey)) ?? defaults.string(forKey: identifierKey) {
             let email = defaults.string(forKey: emailKey)
@@ -86,6 +89,26 @@ final class AccountStore: ObservableObject {
             #endif
         }
         hasSeenAppleNameEmail = false
+    }
+
+    func deleteAccount() async throws {
+        guard let account else { return }
+
+        do {
+            if let userService {
+                try await userService.deleteUserProfile(appleID: account.identifier)
+            }
+        } catch {
+            throw error
+        }
+
+        do {
+            try dataMaintenance.resetAllData()
+        } catch {
+            throw error
+        }
+
+        signOut()
     }
 
     func handleSignIn(credential: ASAuthorizationAppleIDCredential) async throws {

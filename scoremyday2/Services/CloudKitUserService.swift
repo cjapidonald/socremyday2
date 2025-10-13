@@ -103,6 +103,46 @@ struct CloudKitUserService {
         }
     }
 
+    func deleteUserProfile(appleID: String) async throws {
+        guard try await container.accountStatus() == .available else {
+            throw ServiceError.accountUnavailable
+        }
+
+        let predicate = NSPredicate(format: "appleUserIdentifier == %@", appleID)
+        let query = CKQuery(recordType: "UserProfile", predicate: predicate)
+
+        do {
+            let (matchResults, _) = try await database.records(
+                matching: query,
+                desiredKeys: nil,
+                resultsLimit: 1
+            )
+
+            guard let (recordID, result) = matchResults.first else {
+                return
+            }
+
+            switch result {
+            case .success:
+                do {
+                    _ = try await database.modifyRecords(saving: [], deleting: [recordID])
+                } catch {
+                    if let ckError = error as? CKError, ckError.indicatesRecordAlreadyDeleted {
+                        return
+                    }
+                    throw mapError(error)
+                }
+            case .failure(let error):
+                throw mapError(error)
+            }
+        } catch {
+            if let ckError = error as? CKError, ckError.indicatesRecordAlreadyDeleted {
+                return
+            }
+            throw mapError(error)
+        }
+    }
+
     private func mapError(_ error: Error) -> Error {
         if let ckError = error as? CKError {
             analytics.track(event: AnalyticsEvent(
@@ -122,6 +162,24 @@ struct CloudKitUserService {
 private extension CKError {
     /// Returns true when the error represents a missing user profile that should be recreated.
     var isMissingProfileSchemaError: Bool {
+        if code == .unknownItem {
+            return true
+        }
+
+        if code == .partialFailure {
+            let unknownItemError = (userInfo[CKPartialErrorsByItemIDKey] as? [AnyHashable: Error])?
+                .values
+                .compactMap { $0 as? CKError }
+                .first { $0.code == .unknownItem }
+            if unknownItemError != nil {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    var indicatesRecordAlreadyDeleted: Bool {
         if code == .unknownItem {
             return true
         }

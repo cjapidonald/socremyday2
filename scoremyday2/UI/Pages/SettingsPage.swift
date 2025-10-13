@@ -19,6 +19,8 @@ struct SettingsPage: View {
     @State private var isPreparingJSONExport = false
     @State private var isPreparingCSVExport = false
     @State private var isNormalizingDayCutoff = false
+    @State private var showDeleteAccountConfirmation = false
+    @State private var isDeletingAccount = false
 
     private let shareURL = URL(string: "https://apps.apple.com/app/id0000000000")!
 
@@ -64,6 +66,19 @@ struct SettingsPage: View {
             } message: {
                 Text("This deletes all deeds and entries. Preferences remain unchanged. This action cannot be undone.")
             }
+            .confirmationDialog(
+                "Delete Account?",
+                isPresented: $showDeleteAccountConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Delete Account", role: .destructive) {
+                    Task {
+                        await performAccountDeletion()
+                    }
+                }
+            } message: {
+                Text("Deleting your account removes your profile and all synced data from iCloud. This action cannot be undone.")
+            }
             .fileExporter(
                 isPresented: $isPresentingJSONExporter,
                 document: jsonExportDocument,
@@ -103,6 +118,20 @@ struct SettingsPage: View {
                 Button("Sign Out", role: .destructive) {
                     accountStore.signOut()
                 }
+                .disabled(isDeletingAccount)
+
+                Button(role: .destructive) {
+                    showDeleteAccountConfirmation = true
+                } label: {
+                    HStack {
+                        Label("Delete Account", systemImage: "person.crop.circle.badge.xmark")
+                        Spacer()
+                        if isDeletingAccount {
+                            ProgressView()
+                        }
+                    }
+                }
+                .disabled(isDeletingAccount)
             } else {
                 Label("Welcome", systemImage: "applelogo")
                     .font(.headline)
@@ -407,6 +436,22 @@ struct SettingsPage: View {
             actionError = error.localizedDescription
         }
         isPreparingCSVExport = false
+    }
+
+    @MainActor
+    private func performAccountDeletion() async {
+        showDeleteAccountConfirmation = false
+        guard !isDeletingAccount else { return }
+        isDeletingAccount = true
+
+        do {
+            try await accountStore.deleteAccount()
+            appEnvironment.notifyDataDidChange()
+        } catch {
+            actionError = error.localizedDescription
+        }
+
+        isDeletingAccount = false
     }
 
     private func resetAllData() {
