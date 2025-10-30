@@ -22,7 +22,7 @@ struct SettingsPage: View {
     @State private var showDeleteAccountConfirmation = false
     @State private var isDeletingAccount = false
 
-    private let shareURL = URL(string: "https://apps.apple.com/app/id0000000000")!
+    private let shareURL = URL(string: "https://apps.apple.com/vn/app/forge-the-better-me/id6753785275?l=en")!
 
     var body: some View {
         NavigationStack {
