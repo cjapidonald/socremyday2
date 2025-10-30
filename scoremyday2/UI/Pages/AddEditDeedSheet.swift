@@ -10,6 +10,7 @@ struct AddEditDeedSheet: View {
     @State private var name: String
     @State private var emoji: String
     @State private var color: Color
+    @State private var textColor: Color
     @State private var category: String
     @State private var polarity: Polarity
     @State private var unitType: UnitType
@@ -34,6 +35,7 @@ struct AddEditDeedSheet: View {
         _name = State(initialValue: initialCard?.name ?? "")
         _emoji = State(initialValue: initialCard?.emoji ?? "")
         _color = State(initialValue: Color(hex: initialCard?.colorHex ?? "#FF9F0A", fallback: .accentColor))
+        _textColor = State(initialValue: Color(hex: initialCard?.textColorHex ?? "#FFFFFF", fallback: .white))
         _category = State(initialValue: initialCard?.category ?? "")
         _polarity = State(initialValue: defaultPolarity)
         _unitType = State(initialValue: defaultUnitType)
@@ -67,7 +69,33 @@ struct AddEditDeedSheet: View {
                         .textInputAutocapitalization(.words)
                         .disableAutocorrection(true)
 
-                    ColorPicker("Color", selection: $color, supportsOpacity: false)
+                    ColorPicker("Card Color", selection: $color, supportsOpacity: false)
+
+                    HStack {
+                        Text("Text Color")
+                        Spacer()
+                        Button(action: { textColor = .white }) {
+                            Circle()
+                                .fill(Color.white)
+                                .frame(width: 30, height: 30)
+                                .overlay(
+                                    Circle()
+                                        .stroke(textColor == .white ? Color.blue : Color.gray.opacity(0.3), lineWidth: textColor == .white ? 3 : 1)
+                                )
+                        }
+                        .buttonStyle(.plain)
+
+                        Button(action: { textColor = .black }) {
+                            Circle()
+                                .fill(Color.black)
+                                .frame(width: 30, height: 30)
+                                .overlay(
+                                    Circle()
+                                        .stroke(textColor == .black ? Color.blue : Color.gray.opacity(0.3), lineWidth: textColor == .black ? 3 : 1)
+                                )
+                        }
+                        .buttonStyle(.plain)
+                    }
                 }
 
                 Section("Category") {
@@ -159,32 +187,32 @@ struct AddEditDeedSheet: View {
                 if !previewModel.category.trimmingCharacters(in: .whitespaces).isEmpty {
                     Text(previewModel.category.uppercased())
                         .font(.caption2.weight(.semibold))
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(textColor.opacity(0.7))
                 }
 
                 if previewModel.isPrivate {
                     Image(systemName: "eye.slash.fill")
                         .font(.system(size: 14, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.7))
+                        .foregroundStyle(textColor.opacity(0.7))
                         .frame(maxWidth: .infinity, alignment: .topTrailing)
                 }
 
                 Text(previewModel.name.isEmpty ? "Deed Name" : previewModel.name)
                     .font(.headline)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(textColor)
 
                 Text(previewModel.unitLabel.isEmpty ? Self.placeholderLabel(for: previewModel.unitType) : previewModel.unitLabel)
                     .font(.caption)
-                    .foregroundStyle(.white.opacity(0.7))
+                    .foregroundStyle(textColor.opacity(0.7))
 
                 Text(pointsSummary)
                     .font(.caption.weight(.semibold))
-                    .foregroundStyle(.white)
+                    .foregroundStyle(textColor)
 
                 if let cap = previewModel.dailyCap {
                     Text("Daily cap: \(Self.format(cap))")
                         .font(.caption2)
-                        .foregroundStyle(.white.opacity(0.7))
+                        .foregroundStyle(textColor.opacity(0.7))
                 }
             }
             .padding()
@@ -198,11 +226,13 @@ struct AddEditDeedSheet: View {
 
     private var previewModel: DeedCard {
         let hex = color.toHex(includeAlpha: false) ?? initialCard?.colorHex ?? "#FF9F0A"
+        let textHex = textColor.toHex(includeAlpha: false) ?? initialCard?.textColorHex ?? "#FFFFFF"
         return DeedCard(
             id: initialCard?.id ?? UUID(),
             name: name,
             emoji: emoji,
             colorHex: hex,
+            textColorHex: textHex,
             category: category,
             polarity: polarity,
             unitType: unitType,
@@ -259,6 +289,7 @@ struct AddEditDeedSheet: View {
     private func handleSave() {
         guard let rawPoints = pointsPerUnitValue, rawPoints != 0 else { return }
         let colorHex = color.toHex(includeAlpha: false) ?? initialCard?.colorHex ?? "#FF9F0A"
+        let textColorHex = textColor.toHex(includeAlpha: false) ?? initialCard?.textColorHex ?? "#FFFFFF"
         let points = polarity == .positive ? abs(rawPoints) : -abs(rawPoints)
 
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -269,6 +300,7 @@ struct AddEditDeedSheet: View {
             name: trimmedName,
             emoji: emoji.trimmingCharacters(in: .whitespacesAndNewlines),
             colorHex: colorHex,
+            textColorHex: textColorHex,
             category: trimmedCategory,
             polarity: polarity,
             unitType: unitType,

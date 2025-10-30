@@ -8,6 +8,7 @@ extension DeedCard {
             name: managedObject.name,
             emoji: managedObject.emoji,
             colorHex: managedObject.colorHex,
+            textColorHex: managedObject.textColorHex,
             category: managedObject.category,
             polarity: Polarity(rawValue: managedObject.polarityRaw) ?? .positive,
             unitType: UnitType(rawValue: managedObject.unitTypeRaw) ?? .count,
@@ -29,6 +30,7 @@ extension DeedCardMO {
         name = card.name
         emoji = card.emoji
         colorHex = card.colorHex
+        textColorHex = card.textColorHex
         category = card.category
         polarityRaw = card.polarity.rawValue
         unitTypeRaw = card.unitType.rawValue

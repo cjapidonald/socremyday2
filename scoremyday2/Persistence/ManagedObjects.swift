@@ -6,6 +6,7 @@ final class DeedCardMO: NSManagedObject {
     @NSManaged var name: String
     @NSManaged var emoji: String
     @NSManaged var colorHex: String
+    @NSManaged var textColorHex: String
     @NSManaged var category: String
     @NSManaged var polarityRaw: Int16
     @NSManaged var unitTypeRaw: Int16

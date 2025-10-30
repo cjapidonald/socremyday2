@@ -559,7 +559,7 @@ private struct DeedCardTile: View {
 
                         Text(state.card.name)
                             .font(.headline)
-                            .foregroundStyle(state.accentColor)
+                            .foregroundStyle(Color(hex: state.card.textColorHex, fallback: .white))
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -572,11 +572,7 @@ private struct DeedCardTile: View {
             .frame(maxWidth: .infinity, minHeight: 120, maxHeight: 120)
             .background(
                 RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(.ultraThinMaterial)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .stroke(state.accentColor.opacity(0.35), lineWidth: 1.5)
+                    .fill(state.accentColor)
             )
             .contentShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
             .accessibilityElement(children: .ignore)
@@ -594,7 +590,7 @@ private struct DeedCardTile: View {
             if state.card.isPrivate {
                 Image(systemName: "eye.slash.fill")
                     .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(state.accentColor.opacity(0.7))
+                    .foregroundStyle(Color(hex: state.card.textColorHex, fallback: .white).opacity(0.7))
                     .padding(10)
                     .accessibilityLabel("Private card")
                     .padding(6)

@@ -65,6 +65,7 @@ final class PersistenceController {
             attribute(name: "name", type: .stringAttributeType, defaultValue: "", cloudKitFieldName: "name"),
             attribute(name: "emoji", type: .stringAttributeType, defaultValue: "", cloudKitFieldName: "emoji"),
             attribute(name: "colorHex", type: .stringAttributeType, defaultValue: "", cloudKitFieldName: "colorHex"),
+            attribute(name: "textColorHex", type: .stringAttributeType, defaultValue: "#FFFFFF", cloudKitFieldName: "textColorHex"),
             attribute(name: "category", type: .stringAttributeType, defaultValue: "", cloudKitFieldName: "category"),
             attribute(name: "polarityRaw", type: .integer16AttributeType, defaultValue: 0, cloudKitFieldName: "polarityRaw"),
             attribute(name: "unitTypeRaw", type: .integer16AttributeType, defaultValue: 0, cloudKitFieldName: "unitTypeRaw"),

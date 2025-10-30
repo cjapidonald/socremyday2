@@ -17,6 +17,7 @@ struct DeedCard: Identifiable, Equatable {
     var name: String
     var emoji: String
     var colorHex: String
+    var textColorHex: String
     var category: String
     var polarity: Polarity
     var unitType: UnitType
@@ -34,6 +35,7 @@ struct DeedCard: Identifiable, Equatable {
         name: String,
         emoji: String,
         colorHex: String,
+        textColorHex: String = "#FFFFFF",
         category: String,
         polarity: Polarity,
         unitType: UnitType,
@@ -50,6 +52,7 @@ struct DeedCard: Identifiable, Equatable {
         self.name = name
         self.emoji = emoji
         self.colorHex = colorHex
+        self.textColorHex = textColorHex
         self.category = category
         self.polarity = polarity
         self.unitType = unitType
