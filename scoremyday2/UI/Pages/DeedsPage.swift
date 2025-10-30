@@ -67,7 +67,9 @@ struct DeedsPage: View {
             }
 
         }
-        .onAppear { viewModel.onAppear() }
+        .task {
+            viewModel.configureIfNeeded(environment: appEnvironment)
+        }
         .onChange(of: appEnvironment.settings.dayCutoffHour) { _, newValue in
             viewModel.updateCutoffHour(newValue)
         }

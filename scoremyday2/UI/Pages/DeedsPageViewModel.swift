@@ -16,10 +16,10 @@ final class DeedsPageViewModel: ObservableObject {
         var isPositive: Bool { card.polarity == .positive }
     }
 
-    private let deedsRepository: DeedsRepository
-    private let entriesRepository: EntriesRepository
-    private let prefsRepository: AppPrefsRepository
-    private let scoresRepository: ScoresRepository
+    private var deedsRepository: DeedsRepository
+    private var entriesRepository: EntriesRepository
+    private var prefsRepository: AppPrefsRepository
+    private var scoresRepository: ScoresRepository
     private let lastAmountStore = LastAmountStore()
 
     @Published var cards: [CardState] = []
@@ -30,9 +30,11 @@ final class DeedsPageViewModel: ObservableObject {
     @Published var categorySuggestions: [String] = []
 
     private var hasLoaded = false
+    private var persistenceController: PersistenceController?
 
     init(persistenceController: PersistenceController? = nil) {
         let persistenceController = persistenceController ?? .shared
+        self.persistenceController = persistenceController
         let context = persistenceController.viewContext
         self.deedsRepository = DeedsRepository(context: context)
         self.entriesRepository = EntriesRepository(context: context)
@@ -40,9 +42,17 @@ final class DeedsPageViewModel: ObservableObject {
         self.scoresRepository = ScoresRepository(context: context)
     }
 
-    func onAppear() {
+    func configureIfNeeded(environment: AppEnvironment) {
         guard !hasLoaded else { return }
         hasLoaded = true
+
+        persistenceController = environment.persistenceController
+        let context = environment.persistenceController.viewContext
+        deedsRepository = DeedsRepository(context: context)
+        entriesRepository = EntriesRepository(context: context)
+        prefsRepository = AppPrefsRepository(context: context)
+        scoresRepository = ScoresRepository(context: context)
+
         reload()
     }
 
