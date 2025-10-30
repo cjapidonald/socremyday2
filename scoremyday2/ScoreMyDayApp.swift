@@ -6,6 +6,7 @@ struct ForgeApp: App {
 
     init() {
         SoundManager.shared.preload()
+        AppDataBootstrapper.performInitialLoadIfNeeded()
     }
 
     var body: some Scene {
