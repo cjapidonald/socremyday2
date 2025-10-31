@@ -1,4 +1,5 @@
 import Combine
+import CoreData
 import Foundation
 import SwiftUI
 
@@ -9,6 +10,7 @@ final class DeedsPageViewModel: ObservableObject {
         var card: DeedCard
         var lastUsed: Date?
         var lastAmount: Double?
+        var todayCount: Int
 
         var id: UUID { card.id }
 
@@ -31,6 +33,7 @@ final class DeedsPageViewModel: ObservableObject {
 
     private var hasLoaded = false
     private var persistenceController: PersistenceController?
+    private var observers: [NSObjectProtocol] = []
 
     init(persistenceController: PersistenceController? = nil) {
         let persistenceController = persistenceController ?? .shared
@@ -40,6 +43,44 @@ final class DeedsPageViewModel: ObservableObject {
         self.entriesRepository = EntriesRepository(context: context)
         self.prefsRepository = AppPrefsRepository(context: context)
         self.scoresRepository = ScoresRepository(context: context)
+
+        // Observe Core Data changes to reload when CloudKit syncs
+        setupContextObserver(context: context)
+    }
+
+    deinit {
+        for observer in observers {
+            NotificationCenter.default.removeObserver(observer)
+        }
+    }
+
+    private func setupContextObserver(context: NSManagedObjectContext) {
+        // Observe local context saves
+        let saveObserver = NotificationCenter.default.addObserver(
+            forName: .NSManagedObjectContextDidSave,
+            object: context,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self, self.hasLoaded else { return }
+            Task { @MainActor in
+                self.reload()
+            }
+        }
+
+        // Observe CloudKit remote changes
+        let remoteChangeObserver = NotificationCenter.default.addObserver(
+            forName: NSPersistentCloudKitContainer.eventChangedNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self, self.hasLoaded else { return }
+            Task { @MainActor in
+                self.reload()
+            }
+        }
+
+        observers.append(saveObserver)
+        observers.append(remoteChangeObserver)
     }
 
     func configureIfNeeded(environment: AppEnvironment) {
@@ -53,6 +94,16 @@ final class DeedsPageViewModel: ObservableObject {
         prefsRepository = AppPrefsRepository(context: context)
         scoresRepository = ScoresRepository(context: context)
 
+        // Remove old observers if any
+        for observer in observers {
+            NotificationCenter.default.removeObserver(observer)
+        }
+        observers.removeAll()
+
+        // Setup new observers with updated context
+        setupContextObserver(context: context)
+
+        // Load data immediately
         reload()
     }
 
@@ -90,6 +141,14 @@ final class DeedsPageViewModel: ObservableObject {
                 }
             }
 
+            // Compute today's entry count for each deed
+            let todayRange = appDayRange(for: Date(), cutoffHour: cutoffHour)
+            let todayEntries = entries.filter { $0.timestamp >= todayRange.start && $0.timestamp < todayRange.end }
+            var todayCount: [UUID: Int] = [:]
+            for entry in todayEntries {
+                todayCount[entry.deedId, default: 0] += 1
+            }
+
             let limitedCards = Array(sortedCards.prefix(14))
             let categories = Set(cards.map { $0.category }.filter { !$0.isEmpty })
             categorySuggestions = categories.sorted { $0.localizedCaseInsensitiveCompare($1) == .orderedAscending }
@@ -97,7 +156,8 @@ final class DeedsPageViewModel: ObservableObject {
                 CardState(
                     card: card,
                     lastUsed: lastUsed[card.id],
-                    lastAmount: rememberedAmounts[card.id]
+                    lastAmount: rememberedAmounts[card.id],
+                    todayCount: todayCount[card.id] ?? 0
                 )
             }
 
@@ -199,6 +259,7 @@ final class DeedsPageViewModel: ObservableObject {
             cards[index].lastAmount = entry.amount
             lastAmountStore.setAmount(entry.amount, for: cardID)
             if isDate(entry.timestamp, inSameAppDayAs: Date()) {
+                cards[index].todayCount += 1
                 if !sparklineValues.isEmpty {
                     sparklineValues[sparklineValues.count - 1] += entry.computedPoints
                 }
@@ -210,6 +271,39 @@ final class DeedsPageViewModel: ObservableObject {
             return result
         } catch {
             assertionFailure("Failed to log entry: \(error)")
+            return nil
+        }
+    }
+
+    func undoLastEntry(for cardID: UUID) -> DeedEntry? {
+        do {
+            // Fetch all entries for this deed
+            let entries = try entriesRepository.fetchEntries(forDeed: cardID)
+
+            // Get the last (most recent) entry
+            guard let lastEntry = entries.sorted(by: { $0.timestamp > $1.timestamp }).first else {
+                return nil
+            }
+
+            // Delete the entry
+            try entriesRepository.deleteEntry(id: lastEntry.id)
+
+            // Update the card state
+            if let index = cards.firstIndex(where: { $0.id == cardID }) {
+                // Decrement today's count if the entry was from today
+                if isDate(lastEntry.timestamp, inSameAppDayAs: Date()) {
+                    cards[index].todayCount = max(0, cards[index].todayCount - 1)
+                }
+
+                // Update sparkline
+                let sparkline = try computeSparkline()
+                sparklineValues = sparkline
+                weeklyNetScore = sparklineValues.reduce(0, +)
+            }
+
+            return lastEntry
+        } catch {
+            assertionFailure("Failed to undo entry: \(error)")
             return nil
         }
     }

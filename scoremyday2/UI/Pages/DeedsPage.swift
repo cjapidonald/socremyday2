@@ -167,63 +167,56 @@ struct DeedsPage: View {
 
     private var cardsGrid: some View {
         let columns = Array(repeating: GridItem(.flexible(), spacing: 14, alignment: .top), count: 3)
-        let isShowingCardActions = Binding(
-            get: { heldActionCard != nil },
-            set: { newValue in
-                if !newValue {
-                    heldActionCard = nil
-                }
-            }
-        )
 
         return LazyVGrid(columns: columns, spacing: 14) {
             ForEach(viewModel.cards) { card in
                 DeedCardTile(
                     state: card,
                     onTap: { handleTap(on: card) },
-                    onLongPress: { heldActionCard = card }
+                    onLongPress: { handleUndo(for: card) }
                 )
                 .anchorPreference(key: CardFramePreferenceKey.self, value: .bounds) { [card.id: $0] }
+                .contextMenu {
+                    Button(action: {
+                        moveCardState = MoveCardSheetState(cardID: card.id)
+                    }) {
+                        Label("Move Card", systemImage: "arrow.up.arrow.down")
+                    }
+
+                    Button(action: {
+                        deedEditorState = DeedEditorState(card: card.card)
+                    }) {
+                        Label("Edit Card", systemImage: "pencil")
+                    }
+
+                    Button(action: {
+                        quickAddState = QuickAddState(
+                            card: card,
+                            amount: viewModel.defaultAmount(for: card),
+                            note: "",
+                        )
+                    }) {
+                        Label("Quick Add", systemImage: "plus.circle")
+                    }
+
+                    Button(action: {
+                        viewModel.setShowOnStats(!card.card.showOnStats, for: card.id)
+                    }) {
+                        Label(card.card.showOnStats ? "Hide from Stats" : "Show on Stats", systemImage: card.card.showOnStats ? "eye.slash" : "eye")
+                    }
+
+                    Button(role: card.card.isArchived ? .none : .destructive, action: {
+                        viewModel.toggleArchive(for: card.id)
+                    }) {
+                        Label(card.card.isArchived ? "Unarchive" : "Archive", systemImage: card.card.isArchived ? "tray.and.arrow.up" : "archivebox")
+                    }
+                }
             }
 
             AddCardTile {
                 deedEditorState = DeedEditorState(card: nil)
             }
         }
-        .confirmationDialog("Card Actions", isPresented: isShowingCardActions) {
-            if let card = heldActionCard {
-                Button("Move Card", role: .none) {
-                    moveCardState = MoveCardSheetState(cardID: card.id)
-                }
-
-                Button("Edit Card") {
-                    deedEditorState = DeedEditorState(card: card.card)
-                }
-
-                Button("Quick Add") {
-                    quickAddState = QuickAddState(
-                        card: card,
-                        amount: viewModel.defaultAmount(for: card),
-                        note: "",
-                    )
-                }
-
-                Button(card.card.showOnStats ? "Hide from Stats" : "Show on Stats") {
-                    viewModel.setShowOnStats(!card.card.showOnStats, for: card.id)
-                }
-
-                Button(card.card.isArchived ? "Unarchive" : "Archive", role: card.card.isArchived ? .none : .destructive) {
-                    viewModel.toggleArchive(for: card.id)
-                }
-            }
-
-            Button("Cancel", role: .cancel) { }
-        } message: {
-            if let card = heldActionCard {
-                Text("Select an action for \(card.card.name)")
-            }
-        }
-
         .animation(.spring(response: 0.3, dampingFraction: 0.8), value: viewModel.cards)
     }
 
@@ -232,6 +225,24 @@ struct DeedsPage: View {
         if let result = viewModel.prepareTap(on: card) {
             let entry = result.entry
             handleFeedback(for: card.card.polarity, points: entry.computedPoints, cardID: card.id, startFrameOverride: startFrame)
+        }
+    }
+
+    private func handleUndo(for card: DeedsPageViewModel.CardState) {
+        guard let deletedEntry = viewModel.undoLastEntry(for: card.id) else {
+            // No entry to undo
+            HapticsManager.shared.negative()
+            return
+        }
+
+        // Provide haptic feedback for successful undo
+        HapticsManager.shared.negative()
+
+        // Show floating delta for undo (negative of the deleted points)
+        let undoPoints = -deletedEntry.computedPoints
+        let polarity: Polarity = undoPoints >= 0 ? .positive : .negative
+        if undoPoints != 0 {
+            enqueueFloatingDelta(points: undoPoints, cardID: card.id, polarity: polarity, startFrameOverride: cardFrames[card.id])
         }
     }
 
@@ -586,6 +597,20 @@ private struct DeedCardTile: View {
                     onLongPress()
                 }
         )
+        .overlay(alignment: .topLeading) {
+            if state.todayCount > 0 {
+                Text("\(state.todayCount)")
+                    .font(.system(size: 14, weight: .bold, design: .rounded))
+                    .foregroundStyle(Color(hex: state.card.textColorHex, fallback: .white))
+                    .frame(minWidth: 28, minHeight: 28)
+                    .background(
+                        Circle()
+                            .fill(Color.black.opacity(0.25))
+                    )
+                    .padding(8)
+                    .accessibilityLabel("Tapped \(state.todayCount) times today")
+            }
+        }
         .overlay(alignment: .topTrailing) {
             if state.card.isPrivate {
                 Image(systemName: "eye.slash.fill")
