@@ -34,6 +34,7 @@ final class DeedsPageViewModel: ObservableObject {
     private var hasLoaded = false
     private var persistenceController: PersistenceController?
     private var observers: [NSObjectProtocol] = []
+    private var isReordering = false
 
     init(persistenceController: PersistenceController? = nil) {
         let persistenceController = persistenceController ?? .shared
@@ -46,6 +47,9 @@ final class DeedsPageViewModel: ObservableObject {
 
         // Observe Core Data changes to reload when CloudKit syncs
         setupContextObserver(context: context)
+
+        // Don't load data here - wait for configureIfNeeded to be called
+        // This ensures we use the correct AppEnvironment context
     }
 
     deinit {
@@ -61,8 +65,9 @@ final class DeedsPageViewModel: ObservableObject {
             object: context,
             queue: .main
         ) { [weak self] _ in
-            guard let self = self, self.hasLoaded else { return }
-            Task { @MainActor in
+            guard let self = self else { return }
+            Task { @MainActor [weak self] in
+                guard let self = self, self.hasLoaded, !self.isReordering else { return }
                 self.reload()
             }
         }
@@ -73,8 +78,9 @@ final class DeedsPageViewModel: ObservableObject {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            guard let self = self, self.hasLoaded else { return }
-            Task { @MainActor in
+            guard let self = self else { return }
+            Task { @MainActor [weak self] in
+                guard let self = self, self.hasLoaded, !self.isReordering else { return }
                 self.reload()
             }
         }
@@ -84,7 +90,12 @@ final class DeedsPageViewModel: ObservableObject {
     }
 
     func configureIfNeeded(environment: AppEnvironment) {
-        guard !hasLoaded else { return }
+        guard !hasLoaded else {
+            print("⚠️ DeedsPageViewModel already configured")
+            return
+        }
+
+        print("✅ Configuring DeedsPageViewModel...")
         hasLoaded = true
 
         persistenceController = environment.persistenceController
@@ -104,16 +115,33 @@ final class DeedsPageViewModel: ObservableObject {
         setupContextObserver(context: context)
 
         // Load data immediately
+        print("📊 Loading initial data...")
         reload()
+        print("✅ Initial load complete. Cards count: \(cards.count)")
+
+        // If no cards loaded, try again after a short delay
+        // This handles cases where Core Data hasn't fully initialized yet
+        if cards.isEmpty {
+            print("⚠️ No cards found on initial load, scheduling retry...")
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                guard let self = self else { return }
+                print("🔄 Retrying data load...")
+                self.reload()
+                print("✅ Retry complete. Cards count: \(self.cards.count)")
+            }
+        }
     }
 
     func reload() {
+        print("🔄 Reload called...")
         do {
             let prefs = try prefsRepository.fetch()
             cutoffHour = prefs.dayCutoffHour
 
             let cards = try deedsRepository.fetchAll(includeArchived: false)
+            print("📦 Fetched \(cards.count) cards from repository")
             let entries = try entriesRepository.fetchEntries()
+            print("📝 Fetched \(entries.count) entries")
 
             var lastUsed: [UUID: Date] = [:]
             var lastAmount: [UUID: Double] = [:]
@@ -370,12 +398,17 @@ final class DeedsPageViewModel: ObservableObject {
     func reorderCards(by orderedIDs: [UUID]) {
         guard orderedIDs.count == cards.count else { return }
 
+        isReordering = true
+
         let lookup = Dictionary(uniqueKeysWithValues: cards.map { ($0.id, $0) })
         var updatedCards: [CardState] = []
         updatedCards.reserveCapacity(cards.count)
 
         for id in orderedIDs {
-            guard let card = lookup[id] else { return }
+            guard let card = lookup[id] else {
+                isReordering = false
+                return
+            }
             updatedCards.append(card)
         }
 
@@ -394,8 +427,13 @@ final class DeedsPageViewModel: ObservableObject {
     func persistCardOrder() {
         do {
             try deedsRepository.updateSortOrders(cards.map { $0.card })
+            // Clear the reordering flag after a short delay to allow the save to complete
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                self?.isReordering = false
+            }
         } catch {
             assertionFailure("Failed to persist card order: \(error)")
+            isReordering = false
         }
     }
 

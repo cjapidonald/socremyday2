@@ -67,7 +67,7 @@ struct DeedsPage: View {
             }
 
         }
-        .task {
+        .onAppear {
             viewModel.configureIfNeeded(environment: appEnvironment)
         }
         .onChange(of: appEnvironment.settings.dayCutoffHour) { _, newValue in
@@ -173,7 +173,7 @@ struct DeedsPage: View {
                 DeedCardTile(
                     state: card,
                     onTap: { handleTap(on: card) },
-                    onLongPress: { handleUndo(for: card) }
+                    onUndo: { handleUndo(for: card) }
                 )
                 .anchorPreference(key: CardFramePreferenceKey.self, value: .bounds) { [card.id: $0] }
                 .contextMenu {
@@ -522,9 +522,13 @@ private struct MoveCardSheet: View {
             ForEach(orderedCards) { card in
                 cardRow(for: card)
             }
-            .onMove { indices, newOffset in
-                orderedCards.move(fromOffsets: indices, toOffset: newOffset)
-            }
+            .onMove(perform: moveCard)
+        }
+    }
+
+    private func moveCard(from source: IndexSet, to destination: Int) {
+        withAnimation {
+            orderedCards.move(fromOffsets: source, toOffset: destination)
         }
     }
 
@@ -552,9 +556,7 @@ private struct MoveCardSheet: View {
 private struct DeedCardTile: View {
     let state: DeedsPageViewModel.CardState
     let onTap: () -> Void
-    let onLongPress: () -> Void
-
-    @State private var longPressTriggered = false
+    let onUndo: () -> Void
 
     var body: some View {
         Button(action: handleTap) {
@@ -590,13 +592,6 @@ private struct DeedCardTile: View {
             .accessibilityLabel(state.card.accessibilityLabel(lastAmount: state.lastAmount, unit: state.card.unitLabel))
         }
         .buttonStyle(.plain)
-        .simultaneousGesture(
-            LongPressGesture(minimumDuration: 0.45)
-                .onEnded { _ in
-                    longPressTriggered = true
-                    onLongPress()
-                }
-        )
         .overlay(alignment: .topLeading) {
             if state.todayCount > 0 {
                 Text("\(state.todayCount)")
@@ -612,22 +607,40 @@ private struct DeedCardTile: View {
             }
         }
         .overlay(alignment: .topTrailing) {
-            if state.card.isPrivate {
-                Image(systemName: "eye.slash.fill")
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(Color(hex: state.card.textColorHex, fallback: .white).opacity(0.7))
-                    .padding(10)
-                    .accessibilityLabel("Private card")
-                    .padding(6)
+            HStack(spacing: 4) {
+                // Undo button (when todayCount > 0 and not private, or always show if count > 0)
+                if state.todayCount > 0 {
+                    Button(action: {
+                        onUndo()
+                    }) {
+                        Image(systemName: "arrow.uturn.backward.circle.fill")
+                            .font(.system(size: 24, weight: .semibold))
+                            .foregroundStyle(Color(hex: state.card.textColorHex, fallback: .white))
+                            .background(
+                                Circle()
+                                    .fill(Color.black.opacity(0.25))
+                                    .frame(width: 28, height: 28)
+                            )
+                    }
+                    .buttonStyle(.plain)
+                    .padding(8)
+                    .accessibilityLabel("Undo last entry")
+                }
+
+                // Private indicator
+                if state.card.isPrivate {
+                    Image(systemName: "eye.slash.fill")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(Color(hex: state.card.textColorHex, fallback: .white).opacity(0.7))
+                        .padding(10)
+                        .accessibilityLabel("Private card")
+                }
             }
+            .padding(state.todayCount > 0 && state.card.isPrivate ? 4 : 0)
         }
     }
 
     private func handleTap() {
-        if longPressTriggered {
-            longPressTriggered = false
-            return
-        }
         HapticsManager.shared.cardTap()
         onTap()
     }
