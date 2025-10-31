@@ -3,6 +3,7 @@ import SwiftUI
 struct RootView: View {
     @EnvironmentObject private var appEnvironment: AppEnvironment
     private let tabOrder: [RootTab] = [.deeds, .stats, .settings]
+    @State private var showContent = false
 
     var body: some View {
         ZStack {
@@ -31,6 +32,7 @@ struct RootView: View {
                     }
                     .tag(RootTab.settings)
             }
+            .opacity(showContent ? 1 : 0)
             .gesture(
                 DragGesture()
                     .onEnded { value in
@@ -40,6 +42,28 @@ struct RootView: View {
         }
         .accentColor(accentColor)
         .preferredColorScheme(appEnvironment.settings.theme.preferredColorScheme)
+        .onAppear {
+            // Trick to trigger data load: Start on stats, then auto-switch to deeds
+            // This ensures Core Data is fully initialized before showing deeds
+            if !appEnvironment.hasPerformedInitialLoad {
+                appEnvironment.hasPerformedInitialLoad = true
+
+                // Show content with fade-in
+                withAnimation(.easeIn(duration: 0.2)) {
+                    showContent = true
+                }
+
+                // Switch to deeds after stats loads data
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        appEnvironment.selectedTab = .deeds
+                    }
+                }
+            } else {
+                // If already loaded, show immediately
+                showContent = true
+            }
+        }
     }
 
     private var accentColor: Color {

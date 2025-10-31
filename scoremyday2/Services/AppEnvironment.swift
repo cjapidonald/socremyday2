@@ -4,8 +4,9 @@ import Combine
 @MainActor
 final class AppEnvironment: ObservableObject {
     @Published var settings = AppSettings()
-    @Published var selectedTab: RootTab = .deeds
+    @Published var selectedTab: RootTab = .stats  // Start on stats to trigger data load
     @Published var dataVersion: Int = 0
+    @Published var hasPerformedInitialLoad = false
     let persistenceController: PersistenceController
     private let prefsStore: AppPrefsStore
     private var cancellables: Set<AnyCancellable> = []
