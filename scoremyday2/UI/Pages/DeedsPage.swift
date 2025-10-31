@@ -69,6 +69,22 @@ struct DeedsPage: View {
         }
         .onAppear {
             viewModel.configureIfNeeded(environment: appEnvironment)
+
+            // Force reload if cards are empty every time view appears
+            // This ensures data loads even if initial load failed
+            if viewModel.cards.isEmpty {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    if viewModel.cards.isEmpty {
+                        viewModel.reload()
+                    }
+                }
+            }
+        }
+        .onChange(of: appEnvironment.selectedTab) { _, newTab in
+            // Reload if switching to deeds tab and no cards are loaded
+            if newTab == .deeds && viewModel.cards.isEmpty {
+                viewModel.reload()
+            }
         }
         .onChange(of: appEnvironment.settings.dayCutoffHour) { _, newValue in
             viewModel.updateCutoffHour(newValue)

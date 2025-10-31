@@ -35,6 +35,8 @@ final class DeedsPageViewModel: ObservableObject {
     private var persistenceController: PersistenceController?
     private var observers: [NSObjectProtocol] = []
     private var isReordering = false
+    private var retryCount = 0
+    private let maxRetries = 3
 
     init(persistenceController: PersistenceController? = nil) {
         let persistenceController = persistenceController ?? .shared
@@ -45,10 +47,7 @@ final class DeedsPageViewModel: ObservableObject {
         self.prefsRepository = AppPrefsRepository(context: context)
         self.scoresRepository = ScoresRepository(context: context)
 
-        // Observe Core Data changes to reload when CloudKit syncs
-        setupContextObserver(context: context)
-
-        // Don't load data here - wait for configureIfNeeded to be called
+        // Don't set up observers here - wait for configureIfNeeded
         // This ensures we use the correct AppEnvironment context
     }
 
@@ -90,12 +89,14 @@ final class DeedsPageViewModel: ObservableObject {
     }
 
     func configureIfNeeded(environment: AppEnvironment) {
-        guard !hasLoaded else {
-            print("⚠️ DeedsPageViewModel already configured")
+        if hasLoaded {
+            // Even if already configured, reload if cards are empty
+            if cards.isEmpty {
+                reload()
+            }
             return
         }
 
-        print("✅ Configuring DeedsPageViewModel...")
         hasLoaded = true
 
         persistenceController = environment.persistenceController
@@ -115,33 +116,43 @@ final class DeedsPageViewModel: ObservableObject {
         setupContextObserver(context: context)
 
         // Load data immediately
-        print("📊 Loading initial data...")
         reload()
-        print("✅ Initial load complete. Cards count: \(cards.count)")
 
-        // If no cards loaded, try again after a short delay
-        // This handles cases where Core Data hasn't fully initialized yet
+        // If no cards loaded, schedule retries with exponential backoff
         if cards.isEmpty {
-            print("⚠️ No cards found on initial load, scheduling retry...")
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-                guard let self = self else { return }
-                print("🔄 Retrying data load...")
-                self.reload()
-                print("✅ Retry complete. Cards count: \(self.cards.count)")
+            scheduleRetry()
+        }
+    }
+
+    private func scheduleRetry() {
+        guard retryCount < maxRetries else {
+            return
+        }
+
+        retryCount += 1
+        let delay = Double(retryCount) * 0.5 // 0.5s, 1.0s, 1.5s
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+            guard let self = self else { return }
+            self.reload()
+
+            // Schedule another retry if still empty
+            if self.cards.isEmpty {
+                self.scheduleRetry()
+            } else {
+                // Reset retry count on success
+                self.retryCount = 0
             }
         }
     }
 
     func reload() {
-        print("🔄 Reload called...")
         do {
             let prefs = try prefsRepository.fetch()
             cutoffHour = prefs.dayCutoffHour
 
             let cards = try deedsRepository.fetchAll(includeArchived: false)
-            print("📦 Fetched \(cards.count) cards from repository")
             let entries = try entriesRepository.fetchEntries()
-            print("📝 Fetched \(entries.count) entries")
 
             var lastUsed: [UUID: Date] = [:]
             var lastAmount: [UUID: Double] = [:]
