@@ -561,8 +561,14 @@ private struct DeedCardTile: View {
     var body: some View {
         Button(action: handleTap) {
             ZStack {
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack(alignment: .center, spacing: 12) {
+                VStack(alignment: .leading, spacing: 8) {
+                    // Add spacing at top when badges are visible
+                    if hasBadgesAtTop {
+                        Spacer()
+                            .frame(height: 8)
+                    }
+
+                    HStack(alignment: .top, spacing: 12) {
                         if let emoji = leadingEmoji {
                             Text(emoji)
                                 .font(.system(size: 30))
@@ -573,14 +579,19 @@ private struct DeedCardTile: View {
                         Text(state.card.name)
                             .font(.headline)
                             .foregroundStyle(Color(hex: state.card.textColorHex, fallback: .white))
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.7)
+                            .lineLimit(3)
+                            .minimumScaleFactor(0.75)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
+
+                    Spacer(minLength: 0)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                .padding(.horizontal, 16)
                 .padding(.vertical, 16)
+                .padding(.top, hasBadgesAtTop ? 36 : 0)
             }
             .frame(maxWidth: .infinity, minHeight: 120, maxHeight: 120)
             .background(
@@ -648,6 +659,10 @@ private struct DeedCardTile: View {
     private var leadingEmoji: String? {
         let trimmed = state.card.emoji.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.isEmpty ? nil : trimmed
+    }
+
+    private var hasBadgesAtTop: Bool {
+        return state.todayCount > 0 || state.card.isPrivate
     }
 
 }
