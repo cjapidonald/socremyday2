@@ -303,30 +303,80 @@ struct StatsPage: View {
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
-                    StatsChartContainer(points: viewModel.cardTrendSeries) {
-                        Chart(viewModel.cardTrendSeries) { point in
-                            LineMark(
-                                x: .value("Day", point.date),
-                                y: .value("Points", point.value)
-                            )
-                            .foregroundStyle(Color.accentColor)
-                            .interpolationMethod(.catmullRom)
+                    // Show amounts chart (money, time, or count)
+                    if let selectedDeed = viewModel.selectedDeed {
+                        StatsChartContainer(points: viewModel.cardAmountSeries) {
+                            Chart(viewModel.cardAmountSeries) { point in
+                                LineMark(
+                                    x: .value("Day", point.date),
+                                    y: .value(yAxisLabel(for: selectedDeed), point.value)
+                                )
+                                .foregroundStyle(Color.accentColor)
+                                .interpolationMethod(.catmullRom)
 
-                            AreaMark(
-                                x: .value("Day", point.date),
-                                y: .value("Points", point.value)
-                            )
-                            .interpolationMethod(.catmullRom)
-                            .foregroundStyle(Color.accentColor.gradient.opacity(0.2))
-                        }
-                        .id("\(viewModel.selectedRange.rawValue)-\(viewModel.selectedDeedId?.uuidString ?? "none")")
-                        .frame(height: 200)
-                        .chartYAxis {
-                            AxisMarks(position: .leading)
+                                AreaMark(
+                                    x: .value("Day", point.date),
+                                    y: .value(yAxisLabel(for: selectedDeed), point.value)
+                                )
+                                .interpolationMethod(.catmullRom)
+                                .foregroundStyle(Color.accentColor.gradient.opacity(0.2))
+                            }
+                            .id("\(viewModel.selectedRange.rawValue)-\(viewModel.selectedDeedId?.uuidString ?? "none")")
+                            .frame(height: 200)
+                            .chartYAxis {
+                                AxisMarks(position: .leading) { value in
+                                    AxisGridLine()
+                                    AxisValueLabel {
+                                        if let doubleValue = value.as(Double.self) {
+                                            Text(formatYAxisValue(doubleValue, for: selectedDeed))
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
+        }
+    }
+
+    private func yAxisLabel(for deed: DeedCard) -> String {
+        switch deed.unitType {
+        case .count:
+            return "Count"
+        case .duration:
+            return "Time"
+        case .amount:
+            // Extract currency from unitLabel (e.g., "10 USD" -> "USD")
+            let components = deed.unitLabel.split(separator: " ")
+            if components.count > 1 {
+                return String(components[1])
+            }
+            return "Amount"
+        }
+    }
+
+    private func formatYAxisValue(_ value: Double, for deed: DeedCard) -> String {
+        let intValue = Int(value)
+
+        switch deed.unitType {
+        case .count:
+            return "\(intValue)"
+        case .duration:
+            // Check if label uses hours or minutes
+            if deed.unitLabel.contains("hour") {
+                return "\(intValue)h"
+            } else {
+                return "\(intValue)m"
+            }
+        case .amount:
+            // Extract currency from unitLabel
+            let components = deed.unitLabel.split(separator: " ")
+            if components.count > 1 {
+                let currency = String(components[1])
+                return "\(intValue) \(currency)"
+            }
+            return "\(intValue)"
         }
     }
 
@@ -727,6 +777,7 @@ final class StatsPageViewModel: ObservableObject {
     @Published private(set) var dailyNetSeries: [DailyStatPoint] = []
     @Published private(set) var todayPoint: DailyStatPoint?
     @Published private(set) var cardTrendSeries: [DailyStatPoint] = []
+    @Published private(set) var cardAmountSeries: [DailyStatPoint] = [] // NEW: Actual amounts (money, time, count)
     @Published private(set) var topDeeds: [DeedCard] = [] {
         didSet { searchIndex.updateTopDeeds(topDeeds) }
     }
@@ -745,6 +796,11 @@ final class StatsPageViewModel: ObservableObject {
         return deed.name
     }
 
+    var selectedDeed: DeedCard? {
+        guard let id = selectedDeedId else { return nil }
+        return deedsById[id]
+    }
+
     func filteredTopDeeds(matching query: String) -> [DeedCard] {
         searchIndex.filteredTopDeeds(query: query)
     }
@@ -759,6 +815,7 @@ final class StatsPageViewModel: ObservableObject {
     private var deedsById: [UUID: DeedCard] = [:]
     private var dailyNetValues: [Date: Double] = [:]
     private var perDeedPoints: [UUID: [Date: Double]] = [:]
+    private var perDeedAmounts: [UUID: [Date: Double]] = [:] // NEW: Track actual amounts (money, time, count)
     private var perDeedPositivePoints: [UUID: [Date: Double]] = [:]
     private var perDeedNegativePoints: [UUID: [Date: Double]] = [:]
     private var perCategoryPositivePoints: [String: [Date: Double]] = [:]
@@ -826,6 +883,7 @@ final class StatsPageViewModel: ObservableObject {
     private func ingest(entries: [DeedEntry]) {
         dailyNetValues = [:]
         perDeedPoints = [:]
+        perDeedAmounts = [:]
         perDeedPositivePoints = [:]
         perDeedNegativePoints = [:]
         perCategoryPositivePoints = [:]
@@ -839,6 +897,7 @@ final class StatsPageViewModel: ObservableObject {
             guard deed.showOnStats else { continue }
 
             perDeedPoints[deed.id, default: [:]][dayStart, default: 0] += value
+            perDeedAmounts[deed.id, default: [:]][dayStart, default: 0] += entry.amount // Track actual amounts
 
             if value > 0 {
                 perDeedPositivePoints[deed.id, default: [:]][dayStart, default: 0] += value
@@ -922,12 +981,19 @@ final class StatsPageViewModel: ObservableObject {
     private func updateCardTrend() {
         guard let selectedId = selectedDeedId else {
             cardTrendSeries = []
+            cardAmountSeries = []
             return
         }
         let dayStarts = daySequence(for: selectedRange)
         let daily = perDeedPoints[selectedId] ?? [:]
+        let dailyAmounts = perDeedAmounts[selectedId] ?? [:]
+
         cardTrendSeries = dayStarts.map { start in
             DailyStatPoint(date: start, value: daily[start] ?? 0)
+        }
+
+        cardAmountSeries = dayStarts.map { start in
+            DailyStatPoint(date: start, value: dailyAmounts[start] ?? 0)
         }
     }
 

@@ -5,6 +5,23 @@ enum TimeUnit: String, CaseIterable {
     case hours = "hours"
 }
 
+enum Currency: String, CaseIterable {
+    case usd = "USD"
+    case eur = "EUR"
+    case gbp = "GBP"
+    case jpy = "JPY"
+    case cad = "CAD"
+    case aud = "AUD"
+    case chf = "CHF"
+    case cny = "CNY"
+    case inr = "INR"
+    case mxn = "MXN"
+    case brl = "BRL"
+    case krw = "KRW"
+    case rub = "RUB"
+    case zar = "ZAR"
+}
+
 struct AddEditDeedSheet: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -27,6 +44,7 @@ struct AddEditDeedSheet: View {
     // New simplified state for tap configuration
     @State private var amountPerTap: Int
     @State private var timeUnit: TimeUnit = .minutes
+    @State private var currency: Currency = .usd
 
     private let isEditing: Bool
 
@@ -61,32 +79,39 @@ struct AddEditDeedSheet: View {
         _isPrivate = State(initialValue: initialCard?.isPrivate ?? false)
         _showOnStats = State(initialValue: initialCard?.showOnStats ?? true)
 
-        // Initialize amountPerTap based on existing card or defaults
+        // Initialize amountPerTap and currency based on existing card or defaults
         if let card = initialCard {
-            // Extract the amount from the unit label (e.g., "15 min" -> 15, "1 times" -> 1)
-            if card.unitType == .duration {
-                // Parse from label like "15 min" or "2 hours"
-                let components = card.unitLabel.split(separator: " ")
-                if let firstComponent = components.first, let value = Int(firstComponent) {
-                    _amountPerTap = State(initialValue: value)
+            // Extract the amount from the unit label (e.g., "15 min" -> 15, "10 USD" -> 10)
+            let components = card.unitLabel.split(separator: " ")
+            if let firstComponent = components.first, let value = Int(firstComponent) {
+                _amountPerTap = State(initialValue: value)
+
+                // Detect currency or time unit
+                if card.unitType == .duration {
                     _timeUnit = State(initialValue: card.unitLabel.contains("hour") ? .hours : .minutes)
+                    _currency = State(initialValue: .usd)
+                } else if card.unitType == .amount {
+                    // Parse currency from label like "10 USD"
+                    if components.count > 1, let curr = Currency.allCases.first(where: { $0.rawValue == String(components[1]) }) {
+                        _currency = State(initialValue: curr)
+                    } else {
+                        _currency = State(initialValue: .usd)
+                    }
+                    _timeUnit = State(initialValue: .minutes)
                 } else {
-                    _amountPerTap = State(initialValue: 15)
+                    _currency = State(initialValue: .usd)
                     _timeUnit = State(initialValue: .minutes)
                 }
             } else {
-                // For count, extract from label like "times" or "3 times"
-                let components = card.unitLabel.split(separator: " ")
-                if components.count > 1, let value = Int(components[0]) {
-                    _amountPerTap = State(initialValue: value)
-                } else {
-                    _amountPerTap = State(initialValue: 1)
-                }
+                _amountPerTap = State(initialValue: 1)
+                _currency = State(initialValue: .usd)
+                _timeUnit = State(initialValue: .minutes)
             }
         } else {
             // New card defaults
-            _amountPerTap = State(initialValue: defaultUnitType == .count ? 1 : 15)
+            _amountPerTap = State(initialValue: defaultUnitType == .count ? 1 : defaultUnitType == .amount ? 10 : 15)
             _timeUnit = State(initialValue: .minutes)
+            _currency = State(initialValue: .usd)
         }
     }
 
@@ -179,8 +204,9 @@ struct AddEditDeedSheet: View {
                                 .font(.subheadline.weight(.medium))
 
                             Picker("Tracking Type", selection: $unitType) {
-                                Label("Count", systemImage: "number").tag(UnitType.count)
-                                Label("Time", systemImage: "clock").tag(UnitType.duration)
+                                Text("Count").tag(UnitType.count)
+                                Text("Time").tag(UnitType.duration)
+                                Text("Money").tag(UnitType.amount)
                             }
                             .pickerStyle(.segmented)
                         }
@@ -205,7 +231,7 @@ struct AddEditDeedSheet: View {
                                     Text("times")
                                         .foregroundStyle(.secondary)
                                 }
-                            } else {
+                            } else if unitType == .duration {
                                 VStack(spacing: 8) {
                                     HStack {
                                         Text("1 tap =")
@@ -228,6 +254,27 @@ struct AddEditDeedSheet: View {
                                             }
                                         }
                                         .pickerStyle(.segmented)
+                                    }
+                                }
+                            } else {
+                                // Amount/Money
+                                VStack(spacing: 8) {
+                                    HStack {
+                                        Text("1 tap =")
+                                        Picker("Amount", selection: $amountPerTap) {
+                                            ForEach([1, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100, 150, 200, 250, 500], id: \.self) { num in
+                                                Text("\(num)").tag(num)
+                                            }
+                                        }
+                                        .pickerStyle(.wheel)
+                                        .frame(width: 100, height: 100)
+                                        Picker("Currency", selection: $currency) {
+                                            ForEach(Currency.allCases, id: \.self) { curr in
+                                                Text(curr.rawValue).tag(curr)
+                                            }
+                                        }
+                                        .pickerStyle(.wheel)
+                                        .frame(width: 100, height: 100)
                                     }
                                 }
                             }
@@ -301,6 +348,9 @@ struct AddEditDeedSheet: View {
             } else if newValue == .minutes && ![1, 5, 10, 15, 20, 25, 30, 45, 60, 90, 120].contains(amountPerTap) {
                 amountPerTap = 15
             }
+            updateUnitLabel()
+        }
+        .onChange(of: currency) { _, _ in
             updateUnitLabel()
         }
     }
@@ -393,16 +443,18 @@ struct AddEditDeedSheet: View {
             if amountPerTap == 1 {
                 unitLabel = "times"
             } else {
-                unitLabel = "\(Int(amountPerTap)) times"
+                unitLabel = "\(amountPerTap) times"
+            }
+        } else if unitType == .duration {
+            // Duration
+            if timeUnit == .minutes {
+                unitLabel = amountPerTap == 1 ? "1 min" : "\(amountPerTap) min"
+            } else {
+                unitLabel = amountPerTap == 1 ? "1 hour" : "\(amountPerTap) hours"
             }
         } else {
-            // Duration
-            let amount = Int(amountPerTap)
-            if timeUnit == .minutes {
-                unitLabel = amount == 1 ? "1 min" : "\(amount) min"
-            } else {
-                unitLabel = amount == 1 ? "1 hour" : "\(amount) hours"
-            }
+            // Amount/Money
+            unitLabel = "\(amountPerTap) \(currency.rawValue)"
         }
     }
 
@@ -449,9 +501,12 @@ struct AddEditDeedSheet: View {
         // Set amount per tap
         if unitType == .count {
             amountPerTap = 1
-        } else {
+        } else if unitType == .duration {
             amountPerTap = 15
             timeUnit = .minutes
+        } else {
+            amountPerTap = 10
+            currency = .usd
         }
 
         unitLabel = defaults.label
@@ -472,6 +527,7 @@ struct AddEditDeedSheet: View {
         switch type {
         case .count: return "count"
         case .duration: return "min"
+        case .amount: return "USD"
         }
     }
 
@@ -479,6 +535,7 @@ struct AddEditDeedSheet: View {
         switch type {
         case .count: return "Count"
         case .duration: return "Duration"
+        case .amount: return "Amount"
         }
     }
 
@@ -487,7 +544,9 @@ struct AddEditDeedSheet: View {
         case .count:
             return ("times", 5, 10, 3)
         case .duration:
-            return ("min", 1, 60, 30)
+            return ("15 min", 1, 60, 30)
+        case .amount:
+            return ("10 USD", 0.1, nil, 50)
         }
     }
 

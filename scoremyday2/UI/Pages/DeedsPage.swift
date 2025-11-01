@@ -579,14 +579,22 @@ private struct DeedCardTile: View {
                                 .accessibilityHidden(true)
                         }
 
-                        Text(state.card.name)
-                            .font(.headline)
-                            .foregroundStyle(Color(hex: state.card.textColorHex, fallback: .white))
-                            .lineLimit(3)
-                            .minimumScaleFactor(0.75)
-                            .multilineTextAlignment(.leading)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(state.card.name)
+                                .font(.headline)
+                                .foregroundStyle(Color(hex: state.card.textColorHex, fallback: .white))
+                                .lineLimit(2)
+                                .minimumScaleFactor(0.75)
+                                .multilineTextAlignment(.leading)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+
+                            // Points per tap display
+                            Text(pointsPerTapText)
+                                .font(.caption.weight(.medium))
+                                .foregroundStyle(Color(hex: state.card.textColorHex, fallback: .white).opacity(0.85))
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
 
                     Spacer(minLength: 0)
@@ -668,6 +676,23 @@ private struct DeedCardTile: View {
         return state.todayCount > 0 || state.card.isPrivate
     }
 
+    private var pointsPerTapText: String {
+        let points = state.card.pointsPerUnit
+        let sign = points >= 0 ? "+" : ""
+        let formatted = formatPoints(abs(points))
+        return "\(sign)\(formatted) pts"
+    }
+
+    private func formatPoints(_ value: Double) -> String {
+        if value == floor(value) {
+            return String(format: "%.0f", value)
+        } else if abs(value * 10 - round(value * 10)) < 0.0001 {
+            return String(format: "%.1f", value)
+        } else {
+            return String(format: "%.2f", value)
+        }
+    }
+
 }
 
 private struct AddCardTile: View {
@@ -742,6 +767,15 @@ private struct QuickAddSheet: View {
                         Text("\(Int(localState.amount)) \(localState.card.card.unitLabel)")
                     }
                     Text("Set the number of minutes for this activity")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            case .amount:
+                VStack(alignment: .leading, spacing: 12) {
+                    Stepper(value: $localState.amount, in: 1...1000, step: 5) {
+                        Text("\(Int(localState.amount)) \(localState.card.card.unitLabel)")
+                    }
+                    Text("Set the amount for this transaction")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

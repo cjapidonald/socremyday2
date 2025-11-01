@@ -250,11 +250,22 @@ final class DeedsPageViewModel: ObservableObject {
 
     func defaultAmount(for card: CardState) -> Double {
         if let lastAmount = card.lastAmount { return lastAmount }
+
+        // Parse amount from unit label
+        // Examples: "15 min", "1 times", "10 USD", "2 hours"
+        let components = card.card.unitLabel.split(separator: " ")
+        if let firstComponent = components.first, let parsedAmount = Double(firstComponent) {
+            return parsedAmount
+        }
+
+        // Fallback defaults
         switch card.card.unitType {
         case .count:
             return 1
         case .duration:
-            return 5
+            return 15
+        case .amount:
+            return 10
         }
     }
 
