@@ -27,9 +27,18 @@ final class EntriesRepository {
                 throw NSError(domain: "EntriesRepository", code: 1, userInfo: [NSLocalizedDescriptionKey: "Deed not found"])
             }
 
-            let rawPoints = request.amount * deed.pointsPerUnit
-            let computedPoints = rawPoints
+            // IMPORTANT: Points per tap should be fixed, not multiplied by amount!
+            // The amount is for tracking purposes (money, time, count) only.
+            // Each tap always gives the same points regardless of amount.
+            let computedPoints = deed.pointsPerUnit
             let wasCapped = false
+
+            // Debug logging
+            print("🔍 ENTRY CALCULATION:")
+            print("   Deed: \(deed.name)")
+            print("   Amount logged: \(request.amount) \(deed.unitLabel)")
+            print("   Points awarded: \(computedPoints)")
+            print("   (Points are NOT multiplied by amount)")
 
             let entry = DeedEntryMO(context: context)
             entry.id = UUID()
