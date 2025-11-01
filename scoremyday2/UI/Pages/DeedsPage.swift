@@ -102,14 +102,7 @@ struct DeedsPage: View {
                 quickAddState = nil
             }
         }
-        .sheet(item: $viewModel.pendingRatingCard) { card in
-            RatingPickerSheet(card: card) { rating in
-                if let result = viewModel.confirmRatingSelection(rating) {
-                    let entry = result.entry
-                    handleFeedback(for: card.card.polarity, points: entry.computedPoints, cardID: card.id)
-                }
-            }
-        }
+        // Removed rating picker sheet as rating type is no longer supported
         .sheet(item: $deedEditorState, onDismiss: { deedEditorState = nil }) { state in
             AddEditDeedSheet(
                 initialCard: state.card,
@@ -358,13 +351,7 @@ struct DeedsPage: View {
         }
 
         var normalizedAmount: Double {
-            switch card.card.unitType {
-            case .rating:
-                let clamped = max(1, min(5, Int(amount.rounded())))
-                return Double(clamped)
-            default:
-                return amount
-            }
+            return amount
         }
     }
 
@@ -745,22 +732,18 @@ private struct QuickAddSheet: View {
     private var amountSection: some View {
         Section(header: Text("Amount")) {
             switch localState.card.card.unitType {
-            case .rating:
-                RatingSlider(rating: Binding(
-                    get: { max(1, min(5, Int(localState.amount.rounded()))) },
-                    set: { localState.amount = Double($0) }
-                ))
             case .count:
-                Stepper(value: $localState.amount, in: 0...100, step: 1) {
+                Stepper(value: $localState.amount, in: 1...100, step: 1) {
                     Text("\(Int(localState.amount)) \(localState.card.card.unitLabel)")
                 }
             case .duration:
-                Stepper(value: $localState.amount, in: 5...1440, step: 5) {
-                    Text("\(Int(localState.amount)) min")
-                }
-            case .quantity:
-                Stepper(value: $localState.amount, in: 50...10000, step: 50) {
-                    Text("\(Int(localState.amount)) \(localState.card.card.unitLabel)")
+                VStack(alignment: .leading, spacing: 12) {
+                    Stepper(value: $localState.amount, in: 1...1440, step: 5) {
+                        Text("\(Int(localState.amount)) \(localState.card.card.unitLabel)")
+                    }
+                    Text("Set the number of minutes for this activity")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
             }
         }
@@ -800,82 +783,7 @@ private struct QuickAddSheet: View {
     }
 }
 
-private struct RatingSlider: View {
-    @Binding var rating: Int
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 6) {
-                ForEach(1...5, id: \.self) { value in
-                    Image(systemName: value <= rating ? "star.fill" : "star")
-                        .foregroundStyle(value <= rating ? Color.yellow : Color.secondary)
-                        .font(.title3)
-                        .onTapGesture {
-                            rating = value
-                        }
-                }
-            }
-
-            Slider(
-                value: Binding(
-                    get: { Double(rating) },
-                    set: { rating = Int(round($0)) }
-                ),
-                in: 1...5,
-                step: 1
-            ) {
-                Text("Rating")
-            }
-            .tint(.yellow)
-
-            Text("\(rating) \(rating == 1 ? "star" : "stars")")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-        .padding(.vertical, 4)
-    }
-}
-
-private struct RatingPickerSheet: View {
-    let card: DeedsPageViewModel.CardState
-    let onSave: (Int) -> Void
-    @Environment(\.dismiss) private var dismiss
-    @State private var rating: Int = 3
-
-    var body: some View {
-        NavigationStack {
-            VStack(spacing: 24) {
-                Text("How did it feel?")
-                    .font(.headline)
-
-                Picker("Rating", selection: $rating) {
-                    ForEach(1..<6) { value in
-                        Text("\(value)").tag(value)
-                    }
-                }
-                .pickerStyle(.segmented)
-
-                Spacer()
-            }
-            .padding()
-            .navigationTitle(card.card.name)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        dismiss()
-                        onSave(rating)
-                    }
-                }
-            }
-        }
-        .onAppear {
-            rating = Int(card.lastAmount ?? 3)
-        }
-    }
-}
+// Removed RatingSlider and RatingPickerSheet as rating type is no longer supported
 
 #Preview {
     DeedsPage()

@@ -251,32 +251,15 @@ final class DeedsPageViewModel: ObservableObject {
     func defaultAmount(for card: CardState) -> Double {
         if let lastAmount = card.lastAmount { return lastAmount }
         switch card.card.unitType {
-        case .count, .rating:
+        case .count:
             return 1
         case .duration:
             return 5
-        case .quantity:
-            return 250
         }
     }
 
     func prepareTap(on card: CardState) -> LogEntryResult? {
-        if card.card.unitType == .rating, card.lastAmount == nil {
-            pendingRatingCard = card
-            return nil
-        }
         let amount = defaultAmount(for: card)
-        return log(cardID: card.id, amount: amount, note: nil)
-    }
-
-    func confirmRatingSelection(_ rating: Int) -> LogEntryResult? {
-        guard var card = pendingRatingCard else { return nil }
-        pendingRatingCard = nil
-        let amount = Double(rating)
-        if let index = cards.firstIndex(where: { $0.id == card.id }) {
-            cards[index].lastAmount = amount
-            card = cards[index]
-        }
         return log(cardID: card.id, amount: amount, note: nil)
     }
 

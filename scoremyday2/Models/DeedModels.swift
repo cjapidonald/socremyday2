@@ -1,10 +1,8 @@
 import Foundation
 
 enum UnitType: Int16, CaseIterable, Codable {
-    case count
-    case duration
-    case quantity
-    case rating
+    case count      // Simple tap counter
+    case duration   // Time-based tracking (minutes/hours)
 }
 
 enum Polarity: Int16, CaseIterable, Codable {

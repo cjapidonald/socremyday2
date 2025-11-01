@@ -338,15 +338,7 @@ struct AddEditDeedSheet: View {
     }
 
     private func formatAmount(_ amount: Double) -> String {
-        switch unitType {
-        case .count, .rating:
-            return "\(Int(amount)) \(unitLabel.isEmpty ? Self.placeholderLabel(for: unitType) : unitLabel)"
-        case .duration:
-            return "\(Int(amount)) \(unitLabel.isEmpty ? Self.placeholderLabel(for: unitType) : unitLabel)"
-        case .quantity:
-            let formatted = Self.format(amount)
-            return "\(formatted) \(unitLabel.isEmpty ? Self.placeholderLabel(for: unitType) : unitLabel)"
-        }
+        return "\(Int(amount)) \(unitLabel.isEmpty ? Self.placeholderLabel(for: unitType) : unitLabel)"
     }
 
     private func formattedPointsValue(_ value: Double) -> String {
@@ -359,8 +351,6 @@ struct AddEditDeedSheet: View {
         switch type {
         case .count: return "count"
         case .duration: return "min"
-        case .quantity: return "units"
-        case .rating: return "stars"
         }
     }
 
@@ -368,21 +358,15 @@ struct AddEditDeedSheet: View {
         switch type {
         case .count: return "Count"
         case .duration: return "Duration"
-        case .quantity: return "Quantity"
-        case .rating: return "Rating"
         }
     }
 
     private static func defaults(for type: UnitType) -> (label: String, points: Double, dailyCap: Double?, exampleAmount: Double) {
         switch type {
         case .count:
-            return ("count", 5, 10, 3)
+            return ("times", 5, 10, 3)
         case .duration:
-            return ("min", 1.5, 60, 30)
-        case .quantity:
-            return ("units", 0.5, nil, 250)
-        case .rating:
-            return ("stars", 2, 5, 4)
+            return ("min", 1, 60, 30)
         }
     }
 
