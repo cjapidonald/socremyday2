@@ -20,13 +20,12 @@ struct AddEditDeedSheet: View {
     @State private var polarity: Polarity
     @State private var unitType: UnitType
     @State private var unitLabel: String
-    @State private var pointsPerUnitText: String
-    @State private var dailyCapText: String
+    @State private var pointsPerTapValue: Double
     @State private var isPrivate: Bool
     @State private var showOnStats: Bool
 
     // New simplified state for tap configuration
-    @State private var amountPerTap: Double
+    @State private var amountPerTap: Int
     @State private var timeUnit: TimeUnit = .minutes
 
     private let isEditing: Bool
@@ -49,20 +48,16 @@ struct AddEditDeedSheet: View {
         _polarity = State(initialValue: defaultPolarity)
         _unitType = State(initialValue: defaultUnitType)
         _unitLabel = State(initialValue: initialCard?.unitLabel ?? defaults.label)
+
+        // Initialize points per tap
         let startingPoints: Double
         if let card = initialCard {
-            startingPoints = card.pointsPerUnit
+            startingPoints = abs(card.pointsPerUnit)
         } else {
-            startingPoints = defaultPolarity == .positive ? defaults.points : -defaults.points
+            startingPoints = defaults.points
         }
-        _pointsPerUnitText = State(initialValue: Self.format(startingPoints))
-        if let card = initialCard, let cap = card.dailyCap {
-            _dailyCapText = State(initialValue: Self.format(cap))
-        } else if let cap = defaults.dailyCap, initialCard == nil {
-            _dailyCapText = State(initialValue: Self.format(cap))
-        } else {
-            _dailyCapText = State(initialValue: "")
-        }
+        _pointsPerTapValue = State(initialValue: startingPoints)
+
         _isPrivate = State(initialValue: initialCard?.isPrivate ?? false)
         _showOnStats = State(initialValue: initialCard?.showOnStats ?? true)
 
@@ -72,7 +67,7 @@ struct AddEditDeedSheet: View {
             if card.unitType == .duration {
                 // Parse from label like "15 min" or "2 hours"
                 let components = card.unitLabel.split(separator: " ")
-                if let firstComponent = components.first, let value = Double(firstComponent) {
+                if let firstComponent = components.first, let value = Int(firstComponent) {
                     _amountPerTap = State(initialValue: value)
                     _timeUnit = State(initialValue: card.unitLabel.contains("hour") ? .hours : .minutes)
                 } else {
@@ -82,7 +77,7 @@ struct AddEditDeedSheet: View {
             } else {
                 // For count, extract from label like "times" or "3 times"
                 let components = card.unitLabel.split(separator: " ")
-                if components.count > 1, let value = Double(components[0]) {
+                if components.count > 1, let value = Int(components[0]) {
                     _amountPerTap = State(initialValue: value)
                 } else {
                     _amountPerTap = State(initialValue: 1)
@@ -200,10 +195,13 @@ struct AddEditDeedSheet: View {
                             if unitType == .count {
                                 HStack {
                                     Text("1 tap =")
-                                    TextField("Amount", value: $amountPerTap, format: .number)
-                                        .keyboardType(.decimalPad)
-                                        .textFieldStyle(.roundedBorder)
-                                        .frame(width: 80)
+                                    Picker("Amount", selection: $amountPerTap) {
+                                        ForEach(1...100, id: \.self) { num in
+                                            Text("\(num)").tag(num)
+                                        }
+                                    }
+                                    .pickerStyle(.wheel)
+                                    .frame(width: 100, height: 100)
                                     Text("times")
                                         .foregroundStyle(.secondary)
                                 }
@@ -211,10 +209,19 @@ struct AddEditDeedSheet: View {
                                 VStack(spacing: 8) {
                                     HStack {
                                         Text("1 tap =")
-                                        TextField("Amount", value: $amountPerTap, format: .number)
-                                            .keyboardType(.decimalPad)
-                                            .textFieldStyle(.roundedBorder)
-                                            .frame(width: 80)
+                                        Picker("Amount", selection: $amountPerTap) {
+                                            if timeUnit == .minutes {
+                                                ForEach([1, 5, 10, 15, 20, 25, 30, 45, 60, 90, 120], id: \.self) { num in
+                                                    Text("\(num)").tag(num)
+                                                }
+                                            } else {
+                                                ForEach(1...24, id: \.self) { num in
+                                                    Text("\(num)").tag(num)
+                                                }
+                                            }
+                                        }
+                                        .pickerStyle(.wheel)
+                                        .frame(width: 100, height: 100)
                                         Picker("Unit", selection: $timeUnit) {
                                             ForEach(TimeUnit.allCases, id: \.self) { unit in
                                                 Text(unit.rawValue).tag(unit)
@@ -237,10 +244,13 @@ struct AddEditDeedSheet: View {
                                 Text(polarity == .positive ? "+" : "−")
                                     .foregroundStyle(polarity == .positive ? .green : .red)
                                     .font(.title3.bold())
-                                TextField("Points", text: $pointsPerUnitText)
-                                    .keyboardType(.decimalPad)
-                                    .textFieldStyle(.roundedBorder)
-                                    .frame(width: 100)
+                                Picker("Points", selection: $pointsPerTapValue) {
+                                    ForEach([0.5, 1, 2, 3, 4, 5, 10, 15, 20, 25, 30, 40, 50, 75, 100], id: \.self) { points in
+                                        Text(Self.format(points)).tag(points)
+                                    }
+                                }
+                                .pickerStyle(.wheel)
+                                .frame(width: 100, height: 100)
                                 Text("points")
                                     .foregroundStyle(.secondary)
                             }
@@ -250,23 +260,6 @@ struct AddEditDeedSheet: View {
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                                     .padding(.top, 4)
-                            }
-                        }
-
-                        Divider()
-
-                        // Optional: Daily Cap
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Daily limit (optional)")
-                                .font(.subheadline.weight(.medium))
-
-                            HStack {
-                                TextField("No limit", text: $dailyCapText)
-                                    .keyboardType(.decimalPad)
-                                    .textFieldStyle(.roundedBorder)
-                                    .frame(width: 100)
-                                Text("points max per day")
-                                    .foregroundStyle(.secondary)
                             }
                         }
                     }
@@ -298,13 +291,16 @@ struct AddEditDeedSheet: View {
             applyDefaults(for: newValue)
             updateUnitLabel()
         }
-        .onChange(of: polarity) { _, newValue in
-            syncPointsWithPolarity()
-        }
         .onChange(of: amountPerTap) { _, _ in
             updateUnitLabel()
         }
-        .onChange(of: timeUnit) { _, _ in
+        .onChange(of: timeUnit) { _, newValue in
+            // Adjust amountPerTap when switching between minutes and hours
+            if newValue == .hours && amountPerTap > 24 {
+                amountPerTap = 1
+            } else if newValue == .minutes && ![1, 5, 10, 15, 20, 25, 30, 45, 60, 90, 120].contains(amountPerTap) {
+                amountPerTap = 15
+            }
             updateUnitLabel()
         }
     }
@@ -355,6 +351,7 @@ struct AddEditDeedSheet: View {
     private var previewModel: DeedCard {
         let hex = color.toHex(includeAlpha: false) ?? initialCard?.colorHex ?? "#FF9F0A"
         let textHex = textColor.toHex(includeAlpha: false) ?? initialCard?.textColorHex ?? "#FFFFFF"
+        let signedPoints = polarity == .positive ? pointsPerTapValue : -pointsPerTapValue
         return DeedCard(
             id: initialCard?.id ?? UUID(),
             name: name,
@@ -365,8 +362,8 @@ struct AddEditDeedSheet: View {
             polarity: polarity,
             unitType: unitType,
             unitLabel: unitLabel,
-            pointsPerUnit: pointsPerUnitValue ?? 0,
-            dailyCap: dailyCapValue,
+            pointsPerUnit: signedPoints,
+            dailyCap: nil,
             isPrivate: isPrivate,
             showOnStats: showOnStats,
             createdAt: initialCard?.createdAt ?? Date(),
@@ -376,24 +373,14 @@ struct AddEditDeedSheet: View {
     }
 
     private var pointsSummary: String {
-        guard let value = signedPointsPerUnit else { return "Points per unit" }
+        let value = polarity == .positive ? pointsPerTapValue : -pointsPerTapValue
         let sign = value >= 0 ? "+" : "−"
         let formatted = Self.format(abs(value))
         return "\(sign)\(formatted) per \(unitLabel.isEmpty ? Self.placeholderLabel(for: unitType) : unitLabel)"
     }
 
-    private var exampleText: String? {
-        guard let points = signedPointsPerUnit else { return nil }
-        let amount = Self.defaults(for: unitType).exampleAmount
-        let computed = points * amount
-        guard computed != 0 else { return nil }
-        let amountText = formatAmount(amount)
-        let formattedPoints = formattedPointsValue(computed)
-        return "Example: \(formattedPoints) for \(amountText)"
-    }
-
     private var simpleExampleText: String? {
-        guard let points = signedPointsPerUnit else { return nil }
+        let points = polarity == .positive ? pointsPerTapValue : -pointsPerTapValue
         let taps = 3
         let computed = points * Double(taps)
         guard computed != 0 else { return nil }
@@ -419,33 +406,16 @@ struct AddEditDeedSheet: View {
         }
     }
 
-    private var pointsPerUnitValue: Double? {
-        let sanitized = pointsPerUnitText.replacingOccurrences(of: ",", with: ".")
-        return Double(sanitized)
-    }
-
-    private var signedPointsPerUnit: Double? {
-        guard let value = pointsPerUnitValue else { return nil }
-        return polarity == .positive ? abs(value) : -abs(value)
-    }
-
-    private var dailyCapValue: Double? {
-        let trimmed = dailyCapText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return nil }
-        let sanitized = trimmed.replacingOccurrences(of: ",", with: ".")
-        return Double(sanitized)
-    }
-
     private var isValid: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
-            (pointsPerUnitValue ?? 0) != 0
+            pointsPerTapValue > 0
     }
 
     private func handleSave() {
-        guard let rawPoints = pointsPerUnitValue, rawPoints != 0 else { return }
+        guard pointsPerTapValue > 0 else { return }
         let colorHex = color.toHex(includeAlpha: false) ?? initialCard?.colorHex ?? "#FF9F0A"
         let textColorHex = textColor.toHex(includeAlpha: false) ?? initialCard?.textColorHex ?? "#FFFFFF"
-        let points = polarity == .positive ? abs(rawPoints) : -abs(rawPoints)
+        let points = polarity == .positive ? pointsPerTapValue : -pointsPerTapValue
 
         let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedCategory = category.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -461,7 +431,7 @@ struct AddEditDeedSheet: View {
             unitType: unitType,
             unitLabel: trimmedLabel,
             pointsPerUnit: points,
-            dailyCap: dailyCapValue,
+            dailyCap: nil,
             isPrivate: isPrivate,
             showOnStats: showOnStats,
             createdAt: initialCard?.createdAt ?? Date(),
@@ -485,20 +455,7 @@ struct AddEditDeedSheet: View {
         }
 
         unitLabel = defaults.label
-        let signedPoints = polarity == .positive ? defaults.points : -defaults.points
-        pointsPerUnitText = Self.format(signedPoints)
-        if let cap = defaults.dailyCap {
-            dailyCapText = Self.format(cap)
-        } else {
-            dailyCapText = ""
-        }
-    }
-
-    private func syncPointsWithPolarity() {
-        guard let value = pointsPerUnitValue else { return }
-        let magnitude = abs(value)
-        let signed = polarity == .positive ? magnitude : -magnitude
-        pointsPerUnitText = Self.format(signed)
+        pointsPerTapValue = defaults.points
     }
 
     private func formatAmount(_ amount: Double) -> String {
