@@ -99,23 +99,15 @@ struct AppleIDSignInButton: UIViewRepresentable {
                 if let window = activeScene.windows.first {
                     return window
                 }
-                if #available(iOS 26.0, *) {
-                    return UIWindow(windowScene: activeScene)
-                } else {
-                    return UIWindow(frame: .zero)
-                }
+                return UIWindow(windowScene: activeScene)
             }
 
             // As a final fallback, return any existing window we can create within the current deployment target.
-            if #available(iOS 26.0, *) {
-                assertionFailure("Unable to locate a UIWindowScene for Sign in with Apple presentation")
-                guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
-                    fatalError("A UIWindowScene is required to present the authorization controller.")
-                }
-                return UIWindow(windowScene: scene)
-            } else {
-                return UIWindow(frame: .zero)
+            assertionFailure("Unable to locate a UIWindowScene for Sign in with Apple presentation")
+            guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
+                fatalError("A UIWindowScene is required to present the authorization controller.")
             }
+            return UIWindow(windowScene: scene)
         }
     }
 }

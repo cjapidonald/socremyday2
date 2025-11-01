@@ -1,5 +1,10 @@
 import SwiftUI
 
+enum TimeUnit: String, CaseIterable {
+    case minutes = "minutes"
+    case hours = "hours"
+}
+
 struct AddEditDeedSheet: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -19,6 +24,10 @@ struct AddEditDeedSheet: View {
     @State private var dailyCapText: String
     @State private var isPrivate: Bool
     @State private var showOnStats: Bool
+
+    // New simplified state for tap configuration
+    @State private var amountPerTap: Double
+    @State private var timeUnit: TimeUnit = .minutes
 
     private let isEditing: Bool
 
@@ -57,6 +66,33 @@ struct AddEditDeedSheet: View {
         _isPrivate = State(initialValue: initialCard?.isPrivate ?? false)
         _showOnStats = State(initialValue: initialCard?.showOnStats ?? true)
 
+        // Initialize amountPerTap based on existing card or defaults
+        if let card = initialCard {
+            // Extract the amount from the unit label (e.g., "15 min" -> 15, "1 times" -> 1)
+            if card.unitType == .duration {
+                // Parse from label like "15 min" or "2 hours"
+                let components = card.unitLabel.split(separator: " ")
+                if let firstComponent = components.first, let value = Double(firstComponent) {
+                    _amountPerTap = State(initialValue: value)
+                    _timeUnit = State(initialValue: card.unitLabel.contains("hour") ? .hours : .minutes)
+                } else {
+                    _amountPerTap = State(initialValue: 15)
+                    _timeUnit = State(initialValue: .minutes)
+                }
+            } else {
+                // For count, extract from label like "times" or "3 times"
+                let components = card.unitLabel.split(separator: " ")
+                if components.count > 1, let value = Double(components[0]) {
+                    _amountPerTap = State(initialValue: value)
+                } else {
+                    _amountPerTap = State(initialValue: 1)
+                }
+            }
+        } else {
+            // New card defaults
+            _amountPerTap = State(initialValue: defaultUnitType == .count ? 1 : 15)
+            _timeUnit = State(initialValue: .minutes)
+        }
     }
 
     var body: some View {
@@ -126,35 +162,120 @@ struct AddEditDeedSheet: View {
                     }
                 }
 
-                Section("Configuration") {
-                    Picker("Polarity", selection: $polarity) {
-                        Text("Positive").tag(Polarity.positive)
-                        Text("Negative").tag(Polarity.negative)
-                    }
-                    .pickerStyle(.segmented)
+                Section {
+                    VStack(alignment: .leading, spacing: 16) {
+                        // Step 1: Good or Bad Habit
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Is this a good or bad habit?")
+                                .font(.subheadline.weight(.medium))
 
-                    Picker("Unit Type", selection: $unitType) {
-                        ForEach(UnitType.allCases, id: \.self) { type in
-                            Text(Self.label(for: type)).tag(type)
+                            Picker("Polarity", selection: $polarity) {
+                                Label("Good", systemImage: "plus.circle.fill").tag(Polarity.positive)
+                                Label("Bad", systemImage: "minus.circle.fill").tag(Polarity.negative)
+                            }
+                            .pickerStyle(.segmented)
+                        }
+
+                        Divider()
+
+                        // Step 2: What are you tracking?
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("What are you tracking?")
+                                .font(.subheadline.weight(.medium))
+
+                            Picker("Tracking Type", selection: $unitType) {
+                                Label("Count", systemImage: "number").tag(UnitType.count)
+                                Label("Time", systemImage: "clock").tag(UnitType.duration)
+                            }
+                            .pickerStyle(.segmented)
+                        }
+
+                        Divider()
+
+                        // Step 3: How much is 1 tap?
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("How much is 1 tap?")
+                                .font(.subheadline.weight(.medium))
+
+                            if unitType == .count {
+                                HStack {
+                                    Text("1 tap =")
+                                    TextField("Amount", value: $amountPerTap, format: .number)
+                                        .keyboardType(.decimalPad)
+                                        .textFieldStyle(.roundedBorder)
+                                        .frame(width: 80)
+                                    Text("times")
+                                        .foregroundStyle(.secondary)
+                                }
+                            } else {
+                                VStack(spacing: 8) {
+                                    HStack {
+                                        Text("1 tap =")
+                                        TextField("Amount", value: $amountPerTap, format: .number)
+                                            .keyboardType(.decimalPad)
+                                            .textFieldStyle(.roundedBorder)
+                                            .frame(width: 80)
+                                        Picker("Unit", selection: $timeUnit) {
+                                            ForEach(TimeUnit.allCases, id: \.self) { unit in
+                                                Text(unit.rawValue).tag(unit)
+                                            }
+                                        }
+                                        .pickerStyle(.segmented)
+                                    }
+                                }
+                            }
+                        }
+
+                        Divider()
+
+                        // Step 4: Points per tap
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Points per tap")
+                                .font(.subheadline.weight(.medium))
+
+                            HStack {
+                                Text(polarity == .positive ? "+" : "−")
+                                    .foregroundStyle(polarity == .positive ? .green : .red)
+                                    .font(.title3.bold())
+                                TextField("Points", text: $pointsPerUnitText)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 100)
+                                Text("points")
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            if let example = simpleExampleText {
+                                Text(example)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .padding(.top, 4)
+                            }
+                        }
+
+                        Divider()
+
+                        // Optional: Daily Cap
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Daily limit (optional)")
+                                .font(.subheadline.weight(.medium))
+
+                            HStack {
+                                TextField("No limit", text: $dailyCapText)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 100)
+                                Text("points max per day")
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
-                    .pickerStyle(.segmented)
-
-                    TextField("Unit Label", text: $unitLabel)
-                        .textInputAutocapitalization(.never)
-                        .disableAutocorrection(true)
-
-                    TextField("Points per Unit", text: $pointsPerUnitText)
-                        .keyboardType(.decimalPad)
-
-                    if let example = exampleText {
-                        Text(example)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-
-                    TextField("Daily Cap (optional)", text: $dailyCapText)
-                        .keyboardType(.decimalPad)
+                    .padding(.vertical, 4)
+                } header: {
+                    Text("Tracking Setup")
+                } footer: {
+                    Text("Configure how tapping this deed will work. Each tap will log the amount you set and award points.")
+                        .font(.caption)
                 }
 
                 Section("Visibility") {
@@ -175,9 +296,16 @@ struct AddEditDeedSheet: View {
         }
         .onChange(of: unitType) { _, newValue in
             applyDefaults(for: newValue)
+            updateUnitLabel()
         }
         .onChange(of: polarity) { _, newValue in
             syncPointsWithPolarity()
+        }
+        .onChange(of: amountPerTap) { _, _ in
+            updateUnitLabel()
+        }
+        .onChange(of: timeUnit) { _, _ in
+            updateUnitLabel()
         }
     }
 
@@ -264,6 +392,33 @@ struct AddEditDeedSheet: View {
         return "Example: \(formattedPoints) for \(amountText)"
     }
 
+    private var simpleExampleText: String? {
+        guard let points = signedPointsPerUnit else { return nil }
+        let taps = 3
+        let computed = points * Double(taps)
+        guard computed != 0 else { return nil }
+        let formattedPoints = formattedPointsValue(computed)
+        return "Example: \(taps) taps = \(formattedPoints)"
+    }
+
+    private func updateUnitLabel() {
+        if unitType == .count {
+            if amountPerTap == 1 {
+                unitLabel = "times"
+            } else {
+                unitLabel = "\(Int(amountPerTap)) times"
+            }
+        } else {
+            // Duration
+            let amount = Int(amountPerTap)
+            if timeUnit == .minutes {
+                unitLabel = amount == 1 ? "1 min" : "\(amount) min"
+            } else {
+                unitLabel = amount == 1 ? "1 hour" : "\(amount) hours"
+            }
+        }
+    }
+
     private var pointsPerUnitValue: Double? {
         let sanitized = pointsPerUnitText.replacingOccurrences(of: ",", with: ".")
         return Double(sanitized)
@@ -320,6 +475,15 @@ struct AddEditDeedSheet: View {
 
     private func applyDefaults(for unitType: UnitType) {
         let defaults = Self.defaults(for: unitType)
+
+        // Set amount per tap
+        if unitType == .count {
+            amountPerTap = 1
+        } else {
+            amountPerTap = 15
+            timeUnit = .minutes
+        }
+
         unitLabel = defaults.label
         let signedPoints = polarity == .positive ? defaults.points : -defaults.points
         pointsPerUnitText = Self.format(signedPoints)
