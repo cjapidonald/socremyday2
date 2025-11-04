@@ -964,9 +964,22 @@ final class StatsPageViewModel: ObservableObject {
 
     private func updateDailyNetSeries() {
         let dayStarts = daySequence(for: selectedRange)
-        dailyNetSeries = dayStarts.map { start in
-            DailyStatPoint(date: start, value: dailyNetValues[start] ?? 0)
+
+        // Create a sawtooth pattern where each day starts at 0 and accumulates
+        // This ensures the chart resets to zero at each day cutoff
+        var seriesWithResets: [DailyStatPoint] = []
+        for start in dayStarts {
+            // Add a reset point at the start of each day
+            seriesWithResets.append(DailyStatPoint(date: start, value: 0))
+            // Add the day's total value at the end of the day
+            if let value = dailyNetValues[start], value != 0 {
+                // Use a time slightly before the end of the day for visual purposes
+                let endTime = calendar.date(byAdding: .hour, value: 23, to: start) ?? start
+                seriesWithResets.append(DailyStatPoint(date: endTime, value: value))
+            }
         }
+
+        dailyNetSeries = seriesWithResets
 
         let todayStart = dayStart(for: Date())
         if let value = dailyNetValues[todayStart] {
@@ -988,13 +1001,28 @@ final class StatsPageViewModel: ObservableObject {
         let daily = perDeedPoints[selectedId] ?? [:]
         let dailyAmounts = perDeedAmounts[selectedId] ?? [:]
 
-        cardTrendSeries = dayStarts.map { start in
-            DailyStatPoint(date: start, value: daily[start] ?? 0)
+        // Create sawtooth pattern for card trend (same as main net score)
+        var trendWithResets: [DailyStatPoint] = []
+        for start in dayStarts {
+            trendWithResets.append(DailyStatPoint(date: start, value: 0))
+            if let value = daily[start], value != 0 {
+                let endTime = calendar.date(byAdding: .hour, value: 23, to: start) ?? start
+                trendWithResets.append(DailyStatPoint(date: endTime, value: value))
+            }
         }
 
-        cardAmountSeries = dayStarts.map { start in
-            DailyStatPoint(date: start, value: dailyAmounts[start] ?? 0)
+        // Create sawtooth pattern for amounts
+        var amountsWithResets: [DailyStatPoint] = []
+        for start in dayStarts {
+            amountsWithResets.append(DailyStatPoint(date: start, value: 0))
+            if let value = dailyAmounts[start], value != 0 {
+                let endTime = calendar.date(byAdding: .hour, value: 23, to: start) ?? start
+                amountsWithResets.append(DailyStatPoint(date: endTime, value: value))
+            }
         }
+
+        cardTrendSeries = trendWithResets
+        cardAmountSeries = amountsWithResets
     }
 
     private func updateContributionSlices() {
