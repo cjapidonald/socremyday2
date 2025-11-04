@@ -6,6 +6,7 @@ final class AppPrefsStore: ObservableObject {
     static let shared = AppPrefsStore()
 
     @Published var dayCutoffHour: Int
+    @Published var dayCutoffMinute: Int
     @Published var hapticsOn: Bool
     @Published var soundsOn: Bool
     @Published var accentColorHex: String?
@@ -23,6 +24,7 @@ final class AppPrefsStore: ObservableObject {
         let storedPrefs = (try? repository.fetch()) ?? AppPrefs()
         prefsID = storedPrefs.id
         dayCutoffHour = storedPrefs.dayCutoffHour
+        dayCutoffMinute = storedPrefs.dayCutoffMinute
         hapticsOn = storedPrefs.hapticsOn
         soundsOn = storedPrefs.soundsOn
         accentColorHex = storedPrefs.accentColorHex
@@ -37,6 +39,12 @@ final class AppPrefsStore: ObservableObject {
 
     private func bindPersistence() {
         $dayCutoffHour
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] _ in self?.persistChanges() }
+            .store(in: &cancellables)
+
+        $dayCutoffMinute
             .dropFirst()
             .removeDuplicates()
             .sink { [weak self] _ in self?.persistChanges() }
@@ -74,6 +82,7 @@ final class AppPrefsStore: ObservableObject {
         let prefs = AppPrefs(
             id: prefsID,
             dayCutoffHour: dayCutoffHour,
+            dayCutoffMinute: dayCutoffMinute,
             hapticsOn: hapticsOn,
             soundsOn: soundsOn,
             accentColorHex: accentColorHex,

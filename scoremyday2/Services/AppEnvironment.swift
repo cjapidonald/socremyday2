@@ -17,6 +17,7 @@ final class AppEnvironment: ObservableObject {
 
         var updated = settings
         updated.dayCutoffHour = prefsStore.dayCutoffHour
+        updated.dayCutoffMinute = prefsStore.dayCutoffMinute
         updated.hapticsEnabled = prefsStore.hapticsOn
         updated.soundsEnabled = prefsStore.soundsOn
         updated.accentColorHex = prefsStore.accentColorHex
@@ -52,6 +53,17 @@ final class AppEnvironment: ObservableObject {
                 guard self.settings.dayCutoffHour != value else { return }
                 var current = self.settings
                 current.dayCutoffHour = value
+                self.settings = current
+            }
+            .store(in: &cancellables)
+
+        prefsStore.$dayCutoffMinute
+            .removeDuplicates()
+            .sink { [weak self] value in
+                guard let self else { return }
+                guard self.settings.dayCutoffMinute != value else { return }
+                var current = self.settings
+                current.dayCutoffMinute = value
                 self.settings = current
             }
             .store(in: &cancellables)

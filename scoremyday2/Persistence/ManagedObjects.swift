@@ -90,6 +90,7 @@ extension DeedEntryMO {
 final class AppPrefsMO: NSManagedObject {
     @NSManaged private var idRaw: String?
     @NSManaged var dayCutoffHour: Int16
+    @NSManaged var dayCutoffMinute: Int16
     @NSManaged var hapticsOn: Bool
     @NSManaged var soundsOn: Bool
     @NSManaged var themeAccent: String?

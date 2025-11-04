@@ -8,7 +8,7 @@ struct SettingsPage: View {
     @ObservedObject private var prefs = AppPrefsStore.shared
     @ObservedObject private var accountStore = AccountStore.shared
 
-    @State private var dayCutoffSelection = SettingsPage.makeDate(forHour: AppPrefsStore.shared.dayCutoffHour)
+    @State private var dayCutoffSelection = SettingsPage.makeDate(forHour: AppPrefsStore.shared.dayCutoffHour, minute: AppPrefsStore.shared.dayCutoffMinute)
     @State private var isResettingData = false
     @State private var showResetConfirmation = false
     @State private var actionError: String?
@@ -18,7 +18,6 @@ struct SettingsPage: View {
     @State private var isPresentingCSVExporter = false
     @State private var isPreparingJSONExport = false
     @State private var isPreparingCSVExport = false
-    @State private var isNormalizingDayCutoff = false
     @State private var showDeleteAccountConfirmation = false
     @State private var isDeletingAccount = false
 
@@ -38,8 +37,18 @@ struct SettingsPage: View {
                 SoundManager.shared.preload()
             }
             .onChange(of: prefs.dayCutoffHour) { _, newValue in
-                let newDate = SettingsPage.makeDate(forHour: newValue)
-                if Calendar.current.component(.hour, from: dayCutoffSelection) != newValue {
+                let newDate = SettingsPage.makeDate(forHour: newValue, minute: prefs.dayCutoffMinute)
+                let calendar = Calendar.current
+                if calendar.component(.hour, from: dayCutoffSelection) != newValue ||
+                   calendar.component(.minute, from: dayCutoffSelection) != prefs.dayCutoffMinute {
+                    dayCutoffSelection = newDate
+                }
+            }
+            .onChange(of: prefs.dayCutoffMinute) { _, newValue in
+                let newDate = SettingsPage.makeDate(forHour: prefs.dayCutoffHour, minute: newValue)
+                let calendar = Calendar.current
+                if calendar.component(.hour, from: dayCutoffSelection) != prefs.dayCutoffHour ||
+                   calendar.component(.minute, from: dayCutoffSelection) != newValue {
                     dayCutoffSelection = newDate
                 }
             }
@@ -380,11 +389,6 @@ struct SettingsPage: View {
     }
 
     private func handleDayCutoffSelectionChange(previous: Date, newValue: Date) {
-        if isNormalizingDayCutoff {
-            isNormalizingDayCutoff = false
-            return
-        }
-
         playDayCutoffTick(previous: previous, newValue: newValue)
         updateDayCutoff(with: newValue)
     }
@@ -398,15 +402,13 @@ struct SettingsPage: View {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = TimeZone.current
         let hour = calendar.component(.hour, from: date)
+        let minute = calendar.component(.minute, from: date)
+
         if prefs.dayCutoffHour != hour {
             prefs.dayCutoffHour = hour
         }
-
-        if calendar.component(.minute, from: date) != 0 || calendar.component(.second, from: date) != 0 {
-            if let normalized = calendar.date(bySettingHour: hour, minute: 0, second: 0, of: date) {
-                isNormalizingDayCutoff = true
-                dayCutoffSelection = normalized
-            }
+        if prefs.dayCutoffMinute != minute {
+            prefs.dayCutoffMinute = minute
         }
     }
 
@@ -458,6 +460,7 @@ struct SettingsPage: View {
         guard !isResettingData else { return }
         let storedPrefs = (
             dayCutoffHour: prefs.dayCutoffHour,
+            dayCutoffMinute: prefs.dayCutoffMinute,
             hapticsOn: prefs.hapticsOn,
             soundsOn: prefs.soundsOn,
             accentColorHex: prefs.accentColorHex,
@@ -473,6 +476,9 @@ struct SettingsPage: View {
                     if prefs.dayCutoffHour != storedPrefs.dayCutoffHour {
                         prefs.dayCutoffHour = storedPrefs.dayCutoffHour
                     }
+                    if prefs.dayCutoffMinute != storedPrefs.dayCutoffMinute {
+                        prefs.dayCutoffMinute = storedPrefs.dayCutoffMinute
+                    }
                     if prefs.hapticsOn != storedPrefs.hapticsOn {
                         prefs.hapticsOn = storedPrefs.hapticsOn
                     }
@@ -485,7 +491,7 @@ struct SettingsPage: View {
                     if prefs.theme != storedPrefs.theme {
                         prefs.theme = storedPrefs.theme
                     }
-                    dayCutoffSelection = SettingsPage.makeDate(forHour: storedPrefs.dayCutoffHour)
+                    dayCutoffSelection = SettingsPage.makeDate(forHour: storedPrefs.dayCutoffHour, minute: storedPrefs.dayCutoffMinute)
                     isResettingData = false
                     appEnvironment.notifyDataDidChange()
                 }
@@ -498,13 +504,13 @@ struct SettingsPage: View {
         }
     }
 
-    private static func makeDate(forHour hour: Int) -> Date {
+    private static func makeDate(forHour hour: Int, minute: Int = 0) -> Date {
         var calendar = Calendar.current
         calendar.timeZone = TimeZone.current
         let now = Date()
         var components = calendar.dateComponents([.year, .month, .day], from: now)
         components.hour = hour
-        components.minute = 0
+        components.minute = minute
         return calendar.date(from: components) ?? now
     }
 

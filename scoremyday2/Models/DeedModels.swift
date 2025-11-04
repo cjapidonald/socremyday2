@@ -94,6 +94,7 @@ struct DeedEntry: Identifiable, Equatable {
 struct AppPrefs: Identifiable, Equatable {
     var id: UUID
     var dayCutoffHour: Int
+    var dayCutoffMinute: Int
     var hapticsOn: Bool
     var soundsOn: Bool
     var accentColorHex: String?
@@ -102,6 +103,7 @@ struct AppPrefs: Identifiable, Equatable {
     init(
         id: UUID = UUID(),
         dayCutoffHour: Int = 4,
+        dayCutoffMinute: Int = 0,
         hapticsOn: Bool = true,
         soundsOn: Bool = true,
         accentColorHex: String? = nil,
@@ -109,6 +111,7 @@ struct AppPrefs: Identifiable, Equatable {
     ) {
         self.id = id
         self.dayCutoffHour = dayCutoffHour
+        self.dayCutoffMinute = dayCutoffMinute
         self.hapticsOn = hapticsOn
         self.soundsOn = soundsOn
         self.accentColorHex = accentColorHex

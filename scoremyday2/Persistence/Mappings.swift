@@ -81,6 +81,7 @@ extension AppPrefs {
         self.init(
             id: managedObject.id,
             dayCutoffHour: Int(managedObject.dayCutoffHour),
+            dayCutoffMinute: Int(managedObject.dayCutoffMinute),
             hapticsOn: managedObject.hapticsOn,
             soundsOn: managedObject.soundsOn,
             accentColorHex: managedObject.themeAccent,
@@ -93,6 +94,7 @@ extension AppPrefsMO {
     func update(from prefs: AppPrefs) {
         id = prefs.id
         dayCutoffHour = Int16(prefs.dayCutoffHour)
+        dayCutoffMinute = Int16(prefs.dayCutoffMinute)
         hapticsOn = prefs.hapticsOn
         soundsOn = prefs.soundsOn
         themeAccent = prefs.accentColorHex
