@@ -13,10 +13,10 @@ final class ScoresRepository {
         self.context = context
     }
 
-    func dailyScores(in range: ClosedRange<Date>, cutoffHour: Int) throws -> [DailyScore] {
+    func dailyScores(in range: ClosedRange<Date>, cutoffHour: Int, cutoffMinute: Int = 0) throws -> [DailyScore] {
         try context.performAndReturn {
-            let lower = appDayRange(for: range.lowerBound, cutoffHour: cutoffHour).start
-            let upper = appDayRange(for: range.upperBound, cutoffHour: cutoffHour).end
+            let lower = appDayRange(for: range.lowerBound, cutoffHour: cutoffHour, cutoffMinute: cutoffMinute).start
+            let upper = appDayRange(for: range.upperBound, cutoffHour: cutoffHour, cutoffMinute: cutoffMinute).end
 
             let request = DeedEntryMO.fetchRequest()
             request.predicate = NSPredicate(format: "timestamp >= %@ AND timestamp < %@", lower as NSDate, upper as NSDate)
@@ -27,7 +27,7 @@ final class ScoresRepository {
             calendar.timeZone = TimeZone.current
 
             for entry in entries {
-                let bucketStart = appDayRange(for: entry.timestamp, cutoffHour: cutoffHour, calendar: calendar).start
+                let bucketStart = appDayRange(for: entry.timestamp, cutoffHour: cutoffHour, cutoffMinute: cutoffMinute, calendar: calendar).start
                 totals[bucketStart, default: 0] += entry.computedPoints
             }
 

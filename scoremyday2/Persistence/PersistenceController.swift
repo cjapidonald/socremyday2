@@ -91,6 +91,7 @@ final class PersistenceController {
         appPrefs.properties = [
             attribute(name: "idRaw", type: .stringAttributeType, optional: true, cloudKitFieldName: "id"),
             attribute(name: "dayCutoffHour", type: .integer16AttributeType, defaultValue: 4, cloudKitFieldName: "dayCutoffHour"),
+            attribute(name: "dayCutoffMinute", type: .integer16AttributeType, defaultValue: 0, cloudKitFieldName: "dayCutoffMinute"),
             attribute(name: "hapticsOn", type: .booleanAttributeType, defaultValue: true, cloudKitFieldName: "hapticsOn"),
             attribute(name: "soundsOn", type: .booleanAttributeType, defaultValue: true, cloudKitFieldName: "soundsOn"),
             attribute(name: "themeAccent", type: .stringAttributeType, optional: true, cloudKitFieldName: "themeAccent"),
@@ -157,6 +158,7 @@ final class PersistenceController {
                 let prefs = AppPrefsMO(context: context)
                 prefs.id = UUID()
                 prefs.dayCutoffHour = 4
+                prefs.dayCutoffMinute = 0
                 prefs.hapticsOn = true
                 prefs.soundsOn = true
                 prefs.themeAccent = nil

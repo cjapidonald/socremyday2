@@ -65,6 +65,9 @@ struct StatsPage: View {
         .onChange(of: appEnvironment.settings.dayCutoffHour, initial: false) { oldValue, newValue in
             Task { await viewModel.updateCutoffHour(newValue) }
         }
+        .onChange(of: appEnvironment.settings.dayCutoffMinute, initial: false) { oldValue, newValue in
+            Task { await viewModel.updateCutoffMinute(newValue) }
+        }
         .onChange(of: appEnvironment.dataVersion, initial: false) { _, _ in
             Task { await viewModel.forceReload() }
         }
@@ -811,6 +814,7 @@ final class StatsPageViewModel: ObservableObject {
 
     private var calendar: Calendar
     private var cutoffHour: Int = 4
+    private var cutoffMinute: Int = 0
     private var isReady = false
     private var deedsById: [UUID: DeedCard] = [:]
     private var dailyNetValues: [Date: Double] = [:]
@@ -821,6 +825,8 @@ final class StatsPageViewModel: ObservableObject {
     private var perCategoryPositivePoints: [String: [Date: Double]] = [:]
     private var searchIndex = DeedSearchIndex()
     private var persistenceController: PersistenceController?
+    private var cutoffRefreshWorkItem: DispatchWorkItem?
+    private var lastReloadCompletedAt: Date?
 
     init() {
         var calendar = Calendar(identifier: .gregorian)
@@ -829,8 +835,13 @@ final class StatsPageViewModel: ObservableObject {
         self.calendar = calendar
     }
 
+    deinit {
+        cutoffRefreshWorkItem?.cancel()
+    }
+
     func configureIfNeeded(environment: AppEnvironment) async {
         cutoffHour = environment.settings.dayCutoffHour
+        cutoffMinute = environment.settings.dayCutoffMinute
         persistenceController = environment.persistenceController
 
         await reloadData()
@@ -843,12 +854,20 @@ final class StatsPageViewModel: ObservableObject {
         await reloadData()
     }
 
+    func updateCutoffMinute(_ minute: Int) async {
+        guard minute != cutoffMinute else { return }
+        cutoffMinute = minute
+        // Re-ingest entries to respect the new cutoff boundaries.
+        await reloadData()
+    }
+
     func forceReload() async {
         await reloadData()
     }
 
     private func reloadData() async {
         guard let persistence = persistenceController else { return }
+        defer { scheduleCutoffRefresh() }
         isReady = false
         isLoading = true
         hasAnyEntries = false
@@ -860,6 +879,7 @@ final class StatsPageViewModel: ObservableObject {
             updateForRangeChange()
             updateCardTrend()
             updateInsights()
+            lastReloadCompletedAt = Date()
         } catch {
             isLoading = false
             print("Failed to load stats: \(error)")
@@ -945,6 +965,56 @@ final class StatsPageViewModel: ObservableObject {
         updateContributionSlices()
         updateCardTrend()
         updateInsights()
+    }
+
+    private func scheduleCutoffRefresh() {
+        cutoffRefreshWorkItem?.cancel()
+
+        let nextCutoff = nextCutoffDate(after: Date())
+        var interval = nextCutoff.timeIntervalSinceNow
+
+        if interval <= 1 {
+            interval = 60
+        }
+
+        let workItem = DispatchWorkItem { [weak self] in
+            Task { [weak self] in
+                guard let self else { return }
+                await self.handleCutoffReached()
+            }
+        }
+        cutoffRefreshWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + interval, execute: workItem)
+    }
+
+    private func handleCutoffReached() async {
+        cutoffRefreshWorkItem = nil
+        if let last = lastReloadCompletedAt, Date().timeIntervalSince(last) < 5 {
+            scheduleCutoffRefresh()
+            return
+        }
+        await reloadData()
+    }
+
+    private func nextCutoffDate(after reference: Date) -> Date {
+        let range = appDayRange(
+            for: reference,
+            cutoffHour: cutoffHour,
+            cutoffMinute: cutoffMinute,
+            calendar: calendar
+        )
+
+        if reference < range.end {
+            return range.end
+        }
+
+        let nextReference = calendar.date(byAdding: .minute, value: 1, to: reference) ?? reference.addingTimeInterval(60)
+        return appDayRange(
+            for: nextReference,
+            cutoffHour: cutoffHour,
+            cutoffMinute: cutoffMinute,
+            calendar: calendar
+        ).end
     }
 
     func focusOnDeed(withId id: UUID) {
@@ -1190,7 +1260,7 @@ final class StatsPageViewModel: ObservableObject {
     }
 
     private func dayRange(for date: Date) -> (start: Date, end: Date) {
-        appDayRange(for: date, cutoffHour: cutoffHour, calendar: calendar)
+        appDayRange(for: date, cutoffHour: cutoffHour, cutoffMinute: cutoffMinute, calendar: calendar)
     }
 
     private func dayStart(for date: Date) -> Date {
@@ -1200,13 +1270,13 @@ final class StatsPageViewModel: ObservableObject {
     private func monthStart(for date: Date) -> Date {
         let components = calendar.dateComponents([.year, .month], from: date)
         let midnight = calendar.date(from: components) ?? date
-        return calendar.date(bySettingHour: cutoffHour, minute: 0, second: 0, of: midnight) ?? midnight
+        return calendar.date(bySettingHour: cutoffHour, minute: cutoffMinute, second: 0, of: midnight) ?? midnight
     }
 
     private func previousMonthStart(for date: Date) -> Date {
         let currentMonthStart = monthStart(for: date)
         let previousMidnight = calendar.date(byAdding: .month, value: -1, to: currentMonthStart) ?? currentMonthStart
-        return calendar.date(bySettingHour: cutoffHour, minute: 0, second: 0, of: previousMidnight) ?? previousMidnight
+        return calendar.date(bySettingHour: cutoffHour, minute: cutoffMinute, second: 0, of: previousMidnight) ?? previousMidnight
     }
 
     private func dateRange(forDays days: Int) -> ClosedRange<Date> {

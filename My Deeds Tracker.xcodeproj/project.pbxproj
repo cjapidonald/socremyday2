@@ -160,7 +160,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 49AC91742E948B0500777C6A /* Build configuration list for PBXProject "forge" */;
+			buildConfigurationList = 49AC91742E948B0500777C6A /* Build configuration list for PBXProject "My Deeds Tracker" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -480,7 +480,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		49AC91742E948B0500777C6A /* Build configuration list for PBXProject "forge" */ = {
+		49AC91742E948B0500777C6A /* Build configuration list for PBXProject "My Deeds Tracker" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				49AC918A2E948B0600777C6A /* Debug */,

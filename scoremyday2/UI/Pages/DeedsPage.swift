@@ -89,6 +89,9 @@ struct DeedsPage: View {
         .onChange(of: appEnvironment.settings.dayCutoffHour) { _, newValue in
             viewModel.updateCutoffHour(newValue)
         }
+        .onChange(of: appEnvironment.settings.dayCutoffMinute) { _, newValue in
+            viewModel.updateCutoffMinute(newValue)
+        }
         .onChange(of: appEnvironment.dataVersion) {
             viewModel.reload()
         }
@@ -140,16 +143,16 @@ struct DeedsPage: View {
     private var headerView: some View {
         HStack(alignment: .center, spacing: 16) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("LAST 7 DAYS")
+                Text("Points Today")
                     .font(.caption.weight(.semibold))
                     .textCase(.uppercase)
                     .foregroundStyle(.secondary)
 
-                Text(formattedPoints(viewModel.weeklyNetScore))
+                Text(formattedPoints(viewModel.todayNetScore))
                     .font(.system(size: 34, weight: .bold, design: .rounded))
                     .foregroundStyle(.primary)
 
-                Text("checkpoint at \(formattedCutoffHour())")
+                Text("checkpoint at \(formattedCutoffTime())")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
@@ -312,8 +315,8 @@ struct DeedsPage: View {
         return "\(sign)\(base)"
     }
 
-    private func formattedCutoffHour() -> String {
-        String(format: "%02d:00", viewModel.cutoffHour)
+    private func formattedCutoffTime() -> String {
+        String(format: "%02d:%02d", viewModel.cutoffHour, viewModel.cutoffMinute)
     }
 
     private func triggerScorePulse(after delay: TimeInterval) {

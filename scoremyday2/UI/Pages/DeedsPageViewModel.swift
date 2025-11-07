@@ -26,8 +26,10 @@ final class DeedsPageViewModel: ObservableObject {
 
     @Published var cards: [CardState] = []
     @Published var weeklyNetScore: Double = 0
+    @Published var todayNetScore: Double = 0
     @Published var sparklineValues: [Double] = Array(repeating: 0, count: 7)
     @Published private(set) var cutoffHour: Int = 4
+    @Published private(set) var cutoffMinute: Int = 0
     @Published var pendingRatingCard: CardState?
     @Published var categorySuggestions: [String] = []
 
@@ -37,6 +39,8 @@ final class DeedsPageViewModel: ObservableObject {
     private var isReordering = false
     private var retryCount = 0
     private let maxRetries = 3
+    private var cutoffResetWorkItem: DispatchWorkItem?
+    private var lastReloadCompletedAt: Date?
 
     init(persistenceController: PersistenceController? = nil) {
         let persistenceController = persistenceController ?? .shared
@@ -55,6 +59,7 @@ final class DeedsPageViewModel: ObservableObject {
         for observer in observers {
             NotificationCenter.default.removeObserver(observer)
         }
+        cutoffResetWorkItem?.cancel()
     }
 
     private func setupContextObserver(context: NSManagedObjectContext) {
@@ -150,6 +155,7 @@ final class DeedsPageViewModel: ObservableObject {
         do {
             let prefs = try prefsRepository.fetch()
             cutoffHour = prefs.dayCutoffHour
+            cutoffMinute = prefs.dayCutoffMinute
 
             let cards = try deedsRepository.fetchAll(includeArchived: false)
             let entries = try entriesRepository.fetchEntries()
@@ -181,7 +187,7 @@ final class DeedsPageViewModel: ObservableObject {
             }
 
             // Compute today's entry count for each deed
-            let todayRange = appDayRange(for: Date(), cutoffHour: cutoffHour)
+            let todayRange = appDayRange(for: Date(), cutoffHour: cutoffHour, cutoffMinute: cutoffMinute)
             let todayEntries = entries.filter { $0.timestamp >= todayRange.start && $0.timestamp < todayRange.end }
             var todayCount: [UUID: Int] = [:]
             for entry in todayEntries {
@@ -203,9 +209,13 @@ final class DeedsPageViewModel: ObservableObject {
             let sparkline = try computeSparkline()
             sparklineValues = sparkline
             weeklyNetScore = sparkline.reduce(0, +)
+            todayNetScore = sparkline.last ?? 0
+            lastReloadCompletedAt = Date()
         } catch {
             assertionFailure("Failed to load deeds: \(error)")
         }
+
+        scheduleCutoffReset()
     }
 
     func updateCutoffHour(_ hour: Int) {
@@ -216,9 +226,82 @@ final class DeedsPageViewModel: ObservableObject {
             let sparkline = try computeSparkline()
             sparklineValues = sparkline
             weeklyNetScore = sparkline.reduce(0, +)
+            todayNetScore = sparkline.last ?? 0
+            lastReloadCompletedAt = Date()
         } catch {
             assertionFailure("Failed to recompute metrics: \(error)")
         }
+
+        scheduleCutoffReset()
+    }
+
+    func updateCutoffMinute(_ minute: Int) {
+        guard cutoffMinute != minute else { return }
+        cutoffMinute = minute
+
+        do {
+            let sparkline = try computeSparkline()
+            sparklineValues = sparkline
+            weeklyNetScore = sparkline.reduce(0, +)
+            todayNetScore = sparkline.last ?? 0
+        } catch {
+            assertionFailure("Failed to recompute metrics: \(error)")
+        }
+
+        scheduleCutoffReset()
+    }
+
+    private func scheduleCutoffReset() {
+        cutoffResetWorkItem?.cancel()
+
+        let nextCutoff = nextCutoffDate(after: Date())
+        var interval = nextCutoff.timeIntervalSinceNow
+
+        if interval <= 1 {
+            interval = 60
+        }
+
+        let workItem = DispatchWorkItem { [weak self] in
+            Task { [weak self] in
+                guard let self else { return }
+                await self.handleCutoffBoundaryReached()
+            }
+        }
+        cutoffResetWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + interval, execute: workItem)
+    }
+
+    private func nextCutoffDate(after reference: Date) -> Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone.current
+
+        let range = appDayRange(
+            for: reference,
+            cutoffHour: cutoffHour,
+            cutoffMinute: cutoffMinute,
+            calendar: calendar
+        )
+
+        if reference < range.end {
+            return range.end
+        }
+
+        let nextReference = calendar.date(byAdding: .minute, value: 1, to: reference) ?? reference.addingTimeInterval(60)
+        return appDayRange(
+            for: nextReference,
+            cutoffHour: cutoffHour,
+            cutoffMinute: cutoffMinute,
+            calendar: calendar
+        ).end
+    }
+
+    private func handleCutoffBoundaryReached() async {
+        cutoffResetWorkItem = nil
+        if let last = lastReloadCompletedAt, Date().timeIntervalSince(last) < 5 {
+            scheduleCutoffReset()
+            return
+        }
+        reload()
     }
 
     func upsert(card: DeedCard) {
@@ -236,14 +319,14 @@ final class DeedsPageViewModel: ObservableObject {
         guard let start = calendar.date(byAdding: .day, value: -6, to: date) else {
             return Array(repeating: 0, count: 7)
         }
-        let scores = try scoresRepository.dailyScores(in: start...date, cutoffHour: cutoffHour)
+        let scores = try scoresRepository.dailyScores(in: start...date, cutoffHour: cutoffHour, cutoffMinute: cutoffMinute)
         var mapped: [Date: Double] = [:]
         for score in scores {
             mapped[score.dayStart] = score.totalPoints
         }
         return (0..<7).map { offset -> Double in
             let day = calendar.date(byAdding: .day, value: offset, to: start) ?? start
-            let bucket = appDayRange(for: day, cutoffHour: cutoffHour, calendar: calendar).start
+            let bucket = appDayRange(for: day, cutoffHour: cutoffHour, cutoffMinute: cutoffMinute, calendar: calendar).start
             return mapped[bucket] ?? 0
         }
     }
@@ -295,12 +378,14 @@ final class DeedsPageViewModel: ObservableObject {
                 cards[index].todayCount += 1
                 if !sparklineValues.isEmpty {
                     sparklineValues[sparklineValues.count - 1] += entry.computedPoints
+                    todayNetScore = sparklineValues.last ?? 0
                 }
             } else {
                 let sparkline = try computeSparkline()
                 sparklineValues = sparkline
             }
             weeklyNetScore = sparklineValues.reduce(0, +)
+            todayNetScore = sparklineValues.last ?? 0
             return result
         } catch {
             assertionFailure("Failed to log entry: \(error)")
@@ -331,7 +416,8 @@ final class DeedsPageViewModel: ObservableObject {
                 // Update sparkline
                 let sparkline = try computeSparkline()
                 sparklineValues = sparkline
-                weeklyNetScore = sparklineValues.reduce(0, +)
+                weeklyNetScore = sparkline.reduce(0, +)
+                todayNetScore = sparkline.last ?? 0
             }
 
             return lastEntry
@@ -443,7 +529,7 @@ final class DeedsPageViewModel: ObservableObject {
     }
 
     private func isDate(_ date: Date, inSameAppDayAs reference: Date) -> Bool {
-        let range = appDayRange(for: reference, cutoffHour: cutoffHour)
+        let range = appDayRange(for: reference, cutoffHour: cutoffHour, cutoffMinute: cutoffMinute)
         return date >= range.start && date < range.end
     }
 
@@ -479,10 +565,11 @@ struct DailyCapHintStore {
         for cardID: UUID,
         on date: Date,
         cutoffHour: Int,
+        cutoffMinute: Int = 0,
         calendar: Calendar = .current
     ) -> Bool {
         let key = storageKey(for: cardID)
-        let dayStart = appDayRange(for: date, cutoffHour: cutoffHour, calendar: calendar).start
+        let dayStart = appDayRange(for: date, cutoffHour: cutoffHour, cutoffMinute: cutoffMinute, calendar: calendar).start
         guard let stored = defaults.object(forKey: key) as? Double else {
             return true
         }
@@ -494,10 +581,11 @@ struct DailyCapHintStore {
         for cardID: UUID,
         on date: Date,
         cutoffHour: Int,
+        cutoffMinute: Int = 0,
         calendar: Calendar = .current
     ) {
         let key = storageKey(for: cardID)
-        let dayStart = appDayRange(for: date, cutoffHour: cutoffHour, calendar: calendar).start
+        let dayStart = appDayRange(for: date, cutoffHour: cutoffHour, cutoffMinute: cutoffMinute, calendar: calendar).start
         defaults.set(dayStart.timeIntervalSinceReferenceDate, forKey: key)
     }
 

@@ -8,7 +8,6 @@ struct SettingsPage: View {
     @ObservedObject private var prefs = AppPrefsStore.shared
     @ObservedObject private var accountStore = AccountStore.shared
 
-    @State private var dayCutoffSelection = SettingsPage.makeDate(forHour: AppPrefsStore.shared.dayCutoffHour, minute: AppPrefsStore.shared.dayCutoffMinute)
     @State private var isResettingData = false
     @State private var showResetConfirmation = false
     @State private var actionError: String?
@@ -35,22 +34,6 @@ struct SettingsPage: View {
             .navigationTitle("Settings")
             .onAppear {
                 SoundManager.shared.preload()
-            }
-            .onChange(of: prefs.dayCutoffHour) { _, newValue in
-                let newDate = SettingsPage.makeDate(forHour: newValue, minute: prefs.dayCutoffMinute)
-                let calendar = Calendar.current
-                if calendar.component(.hour, from: dayCutoffSelection) != newValue ||
-                   calendar.component(.minute, from: dayCutoffSelection) != prefs.dayCutoffMinute {
-                    dayCutoffSelection = newDate
-                }
-            }
-            .onChange(of: prefs.dayCutoffMinute) { _, newValue in
-                let newDate = SettingsPage.makeDate(forHour: prefs.dayCutoffHour, minute: newValue)
-                let calendar = Calendar.current
-                if calendar.component(.hour, from: dayCutoffSelection) != prefs.dayCutoffHour ||
-                   calendar.component(.minute, from: dayCutoffSelection) != newValue {
-                    dayCutoffSelection = newDate
-                }
             }
             .alert("Something went wrong", isPresented: Binding(
                 get: { actionError != nil },
@@ -172,16 +155,50 @@ struct SettingsPage: View {
 
     private var preferencesSection: some View {
         Section("Preferences") {
-            DatePicker(
-                "Day Cutoff",
-                selection: $dayCutoffSelection,
-                displayedComponents: [.hourAndMinute]
-            )
-            .datePickerStyle(.wheel)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .onChange(of: dayCutoffSelection) { previous, newValue in
-                handleDayCutoffSelectionChange(previous: previous, newValue: newValue)
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Day Cutoff")
+                    .font(.subheadline.weight(.semibold))
+
+                HStack(spacing: 12) {
+                    // Hour Picker
+                    VStack(spacing: 4) {
+                        Text("Hour")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Picker("Hour", selection: $prefs.dayCutoffHour) {
+                            ForEach(0..<24, id: \.self) { hour in
+                                Text(String(format: "%02d", hour))
+                                    .tag(hour)
+                            }
+                        }
+                        .pickerStyle(.wheel)
+                        .frame(width: 80, height: 120)
+                        .clipped()
+                    }
+
+                    Text(":")
+                        .font(.title2)
+                        .padding(.top, 20)
+
+                    // Minute Picker
+                    VStack(spacing: 4) {
+                        Text("Minute")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Picker("Minute", selection: $prefs.dayCutoffMinute) {
+                            ForEach(0..<60, id: \.self) { minute in
+                                Text(String(format: "%02d", minute))
+                                    .tag(minute)
+                            }
+                        }
+                        .pickerStyle(.wheel)
+                        .frame(width: 80, height: 120)
+                        .clipped()
+                    }
+                }
+                .frame(maxWidth: .infinity)
             }
+            .padding(.vertical, 4)
 
             Toggle("Haptics & Vibration", isOn: $prefs.hapticsOn)
             Toggle("Sounds", isOn: $prefs.soundsOn)
@@ -388,29 +405,6 @@ struct SettingsPage: View {
         }
     }
 
-    private func handleDayCutoffSelectionChange(previous: Date, newValue: Date) {
-        playDayCutoffTick(previous: previous, newValue: newValue)
-        updateDayCutoff(with: newValue)
-    }
-
-    private func playDayCutoffTick(previous: Date, newValue: Date) {
-        guard previous != newValue else { return }
-        SoundManager.shared.positive()
-    }
-
-    private func updateDayCutoff(with date: Date) {
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone.current
-        let hour = calendar.component(.hour, from: date)
-        let minute = calendar.component(.minute, from: date)
-
-        if prefs.dayCutoffHour != hour {
-            prefs.dayCutoffHour = hour
-        }
-        if prefs.dayCutoffMinute != minute {
-            prefs.dayCutoffMinute = minute
-        }
-    }
 
     private func prepareJSONExport() {
         guard !isPreparingJSONExport else { return }
@@ -491,7 +485,6 @@ struct SettingsPage: View {
                     if prefs.theme != storedPrefs.theme {
                         prefs.theme = storedPrefs.theme
                     }
-                    dayCutoffSelection = SettingsPage.makeDate(forHour: storedPrefs.dayCutoffHour, minute: storedPrefs.dayCutoffMinute)
                     isResettingData = false
                     appEnvironment.notifyDataDidChange()
                 }
@@ -502,16 +495,6 @@ struct SettingsPage: View {
                 }
             }
         }
-    }
-
-    private static func makeDate(forHour hour: Int, minute: Int = 0) -> Date {
-        var calendar = Calendar.current
-        calendar.timeZone = TimeZone.current
-        let now = Date()
-        var components = calendar.dateComponents([.year, .month, .day], from: now)
-        components.hour = hour
-        components.minute = minute
-        return calendar.date(from: components) ?? now
     }
 
     private static var versionString: String {

@@ -9,9 +9,18 @@ struct SparklineView: View {
     var verticalGridLines: Int = 5
 
     private var normalized: [Double] {
-        guard let max = values.max(), let min = values.min(), max != min else {
-            return Array(repeating: 0.5, count: Swift.max(values.count, 2))
+        guard !values.isEmpty else { return [] }
+        guard let max = values.max(), let min = values.min() else { return [] }
+
+        if max == min {
+            let fallbackCount = Swift.max(values.count, 2)
+            if max == 0 {
+                return Array(repeating: 0, count: fallbackCount)
+            } else {
+                return Array(repeating: 0.5, count: fallbackCount)
+            }
         }
+
         let delta = max - min
         return values.map { ($0 - min) / delta }
     }
